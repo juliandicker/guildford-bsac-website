@@ -38,8 +38,12 @@ namespace GuildfordBsac.Web.Controllers
             var membershipRatesService = new MembershipRatesService(
                 Path.Combine(_env.ContentRootPath, "App_Data", "membershiprates.json"));
 
+            var teamService = new TeamService(
+                Path.Combine(_env.ContentRootPath, "App_Data", "team.json"));
+
             var model = new HomeViewModel();
             model.MembershipRates = membershipRatesService.Current;
+            model.TeamMembers = teamService.TeamMembers;
             model.RecentPosts = await _facebook.GetRecentPostsAsync("GuildfordBSAC", limit: 5);
 
             return View(model);
