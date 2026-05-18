@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guildford Sub-Aqua Club</title>
+    <meta name="description" content="One of Surrey's oldest underwater diving clubs offers training and diving to all" />
+    <meta name="keywords" content="scuba diving, SCUBA, scuba, sub-aqua, subaqua, diving, underwater, BSAC, bsac, Guildford, guildford, Surrey, surrey, diving club, club, swimming, sea, ocean, sports, diver training, training, pool training, try dive, sports diver, ocean diver, dive leader, advanced diver, scuba, scuba diving, technical diving" />
+    <partial name="_favicon" />
+    @{
+        var pdfBase = ViewData["PdfBaseUrl"] as string;
+        string CssUrl(string path) => pdfBase != null ? pdfBase + Url.Content(path) : Url.Content(path);
+    }
+    <link href="https://fonts.googleapis.com/css?family=Lato:300|Open+Sans" rel="stylesheet" />
+    <link href="@CssUrl("~/Content/bootstrap/bootstrap.css")" rel="stylesheet" />
+    <link href="@CssUrl("~/Content/flexslider.css")" rel="stylesheet" />
+    <link href="@CssUrl("~/Content/Site.css")" rel="stylesheet" />
+    @RenderSection("styles", false)
+    <partial name="_ga" />
+</head>
+<body>
+    @RenderBody()
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/jquery.flexslider.js"></script>
+    <script src="~/Scripts/jquery.shorten.min.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>

@@ -1,0 +1,10 @@
+@model DateTime?
+@{
+    Layout = "~/Views/Shared/EditorTemplates/_Layout.cshtml";
+}
+@section value{
+    <div class="input-group date">
+        @Html.TextBoxFor(model => model, ViewData.TemplateInfo.FormattedModelValue.ToString(), new {@class = "form-control", data_mask = "99/99/9999", placeholder = ViewData.ModelMetadata.Placeholder})
+        <span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+    </div>
+}

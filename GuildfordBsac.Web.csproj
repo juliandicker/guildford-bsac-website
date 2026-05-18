@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b94aebc4-d33f-4796-9c8b-fa45e478fa2e</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="android-chrome-192x192.png" />
+    <None Remove="android-chrome-256x256.png" />
+    <None Remove="apple-touch-icon.png" />
+    <None Remove="browserconfig.xml" />
+    <None Remove="favicon-16x16.png" />
+    <None Remove="favicon-32x32.png" />
+    <None Remove="favicon.ico" />
+    <None Remove="mstile-150x150.png" />
+    <None Remove="safari-pinned-tab.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="bootstrap.sass" Version="5.3.8" />
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.74.0.4073" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.74.0.4134" />
+    <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="jQuery.Validation" Version="1.21.0" />
+    <PackageReference Include="MimeKit" Version="4.16.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Rotativa.AspNetCore" Version="1.4.0" />
+  </ItemGroup>
+
+</Project>

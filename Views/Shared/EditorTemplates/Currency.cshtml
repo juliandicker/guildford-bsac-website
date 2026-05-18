@@ -1,0 +1,9 @@
+@{
+    Layout = "~/Views/Shared/EditorTemplates/_Layout.cshtml";
+}
+@section value{
+    <div class="input-group">
+        <span class="input-group-addon addon-fixed">£</span>
+        @Html.TextBoxFor(model => model, new {@class = "form-control", min = "1", step = "any", placeholder = ViewData.ModelMetadata.Placeholder})
+    </div>
+}

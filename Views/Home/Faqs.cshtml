@@ -1,0 +1,16 @@
+﻿@using GuildfordBsac.Web.Models
+<section id="faqs" class="content-block">
+    <div class="container">
+        <div class="underlined-title">
+            <h1>Frequently Asked Questions</h1>
+            <hr />
+        </div>
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            @foreach (FaqViewModel faq in Model.Faqs)
+            {
+                <partial name="_faq" model="faq" />
+            }
+        </div>
+    </div>
+</section>

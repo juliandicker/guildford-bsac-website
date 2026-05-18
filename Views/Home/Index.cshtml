@@ -1,0 +1,68 @@
+﻿@model GuildfordBsac.Web.Models.HomeViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_fullscreen.cshtml";
+}
+
+<partial name="_home" />
+<partial name="_newsevents" />
+<partial name="_joinus" />
+<partial name="_tryus" />
+<partial name="_aboutus" />
+<partial name="_team" />
+<partial name="_membership" model="Model.MembershipRates" />
+
+<script src="https://www.google.com/recaptcha/api.js"></script>
+
+@section scripts {
+    <script>
+        $(function () {
+            $('[data-bs-toggle="popover"]').popover();
+        });
+
+        $('a.swingscroll').click(function (event) {
+            event.preventDefault();
+            var sectionid = $(this).attr('href').replace("/", "");
+            var sectiontop = $(sectionid).offset().top - offset;
+            $('html, body').animate({ scrollTop: sectiontop }, 1000);
+        });
+
+        var windowHeight = $(window).height();
+        var topSection = $('#carousel-top .carousel-item');
+        topSection.css('height', windowHeight);
+
+        $(window).resize(function () {
+            var windowHeight = $(window).height();
+            topSection.css('height', windowHeight - offset);
+        });
+
+        $(document).ready(function () {
+            $("#team-carousel").owlCarousel({
+                autoplay: true,
+                autoplayTimeout: 3000,
+                autoplayHoverPause: true,
+                nav: true,
+                dots: false,
+                loop: true,
+                @*navText: ['@Html.Raw(File.ReadAllText(Server.MapPath("~/Content/Images/icons/arrow-left-circle-fill.svg")).Replace("\n", " "))<span class="sr-only">Prev</span>',
+                    '@Html.Raw(File.ReadAllText(Server.MapPath("~/Content/Images/icons/arrow-right-circle-fill.svg")).Replace("\n", " "))<span class="sr-only">Next</span>'],*@
+                navText: ['<span class="visually-hidden">Prev</span>',
+                    '<span class="visually-hidden">Next</span>'],
+                responsiveClass: true,
+                responsive: {
+                    0: {
+                        margin: 0,
+                        items: 2
+                    },
+                    480: {
+                        margin: 30,
+                        items: 3
+                    },
+                    768: {
+                        margin: 50,
+                        items: 4
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,18 @@
+﻿[
+  {
+    "outputFile": "../../../Users/julia/.nuget/packages/bootstrap.sass/5.3.8/contentFiles/any/any/wwwroot/scss/bootstrap.css",
+    "inputFile": "../../../Users/julia/.nuget/packages/bootstrap.sass/5.3.8/contentFiles/any/any/wwwroot/scss/bootstrap.scss"
+  },
+  {
+    "outputFile": "../../../Users/julia/.nuget/packages/bootstrap.sass/5.3.8/contentFiles/any/any/wwwroot/scss/bootstrap.css",
+    "inputFile": "../../../Users/julia/.nuget/packages/bootstrap.sass/5.3.8/contentFiles/any/any/wwwroot/scss/bootstrap.scss"
+  },
+  {
+    "outputFile": "wwwroot/Content/bootstrap/bootstrap.css",
+    "inputFile": "wwwroot/Content/bootstrap/bootstrap.scss"
+  },
+  {
+    "outputFile": "wwwroot/Content/Site.css",
+    "inputFile": "wwwroot/Content/Site.less"
+  }
+]

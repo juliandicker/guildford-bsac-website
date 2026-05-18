@@ -1,0 +1,136 @@
+namespace GuildfordBsac.Web.Common
+{
+    using GuildfordBsac.Web.Models;
+    using Google.Apis.Auth.OAuth2;
+    using Google.Apis.Calendar.v3;
+    using Google.Apis.Gmail.v1;
+    using Google.Apis.Services;
+    using MimeKit;
+    using System;
+    using System.Collections.Generic;
+    using System.Net.Mail;
+
+    public class GoogleApiHelper
+    {
+        private static string ApplicationName = "GBSAC";
+        private const string userAccountEmail = "gbsacadmin@guildford-bsac.com";
+        private readonly string _clientEmail;
+        private readonly string _privateKey;
+        private readonly string _contactEmail;
+        private readonly string _contactEmailBcc;
+        private readonly ServiceAccountCredential _credential;
+
+        public GoogleApiHelper(string clientEmail, string privateKey, string contactEmail, string contactEmailBcc = "")
+        {
+            _clientEmail = clientEmail;
+            // Env vars store \n as literal backslash-n; normalize to actual newlines
+            _privateKey = privateKey.Replace("\\n", "\n");
+            _contactEmail = contactEmail;
+            _contactEmailBcc = contactEmailBcc;
+            _credential = CreateServiceAccountCredential(new[] {
+                    CalendarService.Scope.CalendarReadonly,
+                    GmailService.Scope.GmailSend
+                });
+        }
+
+        public List<Calendar> GetCalendars(int year, string[] calendarIds)
+        {
+            var service = new CalendarService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = _credential,
+                ApplicationName = ApplicationName,
+            });
+
+            CalendarAdapter adapter = new CalendarAdapter();
+
+            foreach (var calId in calendarIds)
+            {
+                CalendarListResource.GetRequest getRequest = service.CalendarList.Get(calId);
+
+                EventsResource.ListRequest request = service.Events.List(calId);
+                var timeMin = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+                request.TimeMinDateTimeOffset = timeMin;
+                request.TimeMaxDateTimeOffset = timeMin.AddYears(1).AddSeconds(-1);
+                request.ShowDeleted = false;
+                request.SingleEvents = true;
+                request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+
+                adapter.AddCalendar(getRequest.Execute(), request.Execute());
+            }
+
+            return adapter.GetCalendars();
+        }
+
+        public bool SendMessage(string name, string email, string subject, string message)
+        {
+            var service = new GmailService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = _credential,
+                ApplicationName = ApplicationName,
+            });
+
+            var mimeMessage = MimeMessage.CreateFromMailMessage(CreateMailMessage(name, email, subject, message));
+
+            var gmailMessage = new Google.Apis.Gmail.v1.Data.Message
+            {
+                Raw = Encode(mimeMessage.ToString())
+            };
+
+            service.Users.Messages.Send(gmailMessage, userAccountEmail).Execute();
+
+            return true;
+        }
+
+        private ServiceAccountCredential CreateServiceAccountCredential(IEnumerable<string> scopes)
+        {
+            return new ServiceAccountCredential(
+                new ServiceAccountCredential.Initializer(_clientEmail)
+                {
+                    Scopes = scopes,
+                    User = userAccountEmail
+                }.FromPrivateKey(_privateKey));
+        }
+
+        private MailMessage CreateMailMessage(string name, string email, string subject, string message)
+        {
+            var mailMessage = new MailMessage();
+            mailMessage.From = new MailAddress(userAccountEmail);
+            mailMessage.To.Add(_contactEmail);
+            mailMessage.ReplyToList.Add(email);
+
+            if (_contactEmailBcc.Length > 0)
+            {
+                foreach (var a in _contactEmailBcc.Split(','))
+                {
+                    mailMessage.Bcc.Add(a.Trim());
+                }
+            }
+
+            mailMessage.Subject = subject;
+
+            mailMessage.Body = new string('*', 20)
+                + Environment.NewLine
+                + "This email was generated on www.guildford-bsac.com"
+                + Environment.NewLine
+                + "Reply to: " + name + " (" + email + ")"
+                + Environment.NewLine
+                + new string('*', 20)
+                + Environment.NewLine
+                + message;
+
+            mailMessage.IsBodyHtml = false;
+
+            return mailMessage;
+        }
+
+        private static string Encode(string text)
+        {
+            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(text);
+
+            return Convert.ToBase64String(bytes)
+                .Replace('+', '-')
+                .Replace('/', '_')
+                .Replace("=", "");
+        }
+    }
+}

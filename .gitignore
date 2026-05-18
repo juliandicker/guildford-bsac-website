@@ -1,0 +1,30 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Publish output and profiles
+publish/
+*.pubxml
+*.publishsettings
+
+# NuGet
+*.nupkg
+packages/
+
+# Node / tooling caches
+node_modules/
+.sass-cache/
+
+# Logs
+*.log
+
+# Credentials - never commit
+*.pfx
+*.p12

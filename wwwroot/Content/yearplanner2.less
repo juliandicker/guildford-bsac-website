@@ -1,0 +1,301 @@
+﻿@brand-primary: darken(#005fa3, 6.5%);
+
+.page {
+    font-size: 0.8em;
+    margin: 0;
+    padding: 10mm;
+    width: 594mm;
+    height: 420mm;
+    position: relative;
+}
+
+#header {
+    height: 30mm;
+    border-collapse: collapse;
+    width: 574mm;
+    padding: 0;
+    margin: 0;
+
+    #logo {
+        height: 24mm;
+    }
+
+    h1 {
+        color: #999;
+        font-size: 3em;
+
+        a {
+            display: inline-block;
+            border: 0;
+            padding: 2mm;
+            transition: all 1s ease;
+            color: #999;
+
+            &:hover {
+                color: #111;
+            }
+        }
+    }
+}
+
+footer {
+    height: 20mm;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    hr {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+}
+
+.loading {
+    width: 100%;
+    height: 100%;
+}
+
+.loader {
+    position: absolute;
+    left: 50%;
+    top: 35%;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid @brand-primary;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#key {
+    padding: 0px;
+
+    li {
+        list-style: none;
+        display: inline-block;
+        padding-right: 20px;
+    }
+
+    label {
+        display: inline;
+    }
+
+    [type="checkbox"]:not(:checked),
+    [type="checkbox"]:checked {
+        position: absolute;
+        opacity: 0;
+        width: 1em;
+        height: 1em;
+    }
+
+    [type="checkbox"]:not(:checked) + label,
+    [type="checkbox"]:checked + label {
+        position: relative;
+        padding-left: 2.3em;
+        font-size: 1.05em;
+        line-height: 1.7;
+        cursor: pointer;
+    }
+    /* checkbox aspect */
+    [type="checkbox"]:not(:checked) + label:before,
+    [type="checkbox"]:checked + label:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1.4em;
+        height: 1.4em;
+        border: 3px solid;
+        border-radius: .2em;
+    }
+    /* checked mark aspect */
+    [type="checkbox"]:not(:checked) + label:after,
+    [type="checkbox"]:checked + label:after {
+        content: '';
+        position: absolute;
+        top: .5em;
+        left: .1em;
+        font-size: 1.35em;
+        color: #fff;
+        line-height: 0;
+    }
+}
+
+@media only screen {
+    #key {
+        [type="checkbox"]:not(:checked) + label:after,
+        [type="checkbox"]:checked + label:after {
+            content: '\2714';
+        }
+    }
+}
+
+#calendar {
+    width: 574mm;
+    display: table;
+    border-collapse: collapse;
+    margin-top: 5px;
+
+    .calrow {
+        display: table-row;
+
+        div {
+            border: 1px solid #ccc;
+            display: table-cell;
+            vertical-align: middle;
+            padding: 0px 1px 0px 1px;
+        }
+
+        .noborder {
+            border: 1px solid transparent;
+        }
+
+        .nodate {
+            background-color: #666;
+            border: 1px solid #666;
+        }
+
+        .weekend {
+            background-color: #eee;
+        }
+
+        .day {
+            background-color: #666;
+            width: 8mm;
+            border-color: #ccc;
+            color: #fff;
+        }
+
+        .month {
+            background-color: @brand-primary;
+            width: 46.5mm;
+            border-color: #ccc;
+            color: #fff;
+            font-weight: bold;
+        }
+    }
+
+    .monthrow {
+        div {
+            height: 8mm;
+        }
+    }
+
+    .dayrow {
+        div {
+            height: 10.75mm;
+        }
+    }
+}
+
+#agenda {
+    display: table;
+    width: 100%;
+
+    > div {
+        display: table-cell;
+        width: 25%;
+    }
+
+    > div > div {
+        display: table;
+        width: 100%;
+    }
+
+    .agendarow {
+        display: table-row;
+
+        > div {
+            display: table-cell;
+            border-top: solid 1px #ccc;
+        }
+
+        .period {
+            color: #999;
+            font-size: 0.85em;
+        }
+
+        .description {
+            font-size: 0.85em;
+        }
+
+        .date {
+            border-left: solid 10px;
+            vertical-align: middle;
+            text-align: center;
+            width: 15%;
+
+            .month {
+                color: #dd0000;
+                font-size: 0.9em;
+                text-transform: uppercase;
+            }
+
+            .day {
+                font-weight: 600;
+            }
+        }
+
+        .content {
+            width: 85%;
+
+            > div {
+                height: 70px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}
+
+.eventitem {
+    display: block;
+    position: absolute;
+    color: #fff;
+    padding: 0px 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 3px;
+    opacity: 0.9;
+    border: dashed 1px #fff;
+
+    .desc {
+        font-size: 0.8em;
+        max-height: 1.5em;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}
+
+.tide {
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-weight: 900;
+    font-size: 0.9em;
+    line-height: 16px;
+    height: 16px;
+    width: 16px;
+    text-align: center;
+    display: inline-block;
+}
+
+.tide-S {
+    background-color: darkred;
+}
+
+.tide-N {
+    background-color: @brand-primary;
+}

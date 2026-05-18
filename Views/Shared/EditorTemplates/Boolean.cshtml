@@ -1,0 +1,9 @@
+﻿@model bool
+<div class="mb-3">
+    <div class="checkbox">
+        <label>
+            @Html.CheckBoxFor(model => model) @Html.DisplayNameFor(model => model)
+        </label>
+        @Html.ValidationMessageFor(model => model)
+    </div>
+</div>

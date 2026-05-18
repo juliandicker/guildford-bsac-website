@@ -1,0 +1,158 @@
+@using System.Globalization
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+@model GuildfordBsac.Web.Models.YearPlanner2ViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_empty.cshtml";
+    var iconBase = System.IO.Path.Combine(Env.WebRootPath, "Content", "Images", "icons");
+    var _pdfBase = ViewData["PdfBaseUrl"] as string;
+    string AbsUrl(string path) => _pdfBase != null ? _pdfBase + Url.Content(path) : Url.Content(path);
+}
+
+@section styles {
+    <link href="@AbsUrl("~/Content/yearplanner2.css")" rel="stylesheet" type="text/css" />
+    <style type="text/css" id="calenderStyles"></style>
+}
+
+<div id="content" data-ispdf="@(ViewContext.RouteData.Values["action"]?.ToString() != "Index" || Context.Request.Query.ContainsKey("pdf"))">
+    <div class="page">
+        <table class="fulltable" id="header">
+            <tr>
+                <td>
+                    <h1>
+                        Year planner
+                        <a class="d-print-none" href="@Url.Action("Index", "YearPlanner", new { year = Model.Year - 1 })" title="Previous year">
+                            @Html.Raw(System.IO.File.ReadAllText(System.IO.Path.Combine(iconBase, "chevron-left.svg")))
+                        </a>
+                        <span id="year">@Model.Year</span>
+                        <a class="d-print-none" href="@Url.Action("Index", "YearPlanner", new { year = Model.Year + 1 })" title="Next year">
+                            @Html.Raw(System.IO.File.ReadAllText(System.IO.Path.Combine(iconBase, "chevron-right.svg")))
+                        </a>
+                        <a class="d-print-none" href="@Url.Action("Pdf", "YearPlanner", new { year = Model.Year })" title="Print to PDF" target="_blank">
+                            @Html.Raw(System.IO.File.ReadAllText(System.IO.Path.Combine(iconBase, "printer-fill.svg")))
+                        </a>
+                    </h1>
+                </td>
+                <td>
+                    <img src="../../Content/Images/logo_black.png" class="img-fluid float-end" />
+                </td>
+            </tr>
+        </table>
+        <div id="calendar"></div>
+        <ul id="key"></ul>
+        <div id="events"></div>
+        <footer>
+            <div>
+                <div class="text-center">
+                    <span class="address">
+                        Guildford Sub-Aqua Club,
+                        Guildford Waterside Centre,
+                        Riverside,
+                        Guildford,
+                        Surrey,
+                        GU1 1LW
+                    </span> |
+                    <span><a href="http://www.guildford-bsac.com/">www.guildford-bsac.com</a></span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    @if (Model.ShowAgenda)
+    {
+        <div class="page">
+            <h1><span id="yearAgenda">@Model.Year</span> agenda</h1>
+            <div id="agenda"></div>
+            <footer>
+                <div>
+                    <div class="text-center">
+                        <span class="address">
+                            Guildford Sub-Aqua Club,
+                            Guildford Waterside Centre,
+                            Riverside,
+                            Guildford,
+                            Surrey,
+                            GU1 1LW
+                        </span> |
+                        <span><a href="http://www.guildford-bsac.com/">www.guildford-bsac.com</a></span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    }
+</div>
+
+<div id="loading"><div class="loader"></div></div>
+
+<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="Event" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="eventModalTitle">Modal title</h4>
+                    <h5><span id="eventModalStartDate"></span> - <span id="eventModalEndDate"></span></h5>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="calendarData" data-json="@Model.CalendarData" />
+
+<script id="event-template" type="text/template">
+    <div class="eventitem cal {{cssClass}}"
+         data-start-date="{{startDate}}"
+         data-end-date="{{endDate}}"
+         data-calendar="{{calendar}}"
+         data-duration="{{duration}}"
+         data-summary="{{summary}}"
+         data-description="{{description}}"
+         data-bs-toggle="modal"
+         data-bs-target="#eventModal">
+        {{summary}}
+        <div class="desc"></div>
+    </div>
+</script>
+
+<script id="tide-template" type="text/template">
+    <div class="eventitem tide {{cssClass}}"
+         data-start-date="{{startDate}}"
+         data-calendar="{{calendar}}">
+        {{summary}}
+    </div>
+</script>
+
+<script id="agenda-template" type="text/template">
+    <div class="agendarow {{cssClass}}">
+        <div class="date">
+            <div>
+                <div class="month">{{month}}</div>
+                <div class="day">{{day}}</div>
+            </div>
+        </div>
+        <div class="content">
+            <div>
+                <div>
+                    {{summary}}
+                </div>
+                <div class="period">
+                    {{period}}
+                </div>
+                <div class="description">
+                    {{{description}}}
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+@section scripts
+{
+    <script src="@AbsUrl("~/Scripts/mustache.js")"></script>
+    <script src="@AbsUrl("~/Scripts/Calendar.js")"></script>
+}

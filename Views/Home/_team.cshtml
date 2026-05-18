@@ -1,0 +1,56 @@
+﻿@{
+    var teamMembers = new[]
+    {
+        new { Name="Gill Vance", ImgSrc="gill_vance.jpg", Role="Chairperson", Description="The leader & figure-head of the club, manages the conduct of branch affairs & the clubs public image." },
+        new { Name="Andrew Taylor", ImgSrc="andrew_taylor.jpg", Role="Diving Officer", Description="Responsible for the safety of the divers in the branch, approving all diving & training activities within the club & that it will meet the current BSAC standards." },
+        //new { Name="Andrew Taylor", ImgSrc="andrew_taylor.jpg", Role="Diving Officer & Boat Officer", Description="Responsible for the safety of the divers in the branch, approving all diving & training activities within the club & that it will meet the current BSAC standards. Including the clubs boats & trailers making sure they are serviced and accessible" },
+        
+        new { Name="Raynor Manuel", ImgSrc="raynor_manuel.jpg", Role="Membership Officer", Description="Responsible for ensuring the membership details and medical status is up to date & sending renewals to BSAC." },
+        //new { Name="Rachel Sharp", ImgSrc="rachel_sharp.jpg", Role="Secretary & Membership Officer", Description="Responsible for the administration of the club, organising committee meetings, AGMs & providing minutes. In addition membership details and medical status is up to date & sending renewals to BSAC." },
+        new { Name="Charles collard", ImgSrc="charles_collard.jpg", Role="Reception Officer", Description="Deals with membership/try dive enquiries & assists new members to become fully integrated with the club activities, training & social events." },
+        //new { Name="Andrew Taylor", ImgSrc="placeholder.jpg", Role="Membership & Reception Officer", Description="Deals with membership/try dive enquiries & assists new members to become fully integrated with the club activities, training & social events. Responsible for ensuring the membership details and medical status is up to date & sending renewals to BSAC" },
+        new { Name="Mark Ridpath", ImgSrc="mark_ridpath.jpg", Role="Training Officer", Description="Plan the clubs training programme, co-ordinates the instructor team & ensures that training meets the current BSAC standards." },
+        new { Name="Rachel Sharp", ImgSrc="rachel_sharp.jpg", Role="Secretary", Description="Responsible for the administration of the club, organising committee meetings, AGMs & providing minutes." },
+        //new { Name="Wendy Allen", ImgSrc="placeholder.jpg", Role="Social Secretary", Description="Plan the clubs social calendar, encourage members to organise social events including their families and friends & help manage social media websites." },
+        new { Name="Thiery Thielens", ImgSrc="thiery_thielens.jpg", Role="Equipment Officer", Description="Responsible for the clubs shed, equipment, compressor & making sure it is serviced and accessible." },
+        new { Name="Steve Batt", ImgSrc="steve.jpg", Role="Boat Officer", Description="Responsible for the clubs boats & trailers making sure they are serviced and accessible." },
+        new { Name="John Hough", ImgSrc="john_hough.jpg", Role="Treasurer", Description="Responsible for the financial management of the club funds. Banking money, paying expenses, maintaining books & the financial planning & budgeting." },
+        new { Name="Sally Evans", ImgSrc="sally_evans.jpg", Role="Welfare Officer", Description="Responsible for ensuring the safety, wellbeing & inclusion of all members within the club." }
+    };
+}
+<section id="team" class="content-block bg-clouds">
+    <div class="container">
+
+        <div class="underlined-title">
+            <h1>Committee</h1>
+            <hr />
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div id="team-carousel" class="owl-carousel nf-carousel-theme">
+                    @foreach (var teamMember in teamMembers)
+                    {
+                        <div class="item"> 
+                            <div class="team-item">
+                                <div class="team-item-img">
+                                    <img src="/Content/Images/team/@(teamMember.ImgSrc)" class="img-fluid" alt="@teamMember.Name">
+                                    <div class="team-item-detail">
+                                        <div class="team-item-detail-inner">
+                                            <h4>@teamMember.Name</h4>
+                                            <p>@teamMember.Description</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="team-item-info">
+                                    <h4>@teamMember.Name</h4>
+                                    <p>@teamMember.Role</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

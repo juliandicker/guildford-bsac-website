@@ -1,0 +1,13 @@
+@model object
+@{
+    Layout = "~/Views/Shared/EditorTemplates/_Layout.cshtml";
+    var defaultHtmlAttributes = new System.Collections.Generic.Dictionary<string, object> {
+        ["class"] = "form-control",
+        ["placeholder"] = ViewData.ModelMetadata.Placeholder ?? ""
+    };
+    var htmlAttributesObject = ViewData["htmlAttributes"] ?? new System.Collections.Generic.Dictionary<string, object>();
+    var htmlAttributes = Html.MergeHtmlAttributes(htmlAttributesObject, defaultHtmlAttributes);
+}
+@section value{
+    @Html.TextBoxFor(model => model, htmlAttributes)
+}

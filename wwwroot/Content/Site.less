@@ -1,0 +1,236 @@
+﻿
+[data-animate]:not(.animated) {
+    opacity: 0;
+}
+
+@import 'site/col15.less';
+
+body {
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+}
+
+/* BACKGROUND COLORS */
+
+.bg-clouds {
+    background-color: #ECF0F1 !important;
+
+    hr {
+        border-color: #666;
+    }
+}
+
+/** TYPOGRAPHY **/
+h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small, .h3 small, .h4 small, .h5 small, .h6 small {
+    color: #e5e5e5;
+}
+
+.bg-primary {
+    .lead, h2 {
+        color: #fff;
+    }
+}
+
+.lead {
+    margin-bottom: 30px;
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 300;
+}
+
+small, .small {
+    font-size: 80%;
+    line-height: 2;
+}
+
+/* LINKS */
+
+a {
+    color: #0296ff;
+}
+
+a:hover {
+    -moz-transition: all 0.3s ease;
+    -webkit-transition: all 0.3s ease;
+    -o-transition: all 0.3s ease;
+    transition: all 0.3s ease;
+}
+
+/* LISTS */
+
+ol {
+    position: relative;
+    padding-left: 22px;
+}
+
+ul {
+    position: relative;
+    padding-left: 22px;
+}
+
+ul li,
+ol li {
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    color: #515157;
+}
+
+/* TITLES */
+
+.underlined-title {
+    padding-bottom: 30px;
+    text-align: center;
+
+    h1 {
+        margin: 0;
+    }
+
+    hr {
+        border-color: #009EFF;
+        border-width: 2px;
+        width: 10%;
+    }
+}
+
+.btn-trans {
+    padding: 12px 20px;
+    font-size: 14px;
+    border: 2px solid #fff;
+    border-radius: 10px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: all ease-out 1s;
+
+    &:hover {
+        color: #333;
+        background-color: rgba(255, 255, 255, 0.8);
+        transition: all ease-in 1s;
+    }
+}
+
+.btn-outline {
+    color: #FFF;
+    padding: 12px 20px;
+    margin: 15px 0;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 0.1em;
+    text-shadow: none;
+    border: none;
+    text-transform: uppercase;
+    border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -moz-border-radius: 25px;
+
+    &.outline-dark {
+        color: #2c3e50;
+        background: none;
+        border: 2px solid #2c3e50;
+    }
+
+    &:hover {
+        background-color: rgba(52, 152, 219, .2);
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .btn-trans {
+        padding: 18px 30px;
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .btn {
+        white-space: normal;
+    }
+}
+
+@import 'site/blocks.less';
+@import 'site/header.less';
+@import 'site/carousel-top.less';
+@import 'site/footer.less';
+@import 'site/social.less';
+@import 'site/responsive-iframe.less';
+@import 'site/panel-group.less';
+@import "site/price-block.less";
+@import "site/team-carousel.less";
+@import "site/portfolio.less";
+@import 'site/g-recaptcha.less';
+@import 'site/learntodive.less';
+
+#about {
+    .image-container {
+        position: absolute;
+        height: 100%;
+        padding: 0px;
+        top: 0px;
+    }
+
+    .background-image-holder {
+        background: #000 url(Images/trydive_bw.jpg) no-repeat center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        height: 100%;
+    }
+}
+
+#trydive {
+    padding: 0px;
+    position: relative;
+
+    .image-container {
+        height: 100%;
+        padding: 0px;
+        position: absolute;
+        top: 0px;
+
+        .background-image-holder {
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            -webkit-background-size: cover;
+            background-size: cover;
+            background: #fff url('Images/trydive.png') no-repeat center center;
+            height: 100%;
+        }
+    }
+
+    .content {
+        padding-bottom: 80px;
+        padding-top: 80px;
+    }
+
+    h1 {
+        margin-bottom: 32px;
+    }
+
+    p.lead {
+        margin-bottom: 20px;
+    }
+}
+
+#sent {
+    display: none;
+}
+
+#contactus {
+    fieldset {
+        border: 2px solid #ecf0f1;
+        border-radius: 6px;
+        padding: 5px 5px;
+    }
+}
+
+.gold {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 0;
+    width: 0;
+    z-index: -1;
+}

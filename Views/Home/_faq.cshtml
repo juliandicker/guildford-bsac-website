@@ -1,0 +1,16 @@
+﻿@model GuildfordBsac.Web.Models.FaqViewModel
+
+<div class="panel">
+    <div class="panel-heading" role="tab" id="heading@(Model.Index)">
+        <h4 class="panel-title">
+            <a role="button" class="collapsed" data-bs-toggle="collapse" data-bs-parent="#accordion" href="#collapse@(Model.Index)" aria-expanded="true" aria-controls="collapse@(Model.Index)">
+                @Model.Question
+            </a>
+        </h4>
+    </div>
+    <div id="collapse@(Model.Index)" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading@(Model.Index)">
+        <div class="panel-body">
+            @Html.Raw(Model.Answer)
+        </div>
+    </div>
+</div>

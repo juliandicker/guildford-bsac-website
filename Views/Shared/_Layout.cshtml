@@ -1,0 +1,36 @@
+@{
+    Layout = "~/Views/Shared/_Layout_empty.cshtml";
+}
+@section styles {
+    <link href="~/Content/owl.carousel.css" rel="stylesheet" />
+    <link href="~/Content/animate.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    @RenderSection("styles", false)
+}
+
+<partial name="_header" />
+@RenderBody()
+<partial name="_footer" />
+
+@section scripts {
+    <script src="~/Scripts/owl.carousel.min.js"></script>
+    <script src="~/Scripts/jquery.waypoints.min.js"></script>
+    <script>
+        var offset = 96;
+        $('header').css('height', offset);
+
+        var scrollSpy = new bootstrap.ScrollSpy(document.body, {
+            target: '#navbarMain'
+        })
+
+        $('[data-animate]').waypoint(function (direction) {
+            if (direction === 'down' && !$(this).hasClass('animated')) {
+                var $el = $(this.element);
+                setTimeout(function () {
+                    $el.addClass('animated ' + $el.data("animate"));
+                }, 200);
+            }
+        }, { offset: '80%' });
+    </script>
+    @RenderSection("scripts", false)
+}

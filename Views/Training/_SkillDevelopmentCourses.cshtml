@@ -1,0 +1,89 @@
+﻿@{
+    var sdcs = new[]
+    {
+        new { Name = "Accelerated Decompression Procedures", Category="club_diving" },
+        new { Name = "Buoyancy and Trim Workshop", Category="club_diving" },
+        new { Name = "Compressor Operation", Category="club_diving" },
+        new { Name = "Dive Planning and Management", Category="club_diving" },
+        new { Name = "Equipment Care", Category="club_diving" },
+        new { Name = "Marine Life Appreciation", Category="club_diving" },
+        new { Name = "Mixed Gas Blender / Nitrox Gas Blender", Category="club_diving" },
+        new { Name = "Search and Recovery", Category="club_diving" },
+        new { Name = "Wreck Appreciation", Category="club_diving" },
+        new { Name = "Twin-set Diver", Category="club_diving" },
+        new { Name = "Advanced Lifesaver Award", Category="safety_and_rescue" },
+        new { Name = "Automated External Defibrillator", Category="safety_and_rescue" },
+        new { Name = "First Aid for Divers", Category="safety_and_rescue" },
+        new { Name = "Lifesaver Award", Category="safety_and_rescue" },
+        new { Name = "Oxygen Administration", Category="safety_and_rescue" },
+        new { Name = "Practical Rescue Management", Category="safety_and_rescue" },
+        new { Name = "Boat Handling", Category="seamanship" },
+        new { Name = "Chartwork and Position Fixing", Category="seamanship" },
+        new { Name = "Diver Coxswain Assessment", Category="seamanship" },
+        new { Name = "Outboard Engine and Boat Maintenance", Category="seamanship" },
+        new { Name = "Underwater Photography", Category="special_interest" },
+        new { Name = "Ice Diving", Category="special_interest" },
+        new { Name = "Sport Mixed Gas Diver 50m", Category="technical" },
+        new { Name = "Explorer Mixed Gas Diver 60m", Category="technical" },
+        new { Name = "Advanced Mixed Gas Diver 80m", Category="technical" }
+    };
+}
+
+<section id="sdc" class="content-block bg-clouds">
+    <div class="container">
+
+        <div class="underlined-title">
+            <h1>Skill Development Courses (SDCs)</h1>
+            <hr />
+        </div>
+
+        <div class="text-center padd-tb-10">
+            <ul id="filter">
+                <li class="current"><a href="#" style="outline: none;">All</a></li>
+                <li><a href="#">Club Diving</a></li>
+                <li class=""><a href="#" style="outline: none;">Safety and Rescue</a></li>
+                <li><a href="#">Seamanship</a></li>
+                <li><a href="#">Special Interest</a></li>
+                <li><a href="#">Technical</a></li>
+            </ul>
+        </div>
+
+        <div id="portfolio-filter" class="row">
+            @foreach (var sdc in sdcs)
+            {
+                var imgsrc = sdc.Name.Replace(" ", "_").Replace("/", "");
+                <div class="col col-6 col-md-3 @(sdc.Category)">
+                    <div class="gallery">
+                        <figure><img src="/Content/Images/sdc/@(imgsrc).png" alt="image" class="img-fluid"></figure>
+                        <div class="overlay">
+                            <a class="info circle" data-bs-toggle="modal" data-bs-target="#@(imgsrc)-modal-popup"><i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+    </div>
+</section>
+
+@foreach (var sdc in sdcs)
+{
+    var imgsrc = sdc.Name.Replace(" ", "_").Replace("/", "");
+
+    <div class="modal" id="@(imgsrc)-modal-popup" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="myModalLabel">@sdc.Name</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <figure><img src="/Content/Images/sdc/@(imgsrc).png" alt="image" class="img-fluid text-center"></figure>
+
+                    @{ var pname = "sdc/_" + imgsrc; }
+                    @await Html.PartialAsync(pname)
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,92 @@
+﻿@using GuildfordBsac.Web.Models
+@model ContactUsViewModel
+
+<section id="contactus" class="content-block">
+    <div class="container">
+        <div class="underlined-title">
+            <h1>Contact Us</h1>
+            <hr />
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Frequently Asked Questions</h2>
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                    @foreach (FaqViewModel faq in Model.Faqs.Faqs)
+                    {
+                        <partial name="_faq" model="faq" />
+                    }
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h2>Call Us</h2>
+
+                <p>
+                    Please contact our Reception Officer on WhastApp or call on <a href="tel:+447787141857">07787 141 857</a>. If no answer, please leave a voicemail with your name, telephone number and query. We aim to respond to all queries within two working days.
+                </p>
+                <p>
+                    @*https://faq.whatsapp.com/5913398998672934*@
+                    <a aria-label="Chat on WhatsApp" href="https://wa.me/447787141857">
+                        <img alt="Chat on WhatsApp" src="~/Content/Images/WhatsAppButtonGreenSmall.png" style="height:40px" />
+                    </a>
+                </p>
+
+    <h2>Email Us</h2>
+    <p>Send us an email by completing our online form. We aim to respond to all emails within two working days.</p>
+    <partial name="_contact" model="Model.Contact" />
+</div>
+        </div>
+    </div>
+</section>
+<section id="findus">
+    <iframe style="border: 0; border: none; display: block; height: 300px; width: 100%;"
+            loading="lazy" allowfullscreen src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ934GrrrQdUgReTEndusqyRI&key=AIzaSyBM0VnTgtXBudJpc3l78nIgpcag5beRVn0"></iframe>
+</section>
+
+@section scripts {
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+        $(function () {
+            $('#ContactForm').on('submit', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: $('#ContactForm').attr("action"),
+                    type: $('#ContactForm').attr("method"),
+                    data: $('#ContactForm').serialize(),
+                    success: function (result) {
+                        if (result.success) {
+                            showValidationErrors(false);
+                            $("#sent").show();
+                            $("#form").hide();
+                            ga('send', 'pageview', '/home/contactSent');
+                        } else {
+                            fillErrorList(result.errors);
+                            showValidationErrors(true);
+                        }
+                    }
+                });
+            });
+        });
+
+        function showValidationErrors(isShown) {
+            if (isShown) {
+                $("#errorContainer").show();
+            } else {
+                $("#errorContainer").hide();
+            }
+        }
+
+        function fillErrorList(errors) {
+            $("#errors").html("");
+
+            var list = document.createElement('ul');
+
+            for (var i = 0; i < errors.length; i++) {
+                var item = document.createElement('li');
+                item.appendChild(document.createTextNode(errors[i]));
+                list.appendChild(item);
+            }
+            $("#errors").html(list);
+        }
+    </script>
+}

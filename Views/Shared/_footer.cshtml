@@ -1,0 +1,88 @@
+﻿<footer class="content-block-nopad bg-primary">
+    <div class="container footer">
+        <div class="row">
+            <div class="col-sm-4">
+                <img src="~/Content/Images/bsac_reversed.png" class="brand-img img-fluid" alt="BSAC" />
+                <ul class="social social-light">
+                    <li>
+                        <a href="https://www.facebook.com/GuildfordBSAC/">
+                            <i class="fa fa-2x fa-facebook"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:+447787141857" title="0778 7141857">
+                            <i class="fa fa-2x fa-phone"></i>
+                        </a>
+                    </li>
+                </ul>
+                <!-- Begin MailChimp Signup Form -->
+                <h4>Subscribe</h4>
+                <div id="mc_embed_signup">
+                    <form action="//guildford-bsac.us14.list-manage.com/subscribe/post?u=e8cde886de236b4c5a8bd21f4&amp;id=14d98c5570" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate form-inline" target="_blank" novalidate>
+
+                        <div id="mc_embed_signup_scroll">
+
+                            <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_e8cde886de236b4c5a8bd21f4_14d98c5570" tabindex="-1" value="">
+                            </div>
+                            <input class="form-control" type="email" value="" name="EMAIL" class="email" id="mce-EMAIL" placeholder="email address" required>
+                            <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+
+                <!--End mc_embed_signup-->
+            </div>
+            <div class="col-sm-7 offset-sm-1">
+                <div class="row">
+                    <div class="col-sm-5 offset-sm-1">
+                        <h4>Home</h4>
+                        <ul class="shortcuts">
+                            @{ var clsHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "swingscroll" : ""; }
+                            <li><a href="@Url.Action("Index", "Home")#joinus" class="@(clsHome)">Join Us</a></li>
+                            <li><a href="@Url.Action("Index", "Home")#about" class="@(clsHome)">About Us</a></li>
+                            <li><a href="@Url.Action("Index", "Home")#team" class="@(clsHome)">Committee</a></li>
+                            <li><a href="@Url.Action("Index", "Home")#membership" class="@(clsHome)">Membership</a></li>
+                            <li><a href="@Url.Action("Index", "Home")#newsevents" class="@(clsHome)">News & Events</a></li>
+                            <li>@Html.ActionLink("Year Wall Planner", "Index", "YearPlanner")</li>
+                        </ul>
+                        <h4>Pages</h4>
+                        <ul class="shortcuts">
+                            <li>@Html.ActionLink("Training", "Index", "Training")</li>
+                            <li>@Html.ActionLink("FAQs", "faqs", "home")</li>
+                            <li>@Html.ActionLink("Contact Us", "ContactUs", "home")</li>
+                            <li>@Html.ActionLink("Privacy Policy", "PrivacyPolicy", "home")</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-5 offset-sm-1">
+                        <h4>Shortcuts</h4>
+                        <ul class="shortcuts">
+                            <li><a href="https://www.facebook.com/GuildfordBSAC/" target="_blank">Facebook Page</a></li>
+                            <li><a href="http://www.bsac.com/" target="_blank">BSAC</a></li>
+                            <li><a href="http://www.guildford-waterside.org.uk/" target="_blank">Guildford Waterside Centre</a></li>
+                        </ul>
+                        <h4>Members</h4>
+                        <ul class="shortcuts">
+                            <li><a href="https://www.facebook.com/groups/5725686075/" target="_blank">Members Facebook Group</a></li>
+                            <li><a href="https://drive.google.com/drive/folders/0AA--JjqpfLqiUk9PVA" target="_blank">Google Drive</a></li>
+                            <li><a href="https://sites.google.com/guildford-bsac.com/guildford-sub-aqua-club" target="_blank">Dive Site Library</a></li>
+                            <li>@Html.ActionLink("Code Of Conduct", "CodeOfConduct", "home")</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <hr/>
+                <p class="address small">
+                    Guildford Sub-Aqua Club,
+                    Guildford Waterside Centre,
+                    Riverside,
+                    Guildford,
+                    Surrey,
+                    GU1 1LW
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>

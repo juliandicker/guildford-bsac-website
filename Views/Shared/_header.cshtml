@@ -1,0 +1,66 @@
+﻿@{
+    var clsTraining = ViewContext.RouteData.Values["controller"]?.ToString() == "Training" ? "swingscroll" : "";
+    var clsHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "swingscroll" : "";
+}
+<header id="header">
+    <nav class="navbar navbar-expand-sm fixed-top navbar-dark bg-dark">
+        <div class="container">
+
+            <a class="navbar-brand" href="#">
+                <img id="logo" src="~/Content/Images/logo.png" class="d-inline-block align-top smalllogo" alt="" loading="GBSAC" role="img" focusable="false" />
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarToggler">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Home
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#newsevents">News & Events</a></li>
+                            <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#joinus">Join Us</a></li>
+                            <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#about">About Us</a></li>
+                            <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#team">Committee</a></li>
+                            <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#membership">Membership Prices</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Training
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#trydive">Try Dive</a>
+                            <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#learntodive">Learn to Dive</a>
+                            <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#fasttrack">Fast Track Training</a>
+                            <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#sdc">Skill Development Courses</a>
+                            <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#alreadyadiver">Already A Diver</a>
+                        </div>
+                    </li>
+                    <li class="nav-item ms-3">
+                        @Html.ActionLink("FAQs", "faqs", "home", null, new { @class = "nav-link" })
+                    </li>
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Members
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" target="_blank" href="https://www.facebook.com/groups/5725686075/">Members Facebook Group</a>
+                            <a class="dropdown-item" target="_blank" href="https://drive.google.com/drive/folders/0AA--JjqpfLqiUk9PVA">Google Drive</a>
+                            <a class="dropdown-item" target="_blank" href="https://sites.google.com/guildford-bsac.com/guildford-sub-aqua-club">Dive Site Library</a>
+                            @Html.ActionLink("Year Wall Planner", "Index", "YearPlanner", null, new { @class = "dropdown-item" })
+                            <a class="dropdown-item" target="_blank" href="https://www.easyfundraising.org.uk/causes/guildfordwaterside/">Support the Waterside</a>
+                            @Html.ActionLink("Code Of Conduct", "CodeOfConduct", "home", null, new { @class = "dropdown-item" })
+                        </div>
+                    </li>
+                    <li class="nav-item ms-3">
+                        @Html.ActionLink("Contact Us", "ContactUs", "home", null, new { @class = "nav-link" })
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

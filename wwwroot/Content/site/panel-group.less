@@ -1,0 +1,40 @@
+﻿.panel-group {
+    .panel {
+        box-shadow: none;
+        border-top: 3px solid #f3f2f2;
+
+        & + .panel {
+            margin-top: 0;
+        }
+    }
+
+    .panel-body {
+        p:first-child {
+            margin-top: 0;
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    .panel-title > a {
+        color: #009EFF;
+        font-weight: 700;
+        background: url("../Images/accordion-ico.png") no-repeat 6px -63px;
+        display: block;
+        padding: 10px 0 10px 40px;
+        text-decoration: none;
+        text-shadow: none;
+    }
+
+    a:hover {
+        /*transition: all 0.3s ease;*/
+        transition: none;
+    }
+
+    a.collapsed {
+        background-position: 6px 10px;
+        cursor: pointer;
+    }
+}

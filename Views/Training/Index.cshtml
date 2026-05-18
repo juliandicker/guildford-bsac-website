@@ -1,0 +1,41 @@
+﻿<partial name="_TryDive" />
+<partial name="_LearnToDive" />
+<partial name="_FastTrack" />
+<partial name="_SkillDevelopmentCourses" />
+<partial name="_AlreadyADiver" />
+
+@section scripts {
+    <script>
+        $('a.swingscroll').click(function (event) {
+            event.preventDefault();
+            var url = $(this).attr('href').replace("/", "");
+            var sectionid = url.substring(url.indexOf("#"));
+            var sectiontop = $(sectionid).offset().top - offset;
+            $('html, body').animate({ scrollTop: sectiontop }, 1000);
+        });
+
+        $(document).ready(function () {
+            $('ul#filter a').click(function () {
+                $(this).css('outline', 'none');
+                $('ul#filter .current').removeClass('current');
+                $(this).parent().addClass('current');
+
+                var filterVal = $(this).text().toLowerCase().replace(/\s/g, "_");
+
+                if (filterVal == 'all') {
+                    $('#portfolio-filter>div.hidden').fadeIn('slow').removeClass('hidden');
+                } else {
+                    $('#portfolio-filter>div').each(function () {
+                        if (!$(this).hasClass(filterVal)) {
+                            $(this).fadeOut('normal').addClass('hidden');
+                        } else {
+                            $(this).fadeIn('slow').removeClass('hidden');
+                        }
+                    });
+                }
+
+                return false;
+            });
+        });
+    </script>
+}

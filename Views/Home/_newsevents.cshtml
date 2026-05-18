@@ -1,0 +1,42 @@
+﻿<section id="newsevents" class="content-block bg-clouds">
+    <div class="container">
+        <div class="underlined-title">
+            <h1>News & Events</h1>
+            <hr />
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <a href="@Url.Action("Index", "YearPlanner")" target="_blank">
+                    <img src="/YearPlanner/png?agenda=False" class="img-fluid" />
+                </a>
+            </div>
+            <div class="col-6">
+                @*<div class="fb-page" data-href="https://www.facebook.com/GuildfordBSAC/" data-tabs="timeline" data-width="500" data-height="" data-small-header="true" data-adapt-container-width="true" data-hide-cover="true" data-show-facepile="true"><blockquote cite="https://www.facebook.com/GuildfordBSAC/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/GuildfordBSAC/">Guildford Sub Aqua Club</a></blockquote></div>*@
+                @if (Model.RecentPosts != null && Model.RecentPosts.Count > 0)
+                {
+                    foreach (var post in Model.RecentPosts)
+                    {
+                        <div class="fb-post-card">
+                            @if (!string.IsNullOrEmpty(post.FullPicture))
+                            {
+                                <img src="@post.FullPicture" alt="Post image" />
+                            }
+                            <p>@(post.Message ?? post.Story)</p>
+                            <small>@post.CreatedTime.ToString("dd MMM yyyy")</small>
+                            <a href="@post.PermalinkUrl" target="_blank" rel="noopener">View on Facebook</a>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="fb-post-card fb-post-placeholder">
+                        <p>Follow us on Facebook for the latest club news and updates.</p>
+                        <a href="https://www.facebook.com/GuildfordBSAC/" target="_blank" rel="noopener noreferrer">
+                            Visit our Facebook Page
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
