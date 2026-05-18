@@ -1,173 +1,179 @@
-﻿@model GuildfordBsac.Web.Models.MembershipRatesViewModel
+@model GuildfordBsac.Web.Models.MembershipRatesViewModel
 
 <section id="membership" class="content-block">
     <div class="container">
         <div class="underlined-title">
             <h1>Membership Prices</h1>
             <hr />
-            <p class="lead">World-class training, amazing diving and great company - there’s so much more to being a member of BSAC</p>
+            <p class="lead">World-class training, amazing diving and great company - there's so much more to being a member of BSAC</p>
         </div>
 
-        <div class="row">
-            <div class="col-sm-4 price-block" data-animate="slideInLeft">
-                <h3 class="bg-primary">Joining Fee</h3>
-                <div class="price">
-                    <div class="price-figure">
-                        <h4>
+        <div class="row g-4">
+            <div class="col-sm-4" data-animate="slideInLeft">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="mb-0 fw-light text-uppercase" style="font-size:0.85rem;letter-spacing:0.1em">Joining Fee</h3>
+                    </div>
+                    <div class="card-body text-center bg-light">
+                        <h4 class="text-dark mb-1">
                             @(string.Format("{0:C}", Model.ClubJoiningFee))
                             or @(string.Format("{0:C}", Model.ClubJoiningFeeWithTraining))
                         </h4>
-                        <p>first year</p>
-                        (<a data-bs-toggle="collapse" href="#join-price-notes" aria-expanded="false" aria-controls="join-price-notes">see notes</a>)
+                        <p class="text-muted small mb-1">first year</p>
+                        <small>(<a data-bs-toggle="collapse" href="#join-price-notes" aria-expanded="false" aria-controls="join-price-notes">see notes</a>)</small>
                     </div>
-
-                </div>
-                <div class="collapse price-notes" id="join-price-notes">
-                    <ul>
-                        <li>
-                            @(string.Format("{0:C}", Model.ClubJoiningFeeWithTraining))
-                            if Ocean Diver in house training is required
-                        </li>
-                        <li>
-                            Reduced to @(string.Format("{0:C}", Model.ClubJoiningFee))
-                            if Ocean Diver training is not required
-                        </li>
-                        <li>
-                            FREE if <a href="@Url.Action("Index", "Training")#fasttrack">Fast track training</a> with Divecrew
-                        </li>
-                    </ul>
-                </div>
-                <ul class="features">
-                    <li>All Training</li>
-                    <li>Ocean Diver BSAC training manuals</li>
-                    <li>use of club equipment for Ocean Diver training</li>
-                    <li class="hidden-xs">&nbsp;</li>
-                    <li class="hidden-xs">&nbsp;</li>
-                    <li class="hidden-xs">&nbsp;</li>
-                </ul>
-            </div>
-            <div class="col-sm-4 price-block" data-animate="slideInLeft">
-                <h3 class="bg-primary">BSAC Membership</h3>
-                <div class="price">
-                    <div class="price-figure">
-                        <h4>@(string.Format("{0:C}", Model.BsacFullMemberAnnualRate))</h4>
-                        <p>per annum</p>
-                        (<a data-bs-toggle="collapse" href="#bsac-price-notes" aria-expanded="false" aria-controls="bsac-price-notes">see notes</a>)
-                    </div>
-                </div>
-                <div class="collapse price-notes" id="bsac-price-notes">
-                    <ul>
-                        <li>
-                            Reduced by:
-                            <ul>
-                                <li>£10 on first annual payment if paid by direct debit.</li>
-                                <li>£5 for Club Instructors, Open Water Instructors, Advanced Divers</li>
-                                <li>£10 for Advanced Instructor, First Class Diver</li>
-                                <li>£20 for National Instructor</li>
-                                <li>£17.50 for Joint Member (second member of a household aged 18 years or over who joins as a full diving member. Previously known as ‘Abated Member)</li>
+                    <div class="collapse" id="join-price-notes">
+                        <div class="px-3 py-2 border-top bg-white small text-muted">
+                            <ul class="mb-0">
+                                <li>
+                                    @(string.Format("{0:C}", Model.ClubJoiningFeeWithTraining))
+                                    if Ocean Diver in house training is required
+                                </li>
+                                <li>
+                                    Reduced to @(string.Format("{0:C}", Model.ClubJoiningFee))
+                                    if Ocean Diver training is not required
+                                </li>
+                                <li>
+                                    FREE if <a href="@Url.Action("Index", "Training")#fasttrack">Fast track training</a> with Divecrew
+                                </li>
                             </ul>
-                        </li>
-                        <li>Reduced pro rata for membership commencing after 1st March</li>
-                        <li>Payable annually in one amount by cheque or Direct Debit</li>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush small text-center">
+                        <li class="list-group-item">All Training</li>
+                        <li class="list-group-item">Ocean Diver BSAC training manuals</li>
+                        <li class="list-group-item">Use of club equipment for Ocean Diver training</li>
                     </ul>
                 </div>
-                <ul class="features">
-                    <li>
-                        An internationally-recognised
-                        <a href="https://www.bsac.com/training/diver-grade-courses/" target="_blank">Diver Training Programme</a>
-                    </li>
-                    <li>FREE Worldwide Third-Party Liability insurance</li>
-                    <li>FREE monthly subscription to SCUBA magazine</li>
-                    <li>
-                        Save on diving holidays through
-                        <a title="BSAC Travel partners" href="https://www.bsac.com/membership/member-benefits/bsac-travel-partners/" target="_blank">BSAC Travel Partners</a>
-                    </li>
-                    <li>
-                        BSAC Plus - discounts and benefits with High Street Brands
-                    </li>
-                    <li>
-                        and much <a href="http://www.bsac.com/page.asp?section=2598&sectionTitle=Membership+Benefits" target="_blank">more</a>
-                    </li>
-                </ul>
             </div>
 
-            <div class="col-sm-4 price-block" data-animate="slideInLeft">
-                <h3 class="bg-primary">Club Membership</h3>
-                <div class="price">
-                    <div class="price-figure">
-                        <h4>@(string.Format("{0:C}", Model.ClubMembershipMonthlyRate))</h4>
-                        <p>per month</p>
-                        (<a data-bs-toggle="collapse" href="#gbsac-price-notes" aria-expanded="false" aria-controls="gbsac-price-notes">see notes</a>)
+            <div class="col-sm-4" data-animate="slideInLeft">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="mb-0 fw-light text-uppercase" style="font-size:0.85rem;letter-spacing:0.1em">BSAC Membership</h3>
                     </div>
-                </div>
-                <div class="collapse price-notes" id="gbsac-price-notes">
-                    <ul>
-                        <li>
-                            data-toggle
-                            Branch Levy reduced by a maximum of 50% for:
-                            <ul>
-                                <li>Junior Members aged 12 – 17 in full time education.</li>
-                                <li>Student Members aged 18 years and over in full time education</li>
-                                <li>Distant Members (members living approx. 40 miles from the Branch, subject to committee discretion)</li>
-                                <li>Members Over 65 years of age</li>
-                                <li>Members who have had a continuous Full Guildford Branch Diving membership for at least 15 years and are aged over 60 on their membership renewal date.</li>
+                    <div class="card-body text-center bg-light">
+                        <h4 class="text-dark mb-1">@(string.Format("{0:C}", Model.BsacFullMemberAnnualRate))</h4>
+                        <p class="text-muted small mb-1">per annum</p>
+                        <small>(<a data-bs-toggle="collapse" href="#bsac-price-notes" aria-expanded="false" aria-controls="bsac-price-notes">see notes</a>)</small>
+                    </div>
+                    <div class="collapse" id="bsac-price-notes">
+                        <div class="px-3 py-2 border-top bg-white small text-muted">
+                            <ul class="mb-0">
+                                <li>
+                                    Reduced by:
+                                    <ul>
+                                        <li>£10 on first annual payment if paid by direct debit.</li>
+                                        <li>£5 for Club Instructors, Open Water Instructors, Advanced Divers</li>
+                                        <li>£10 for Advanced Instructor, First Class Diver</li>
+                                        <li>£20 for National Instructor</li>
+                                        <li>£17.50 for Joint Member (second member of a household aged 18 years or over who joins as a full diving member. Previously known as 'Abated Member)</li>
+                                    </ul>
+                                </li>
+                                <li>Reduced pro rata for membership commencing after 1st March</li>
+                                <li>Payable annually in one amount by cheque or Direct Debit</li>
                             </ul>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush small text-center">
+                        <li class="list-group-item">
+                            An internationally-recognised
+                            <a href="https://www.bsac.com/training/diver-grade-courses/" target="_blank">Diver Training Programme</a>
                         </li>
-                        <li>New Members must pay at least 12 month’s membership</li>
-                        <li>Members of at least 12 months standing may give 1 months’ notice before cancelling their Direct Debit.</li>
-                        <li>Payable by Monthly Direct Debit (collected midmonth).</li>
-                        <li>Members in their first year of membership paying by Monthly Direct Debit must give a minimum of 12 months’ notice before cancelling their membership.</li>
-                        <li>Membership Year Commences 1st March</li>
-                        <li>
-                            Alternatively, members may pay by cheque or BACS in one amount of
-                            @(string.Format("{0:C}", Model.ClubMembershipAnnualRate))
-                            (reduced pro rata for membership commencing after 1st March)
+                        <li class="list-group-item">FREE Worldwide Third-Party Liability insurance</li>
+                        <li class="list-group-item">FREE monthly subscription to SCUBA magazine</li>
+                        <li class="list-group-item">
+                            Save on diving holidays through
+                            <a title="BSAC Travel partners" href="https://www.bsac.com/membership/member-benefits/bsac-travel-partners/" target="_blank">BSAC Travel Partners</a>
                         </li>
+                        <li class="list-group-item">BSAC Plus - discounts and benefits with High Street Brands</li>
+                        <li class="list-group-item">and much <a href="http://www.bsac.com/page.asp?section=2598&sectionTitle=Membership+Benefits" target="_blank">more</a></li>
                     </ul>
                 </div>
-                <ul class="features">
-                    <li>FREE use of the Waterside Center Gym</li>
-                    <li>FREE air fills & Nitrox at club rates</li>
-                    <li>
-                        FREE club training & courses given by our own instructors
-                        <a data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="bottom" data-bs-content="Extra for course materials & dive related costs etc.  Dive equipment hire is availble with priority given to new trainees">
-                            <i class="bi bi-info-circle" title="info"></i>
-                        </a>
-                    </li>
-                    <li>Dive trips and social events at club rates</li>
-                    <li>Use of club bar & Waterside Centre club facilities</li>
-                    <li class="hidden-xs">&nbsp;</li>
-                </ul>
+            </div>
+
+            <div class="col-sm-4" data-animate="slideInLeft">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="mb-0 fw-light text-uppercase" style="font-size:0.85rem;letter-spacing:0.1em">Club Membership</h3>
+                    </div>
+                    <div class="card-body text-center bg-light">
+                        <h4 class="text-dark mb-1">@(string.Format("{0:C}", Model.ClubMembershipMonthlyRate))</h4>
+                        <p class="text-muted small mb-1">per month</p>
+                        <small>(<a data-bs-toggle="collapse" href="#gbsac-price-notes" aria-expanded="false" aria-controls="gbsac-price-notes">see notes</a>)</small>
+                    </div>
+                    <div class="collapse" id="gbsac-price-notes">
+                        <div class="px-3 py-2 border-top bg-white small text-muted">
+                            <ul class="mb-0">
+                                <li>
+                                    Branch Levy reduced by a maximum of 50% for:
+                                    <ul>
+                                        <li>Junior Members aged 12 – 17 in full time education.</li>
+                                        <li>Student Members aged 18 years and over in full time education</li>
+                                        <li>Distant Members (members living approx. 40 miles from the Branch, subject to committee discretion)</li>
+                                        <li>Members Over 65 years of age</li>
+                                        <li>Members who have had a continuous Full Guildford Branch Diving membership for at least 15 years and are aged over 60 on their membership renewal date.</li>
+                                    </ul>
+                                </li>
+                                <li>New Members must pay at least 12 month's membership</li>
+                                <li>Members of at least 12 months standing may give 1 months' notice before cancelling their Direct Debit.</li>
+                                <li>Payable by Monthly Direct Debit (collected midmonth).</li>
+                                <li>Members in their first year of membership paying by Monthly Direct Debit must give a minimum of 12 months' notice before cancelling their membership.</li>
+                                <li>Membership Year Commences 1st March</li>
+                                <li>
+                                    Alternatively, members may pay by cheque or BACS in one amount of
+                                    @(string.Format("{0:C}", Model.ClubMembershipAnnualRate))
+                                    (reduced pro rata for membership commencing after 1st March)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-flush small text-center">
+                        <li class="list-group-item">FREE use of the Waterside Center Gym</li>
+                        <li class="list-group-item">FREE air fills &amp; Nitrox at club rates</li>
+                        <li class="list-group-item">
+                            FREE club training &amp; courses given by our own instructors
+                            <a data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="bottom" data-bs-content="Extra for course materials & dive related costs etc.  Dive equipment hire is availble with priority given to new trainees">
+                                <i class="bi bi-info-circle" title="info"></i>
+                            </a>
+                        </li>
+                        <li class="list-group-item">Dive trips and social events at club rates</li>
+                        <li class="list-group-item">Use of club bar &amp; Waterside Centre club facilities</li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <ul>
-            <li>
-                As an example
-                <ul>
-                    <li>
-                        a new member Ocean Diver Trainee
-                        <ul>
-                            <li>
-                                with in-house club training will cost
-                                @(string.Format("{0:C}", Model.OceanDiverTraineeOneYearTotalCost))
-                                for the 1st year, includes BSAC and club membership. Dive site fees and dry suit hire apply where required.
-                            </li>
-                            <li>
-                                with <a href="@Url.Action("Index", "Training")#fasttrack">Fast track training</a> (4 or 5 days) through Divecrew, our BSAC Centre Partner will cost
-                                @(string.Format("{0:C}", Model.DiveCrewTotalCost)) (
-                                @(string.Format("{0:C}", Model.DiveCrewCost)) for training and
-                                @(string.Format("{0:C}", Model.RenewalTotalCost)) for BSAC and club membership).
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        Renewal will cost @(string.Format("{0:C}", Model.RenewalTotalCost))
-                        per year, includes Club and BSAC central fees.
-                    </li>
-                    <li>No extra charges for Sports Diver, Dive Leader and Advanced Diver (except student materials, minor instructor expenses) if you complete through the Club</li>
-                </ul>
-            </li>
-        </ul>
-        <p>n.b. Prices effective @(string.Format("{0:D}", Model.EffectiveDate)) for 1 year, approved by AGM @(string.Format("{0:D}", Model.AgmApprovedDate))</p>
+
+        <div class="mt-4 small text-muted">
+            <ul>
+                <li>
+                    As an example
+                    <ul>
+                        <li>
+                            a new member Ocean Diver Trainee
+                            <ul>
+                                <li>
+                                    with in-house club training will cost
+                                    @(string.Format("{0:C}", Model.OceanDiverTraineeOneYearTotalCost))
+                                    for the 1st year, includes BSAC and club membership. Dive site fees and dry suit hire apply where required.
+                                </li>
+                                <li>
+                                    with <a href="@Url.Action("Index", "Training")#fasttrack">Fast track training</a> (4 or 5 days) through Divecrew, our BSAC Centre Partner will cost
+                                    @(string.Format("{0:C}", Model.DiveCrewTotalCost)) (
+                                    @(string.Format("{0:C}", Model.DiveCrewCost)) for training and
+                                    @(string.Format("{0:C}", Model.RenewalTotalCost)) for BSAC and club membership).
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Renewal will cost @(string.Format("{0:C}", Model.RenewalTotalCost))
+                            per year, includes Club and BSAC central fees.
+                        </li>
+                        <li>No extra charges for Sports Diver, Dive Leader and Advanced Diver (except student materials, minor instructor expenses) if you complete through the Club</li>
+                    </ul>
+                </li>
+            </ul>
+            <p>n.b. Prices effective @(string.Format("{0:D}", Model.EffectiveDate)) for 1 year, approved by AGM @(string.Format("{0:D}", Model.AgmApprovedDate))</p>
+        </div>
     </div>
 </section>

@@ -5,6 +5,7 @@
     <link href="~/Content/owl.carousel.css" rel="stylesheet" />
     <link href="~/Content/animate.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     @RenderSection("styles", false)
 }
 
@@ -27,10 +28,10 @@
             var screenWidth = $(window).width();
 
             if (scroll >= 100 || screenWidth < 768) {
-                $(".navbar-dark").addClass("bg-dark");
+                $(".navbar-dark").addClass("bg-primary");
                 $("#logo").removeClass("largelogo");
             } else {
-                $(".navbar-dark").removeClass("bg-dark");
+                $(".navbar-dark").removeClass("bg-primary");
                 $("#logo").addClass("largelogo");
             }
         }

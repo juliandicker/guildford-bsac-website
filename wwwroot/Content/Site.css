@@ -416,75 +416,7 @@ ol li {
   background-position: 6px 10px;
   cursor: pointer;
 }
-.price-block {
-  text-align: center;
-  color: #ffffff;
-  transition: all 0.25s;
-  max-width: 400px;
-  margin: 0 auto 20px auto;
-}
-.price-block h3,
-.price-block h4 {
-  color: #fff;
-}
-.price-block h3 {
-  font-weight: 300;
-  font-size: 20px;
-  text-transform: uppercase;
-  padding: 20px 0;
-  margin: 0;
-  border-radius: 6px 6px 0 0;
-}
-.price-block .price {
-  display: inline-block;
-  background: #898989;
-  width: 100%;
-  padding-top: 14px;
-}
-.price-block .price .price-figure p {
-  text-transform: uppercase;
-  margin: 0;
-  line-height: 1em;
-}
-.price-block .price .price-figure a {
-  color: #ddd;
-  font-size: 0.85em;
-  text-decoration: underline;
-}
-.price-block .price-notes {
-  background: #c6c6c6;
-  color: #555555;
-  padding: 0;
-  margin: 0;
-  text-align: left;
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
-.price-block .price-notes ul {
-  margin: 0;
-}
-.price-block .price-notes ul li {
-  padding: 1px 15px;
-  font-size: 11px;
-  list-style-type: square;
-}
-.price-block .features {
-  list-style: none;
-  background: #e6e6e6;
-  color: #555555;
-  padding: 0;
-  margin: 0;
-  border-radius: 0 0 6px 6px;
-}
-.price-block .features li {
-  padding: 18px 15px;
-  border-bottom: 1px solid #ccc;
-  list-style-type: none;
-  font-size: 0.7em;
-}
-.price-block .features li:last-child {
-  border-radius: 0 0 6px 6px;
-}
+
 #team-carousel .owl-nav {
   color: #fff;
 }
