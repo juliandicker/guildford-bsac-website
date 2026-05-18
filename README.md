@@ -8,7 +8,9 @@ ASP.NET Core 8.0 MVC application for the [Guildford BSAC](https://www.guildford-
 - **TrainingController** — static training course pages
 - **YearPlannerController** — year planner view with optional PDF/PNG export via Rotativa
 - **FacebookService** — singleton that fetches recent Facebook page posts (in-memory cache, 30 min TTL)
-- Static JSON in `App_Data/` — FAQs (`faqs.json`, `faqsContact.json`) and membership rates (`membershiprates.json`)
+- Static JSON in `App_Data/` — FAQs (`faqs.json`, `faqsContact.json`), membership rates (`membershiprates.json`), and committee members (`team.json`)
+
+See [CONTENT_GUIDE.md](CONTENT_GUIDE.md) for instructions on updating content without code changes.
 
 ## Local Development
 

@@ -102,7 +102,9 @@ Delete the entire block for that FAQ, including the comma before or after it.
 
 **File:** `App_Data/membershiprates.json`
 
-**Important:** When rates change, always **add a new entry** to the list — do not edit the existing ones. The site automatically uses the most recent entry. Old entries remain as a historical record.
+**Important:** When rates change, always **add a new entry** to the list — do not edit the existing ones. The site automatically uses the most recent entry whose `EffectiveDate` is in the past. Old entries remain as a historical record.
+
+**You can add next year's rates in advance.** Set the `EffectiveDate` to a future date (e.g. `"2026-03-01T00:00:00"`) and the site will continue showing the current rates until that date, then switch over automatically. This means you can enter the rates right after the AGM and not have to remember to update the site in March.
 
 Each entry looks like this:
 
