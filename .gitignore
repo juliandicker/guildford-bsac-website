@@ -28,3 +28,6 @@ node_modules/
 # Credentials - never commit
 *.pfx
 *.p12
+
+# Claude Code local settings (machine-specific)
+.claude/
