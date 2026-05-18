@@ -1,4 +1,5 @@
-﻿<section id="fasttrack" class="content-block">
+﻿@model GuildfordBsac.Web.Models.MembershipRatesViewModel
+<section id="fasttrack" class="content-block">
     <div class="container">
         <a href="https://shop.divecrew.co.uk/shop/divecrew-2012/en/view-course/courses/open-water-courses/bsac/bsac-ocean-diver-full-52148" target="_blank" class="">
             <img src="~/Content/Images/divecrewlogo.png" class="ps-3 w-25 float-end" />
@@ -17,7 +18,7 @@
         <div class="row">
             <div class="col-lg-9 col-md-8 col-sm-12">
                 <p>
-                    The Ocean Diver course costs £519 which includes all training, course materials and equipment including dry suits.
+                    The Ocean Diver course costs @(string.Format("{0:C}", Model.DiveCrewCost)) which includes all training, course materials and equipment including dry suits.
                     <a href="https://divecrew.dive360.biz/courses/ocean-diver-fast-track" target="_blank" title="Divecrew">Divecrew</a> can offer 0% Finance on the Ocean Diver Course so you can spread payments over a longer time period. You can also extend this Finance to equipment purchases if you so wish.
                 </p>
 
