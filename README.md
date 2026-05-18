@@ -38,6 +38,25 @@ dotnet user-secrets set "Facebook:PageAccessToken" "<token from Bitwarden>"
 
 In production, these are set as environment variables in Plesk using `__` as the section separator (e.g. `AppSettings__ServiceAccount__PrivateKey`).
 
+## reCAPTCHA
+
+The contact form is protected by [Google reCAPTCHA v2](https://developers.google.com/recaptcha/) ("I'm not a robot" checkbox).
+
+**Admin console:** [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin) — log in with the club Google account to manage keys and view traffic stats.
+
+The site is registered under the domain `guildford-bsac.com`. Two keys are required:
+
+| Key | Where used |
+|-----|-----------|
+| **Site key** (`RecaptchaSiteKey`) | Embedded in the contact form HTML — safe to be public, stored in `appsettings.json` |
+| **Secret key** (`RecaptchaSecret`) | Server-side token validation — must be kept secret, stored in User Secrets / Plesk env var |
+
+To rotate keys or register a new domain:
+1. Go to the [reCAPTCHA admin console](https://www.google.com/recaptcha/admin)
+2. Select the site → Settings → update domains or generate new keys
+3. Update `RecaptchaSiteKey` in `appsettings.json` and `RecaptchaSecret` in User Secrets (dev) and Plesk (production)
+4. Update the Bitwarden entry
+
 ## Google APIs
 
 **GCP project:** `gbsac-312212` — [console.cloud.google.com](https://console.cloud.google.com)  
