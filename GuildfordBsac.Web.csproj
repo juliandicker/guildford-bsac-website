@@ -28,6 +28,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Rotativa\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="bootstrap.sass" Version="5.3.8" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.74.0.4073" />
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.74.0.4134" />

@@ -37,7 +37,7 @@ jobs:
                 <handlers>
                   <add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
                 </handlers>
-                <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="inprocess">
+                <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="true" stdoutLogFile=".\logs\stdout" hostingModel="outofprocess">
                   <environmentVariables>
                     <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
                     <environmentVariable name="AppSettings__RecaptchaSecret" value="$r" />
@@ -50,6 +50,9 @@ jobs:
           </configuration>
           "@
           Set-Content -Path "publish\web.config" -Value $xml -Encoding UTF8
+
+      - name: Create logs directory
+        run: New-Item -ItemType Directory -Force -Path "publish\logs"
 
       - name: Deploy via Web Deploy
         env:
