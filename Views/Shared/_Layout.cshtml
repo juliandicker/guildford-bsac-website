@@ -19,11 +19,7 @@
         var offset = 96;
         $('header').css('height', offset);
 
-        var scrollSpy = new bootstrap.ScrollSpy(document.body, {
-            target: '#navbarMain'
-        })
-
-        $('[data-animate]').waypoint(function (direction) {
+$('[data-animate]').waypoint(function (direction) {
             if (direction === 'down' && !$(this).hasClass('animated')) {
                 var $el = $(this.element);
                 setTimeout(function () {

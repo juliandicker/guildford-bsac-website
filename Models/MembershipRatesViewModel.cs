@@ -10,6 +10,7 @@ namespace GuildfordBsac.Web.Models
         public decimal BsacFullMemberAnnualRate { get; set; }
         public decimal ClubJoiningFee { get; set; }
         public decimal DiveCrewCost { get; set; }
+        public decimal TryDiveCost { get; set; }
         public decimal ClubJoiningFeeWithTraining { get; set; }
         public decimal ClubMembershipMonthlyRate { get; set; }
         public decimal ClubMembershipAnnualRate

@@ -19,19 +19,15 @@
     <script>
         var offset = 96;
 
-        var scrollSpy = new bootstrap.ScrollSpy(document.body, {
-            target: '#navbarMain'
-        })
-
-        function NavBarScroll() {
+function NavBarScroll() {
             var scroll = $(window).scrollTop();
             var screenWidth = $(window).width();
 
             if (scroll >= 100 || screenWidth < 768) {
-                $(".navbar-dark").addClass("bg-primary");
+                $(".navbar-dark").addClass("bg-dark");
                 $("#logo").removeClass("largelogo");
             } else {
-                $(".navbar-dark").removeClass("bg-primary");
+                $(".navbar-dark").removeClass("bg-dark");
                 $("#logo").addClass("largelogo");
             }
         }

@@ -64,3 +64,7 @@ Training courses each have individual partial views under `Views/Training/`.
 - `CaptchaValidatorAttribute` — Action filter that validates reCAPTCHA tokens server-side
 - `BrowserJsonFormatter` — Returns `text/html` content-type for JSON when requested from a browser (useful for `/api/calendar/` debugging)
 - Extension methods: `HtmlHelperExtensions`, `LinqExtensions`, `DateExtensions`
+
+## Conventions
+
+- When editing a `.css` file, always check whether a corresponding `.less` file exists and apply the same change there.

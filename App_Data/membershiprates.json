@@ -6,6 +6,7 @@
     "ClubJoiningFee": 30.0,
     "ClubJoiningFeeWithTraining": 100.0,
     "DiveCrewCost": 499.0,
+    "TryDiveCost": 25.0,
     "ClubMembershipMonthlyRate": 15.5
   },
   {
@@ -15,6 +16,7 @@
     "ClubJoiningFee": 30.0,
     "ClubJoiningFeeWithTraining": 100.0,
     "DiveCrewCost": 499.0,
+    "TryDiveCost": 25.0,
     "ClubMembershipMonthlyRate": 16.5
   },
   {
@@ -24,6 +26,7 @@
     "ClubJoiningFee": 50.0,
     "ClubJoiningFeeWithTraining": 75.0,
     "DiveCrewCost": 519.0,
+    "TryDiveCost": 25.0,
     "ClubMembershipMonthlyRate": 17.5
   }
 ]

@@ -1,4 +1,5 @@
-﻿<section id="trydive" class="content-block-nopad">
+﻿@model GuildfordBsac.Web.Models.MembershipRatesViewModel
+<section id="trydive" class="content-block-nopad">
     <div class="image-container col-md-5 col-sm-3 d-none d-sm-block float-start">
         <div class="background-image-holder"></div>
     </div>
@@ -52,7 +53,7 @@
 
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <h3>When and where?</h3>
-                <p>All try dives take place in a swimming pool, but please note try-dives do need to be arranged in advance and you will need to come to the Waterside Centre first so we can arrange equipment and introduce you to an instructor. We will make a nominal charge for the try-dive. However, this will be refunded if you decide to join the club.
+                <p>All try dives take place in a swimming pool and must be arranged in advance. The cost is @(string.Format("{0:C}", Model.TryDiveCost)), which is fully refunded if you decide to join the club. Come to the Waterside Centre first so we can arrange equipment and introduce you to an instructor.
                 </p>
             </div>
         </div>

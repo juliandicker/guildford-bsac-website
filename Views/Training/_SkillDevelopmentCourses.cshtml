@@ -37,6 +37,12 @@
             <hr />
         </div>
 
+        <p class="lead text-center mb-4">
+            SDCs are specialist BSAC qualifications available to Ocean Diver grade and above. They let you develop skills in specific areas -
+            from boat handling and underwater photography to rescue management and technical diving.
+            All courses below are available to BSAC members.
+        </p>
+
         <div class="text-center padd-tb-10">
             <ul id="filter">
                 <li class="current"><a href="#" style="outline: none;">All</a></li>
@@ -54,7 +60,7 @@
                 var imgsrc = sdc.Name.Replace(" ", "_").Replace("/", "");
                 <div class="col col-6 col-md-3 @(sdc.Category)">
                     <div class="gallery">
-                        <figure><img src="/Content/Images/sdc/@(imgsrc).png" alt="image" class="img-fluid"></figure>
+                        <figure><img src="/Content/Images/sdc/@(imgsrc).png" alt="@sdc.Name" class="img-fluid"></figure>
                         <div class="overlay">
                             <a class="info circle" data-bs-toggle="modal" data-bs-target="#@(imgsrc)-modal-popup"><i class="fa fa-link"></i></a>
                         </div>
@@ -78,7 +84,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <figure><img src="/Content/Images/sdc/@(imgsrc).png" alt="image" class="img-fluid text-center"></figure>
+                    <figure><img src="/Content/Images/sdc/@(imgsrc).png" alt="@sdc.Name" class="img-fluid text-center"></figure>
 
                     @{ var pname = "sdc/_" + imgsrc; }
                     @await Html.PartialAsync(pname)

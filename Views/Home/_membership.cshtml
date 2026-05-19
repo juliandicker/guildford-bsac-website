@@ -9,10 +9,10 @@
         </div>
 
         <div class="row g-4">
-            <div class="col-sm-4" data-animate="slideInLeft">
+            <div class="col-sm-4 position-relative" style="z-index:2" data-animate="slideInLeft">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-header bg-primary text-white text-center py-3">
-                        <h3 class="mb-0 fw-light text-uppercase" style="font-size:0.85rem;letter-spacing:0.1em">Joining Fee</h3>
+                    <div class="card-header bg-primary text-center py-3">
+                        <h3 class="mb-0 fw-light text-uppercase text-white" style="font-size:0.85rem;letter-spacing:0.1em">Joining Fee</h3>
                     </div>
                     <div class="card-body text-center bg-light">
                         <h4 class="text-dark mb-1">
@@ -45,12 +45,14 @@
                         <li class="list-group-item">Use of club equipment for Ocean Diver training</li>
                     </ul>
                 </div>
+                <div class="d-none d-sm-flex position-absolute top-50 translate-middle-y align-items-center justify-content-center rounded-circle bg-white border border-2 shadow" style="width:48px;height:48px;right:-24px;z-index:100;color:#495057;font-size:1.5rem;font-weight:600">+</div>
             </div>
 
-            <div class="col-sm-4" data-animate="slideInLeft">
+
+            <div class="col-sm-4 position-relative" style="z-index:1" data-animate="slideInLeft">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-header bg-primary text-white text-center py-3">
-                        <h3 class="mb-0 fw-light text-uppercase" style="font-size:0.85rem;letter-spacing:0.1em">BSAC Membership</h3>
+                    <div class="card-header bg-primary text-center py-3">
+                        <h3 class="mb-0 fw-light text-uppercase text-white" style="font-size:0.85rem;letter-spacing:0.1em">BSAC Membership</h3>
                     </div>
                     <div class="card-body text-center bg-light">
                         <h4 class="text-dark mb-1">@(string.Format("{0:C}", Model.BsacFullMemberAnnualRate))</h4>
@@ -87,15 +89,17 @@
                             <a title="BSAC Travel partners" href="https://www.bsac.com/membership/member-benefits/bsac-travel-partners/" target="_blank">BSAC Travel Partners</a>
                         </li>
                         <li class="list-group-item">BSAC Plus - discounts and benefits with High Street Brands</li>
-                        <li class="list-group-item">and much <a href="http://www.bsac.com/page.asp?section=2598&sectionTitle=Membership+Benefits" target="_blank">more</a></li>
+                        <li class="list-group-item">and much <a href="https://www.bsac.com/membership/member-benefits/" target="_blank">more</a></li>
                     </ul>
                 </div>
+                <div class="d-none d-sm-flex position-absolute top-50 translate-middle-y align-items-center justify-content-center rounded-circle bg-white border border-2 shadow" style="width:48px;height:48px;right:-24px;z-index:100;color:#495057;font-size:1.5rem;font-weight:600">+</div>
             </div>
+
 
             <div class="col-sm-4" data-animate="slideInLeft">
                 <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-header bg-primary text-white text-center py-3">
-                        <h3 class="mb-0 fw-light text-uppercase" style="font-size:0.85rem;letter-spacing:0.1em">Club Membership</h3>
+                    <div class="card-header bg-primary text-center py-3">
+                        <h3 class="mb-0 fw-light text-uppercase text-white" style="font-size:0.85rem;letter-spacing:0.1em">Club Membership</h3>
                     </div>
                     <div class="card-body text-center bg-light">
                         <h4 class="text-dark mb-1">@(string.Format("{0:C}", Model.ClubMembershipMonthlyRate))</h4>
@@ -129,11 +133,11 @@
                         </div>
                     </div>
                     <ul class="list-group list-group-flush small text-center">
-                        <li class="list-group-item">FREE use of the Waterside Center Gym</li>
-                        <li class="list-group-item">FREE air fills &amp; Nitrox at club rates</li>
+                        <li class="list-group-item">FREE use of the Waterside Centre Gym</li>
+                        <li class="list-group-item">Air fills &amp; Nitrox at club rates</li>
                         <li class="list-group-item">
-                            FREE club training &amp; courses given by our own instructors
-                            <a data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="bottom" data-bs-content="Extra for course materials & dive related costs etc.  Dive equipment hire is availble with priority given to new trainees">
+                            FREE club training &amp; courses
+                            <a data-bs-container="body" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="bottom" data-bs-content="Extra for course materials & dive related costs etc.  Dive equipment hire is available with priority given to new trainees">
                                 <i class="bi bi-info-circle" title="info"></i>
                             </a>
                         </li>
@@ -142,6 +146,10 @@
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <strong>Great value as you progress:</strong> Once you're a member, Sports Diver, Dive Leader and Advanced Diver training through the club is included — no extra charges beyond course materials and minor dive expenses.
         </div>
 
         <div class="mt-4 small text-muted">
