@@ -19,6 +19,38 @@ jobs:
       - name: Publish
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
+      - name: Generate web.config
+        env:
+          RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
+          PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
+          FACEBOOK_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+        run: |
+          $pk = ($env:PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
+          $r  = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_SECRET)
+          $pk = [System.Security.SecurityElement]::Escape($pk)
+          $fb = [System.Security.SecurityElement]::Escape($env:FACEBOOK_TOKEN)
+          $xml = @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <location path="." inheritInChildApplications="false">
+              <system.webServer>
+                <handlers>
+                  <add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
+                </handlers>
+                <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="inprocess">
+                  <environmentVariables>
+                    <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
+                    <environmentVariable name="AppSettings__RecaptchaSecret" value="$r" />
+                    <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$pk" />
+                    <environmentVariable name="Facebook__PageAccessToken" value="$fb" />
+                  </environmentVariables>
+                </aspNetCore>
+              </system.webServer>
+            </location>
+          </configuration>
+          "@
+          Set-Content -Path "publish\web.config" -Value $xml -Encoding UTF8
+
       - name: Deploy via Web Deploy
         env:
           DEPLOY_URL: ${{ vars.DEPLOY_URL }}
@@ -28,7 +60,6 @@ jobs:
           $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           $src  = "${{ github.workspace }}\publish"
           $dest = "contentPath='guildford-bsac.com',computerName='$env:DEPLOY_URL',userName='$env:DEPLOY_USERNAME',password='$env:DEPLOY_PASSWORD',authType='Basic'"
-          $skipConfig = "objectname='filePath',absolutePath='appsettings\.json$'"
-          $skipWebConfig = "objectname='filePath',absolutePath='Web\.config$'"
-          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skipConfig" "-skip:$skipWebConfig" -allowUntrusted -enableRule:AppOffline
+          $skip = "objectname='filePath',absolutePath='appsettings\.json$'"
+          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted -enableRule:AppOffline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
