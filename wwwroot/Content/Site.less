@@ -92,6 +92,14 @@ ol li {
     }
 }
 
+h1 + hr {
+    border-color: #009EFF;
+    border-width: 2px;
+    width: 10%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .btn-trans {
     padding: 12px 20px;
     font-size: 14px;
@@ -105,6 +113,20 @@ ol li {
         color: #333;
         background-color: rgba(255, 255, 255, 0.8);
         transition: all ease-in 1s;
+    }
+}
+
+.btn-cta {
+    background-color: #d6222a;
+    color: #fff;
+    border-color: #d6222a;
+    font-weight: 600;
+
+    &:hover,
+    &:focus {
+        background-color: #b51c23;
+        border-color: #b51c23;
+        color: #fff;
     }
 }
 
@@ -160,6 +182,11 @@ ol li {
 @import "site/portfolio.less";
 @import 'site/g-recaptcha.less';
 @import 'site/learntodive.less';
+
+#privacpolicy .container,
+#codeofconduct .container {
+    max-width: 760px;
+}
 
 #about {
     .image-container {
