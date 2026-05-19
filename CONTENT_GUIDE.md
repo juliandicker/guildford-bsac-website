@@ -62,7 +62,7 @@ Delete their entire block (from `{` to `}`), including the comma before or after
 - Photo files go in `Content/Images/team/`
 - Use lowercase filenames with underscores, e.g. `jane_smith.jpg`
 - The `ImgSrc` value must exactly match the filename
-- Recommended size: roughly square, at least 300×300 pixels
+- Recommended size: roughly square, at least 300×300 pixels, but recommend 600x600 pixels
 
 ---
 

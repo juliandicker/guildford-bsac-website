@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".github\workflows\deploy.yml" />
     <None Include="compilerconfig.json" />
   </ItemGroup>
 
@@ -31,6 +32,10 @@
     <Content Include="Rotativa\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include=".claude\settings.local.json" />
   </ItemGroup>
 
   <ItemGroup>
