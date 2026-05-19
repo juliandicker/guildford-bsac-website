@@ -3,6 +3,7 @@ namespace GuildfordBsac.Web.Controllers
     using GuildfordBsac.Web.Models;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
     using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
@@ -12,12 +13,14 @@ namespace GuildfordBsac.Web.Controllers
     public class FacebookService
     {
         private readonly IMemoryCache _cache;
+        private readonly ILogger<FacebookService> _logger;
         private readonly string _accessToken;
         private static readonly HttpClient _http = new HttpClient();
 
-        public FacebookService(IMemoryCache cache, IConfiguration config)
+        public FacebookService(IMemoryCache cache, IConfiguration config, ILogger<FacebookService> logger)
         {
             _cache = cache;
+            _logger = logger;
             _accessToken = config["Facebook:PageAccessToken"] ?? "";
         }
 
@@ -33,15 +36,19 @@ namespace GuildfordBsac.Web.Controllers
 
             try
             {
-                var url = $"https://graph.facebook.com/v10.0/{pageId}/posts" +
+                var url = $"https://graph.facebook.com/v25.0/{pageId}/posts" +
                           $"?fields=message,story,created_time,full_picture,permalink_url" +
                           $"&limit={limit}";
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _accessToken);
                 var httpResponse = await _http.SendAsync(request);
-                httpResponse.EnsureSuccessStatusCode();
                 var json = await httpResponse.Content.ReadAsStringAsync();
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Facebook API {StatusCode}: {Body}", (int)httpResponse.StatusCode, json);
+                    return new List<FacebookPostModel>();
+                }
                 var response = JsonConvert.DeserializeObject<FacebookPageResponseModel>(json);
                 var posts = response?.Data ?? new List<FacebookPostModel>();
 
@@ -49,8 +56,9 @@ namespace GuildfordBsac.Web.Controllers
 
                 return posts;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Failed to fetch Facebook posts for page {PageId}", pageId);
                 return new List<FacebookPostModel>();
             }
         }

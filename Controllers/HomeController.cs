@@ -44,7 +44,7 @@ namespace GuildfordBsac.Web.Controllers
             var model = new HomeViewModel();
             model.MembershipRates = membershipRatesService.Current;
             model.TeamMembers = teamService.TeamMembers;
-            model.RecentPosts = await _facebook.GetRecentPostsAsync("GuildfordBSAC", limit: 5);
+            model.RecentPosts = await _facebook.GetRecentPostsAsync("1027783460591236", limit: 5);
 
             return View(model);
         }
