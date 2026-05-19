@@ -17,17 +17,17 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Publish
-        run: dotnet publish -c Release -o publish
+        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish
 
-      - name: Deploy via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_HOST }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./publish/
-          server-dir: ${{ secrets.FTP_REMOTE_PATH }}
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/appsettings.json
+      - name: Deploy via Web Deploy
+        env:
+          DEPLOY_URL: ${{ vars.DEPLOY_URL }}
+          DEPLOY_USERNAME: ${{ vars.DEPLOY_USERNAME }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+        run: |
+          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+          $src  = "${{ github.workspace }}\publish"
+          $dest = "contentPath='guildford-bsac.com',computerName='$env:DEPLOY_URL',userName='$env:DEPLOY_USERNAME',password='$env:DEPLOY_PASSWORD',authType='Basic'"
+          $skip = "objectname='filePath',absolutePath='appsettings\.json'"
+          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
