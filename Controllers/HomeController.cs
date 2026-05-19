@@ -55,6 +55,11 @@ namespace GuildfordBsac.Web.Controllers
             return View(model);
         }
 
+        public ActionResult About()
+        {
+            return View();
+        }
+
         public ActionResult PrivacyPolicy()
         {
             return View();

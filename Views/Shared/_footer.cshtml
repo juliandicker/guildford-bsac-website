@@ -39,7 +39,7 @@
                         <ul class="shortcuts">
                             @{ var clsHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "swingscroll" : ""; }
                             <li><a href="@Url.Action("Index", "Home")#joinus" class="@(clsHome)">Join Us</a></li>
-                            <li><a href="@Url.Action("Index", "Home")#about" class="@(clsHome)">About Us</a></li>
+                            <li>@Html.ActionLink("About Us", "About", "Home")</li>
                             <li><a href="@Url.Action("Index", "Home")#team" class="@(clsHome)">Committee</a></li>
                             <li><a href="@Url.Action("Index", "Home")#membership" class="@(clsHome)">Membership</a></li>
                             <li><a href="@Url.Action("Index", "Home")#newsevents" class="@(clsHome)">News & Events</a></li>
