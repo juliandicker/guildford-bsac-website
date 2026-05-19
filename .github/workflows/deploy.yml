@@ -17,7 +17,7 @@ jobs:
           dotnet-version: '8.0.x'
 
       - name: Publish
-        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish
+        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Deploy via Web Deploy
         env:
@@ -28,6 +28,7 @@ jobs:
           $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           $src  = "${{ github.workspace }}\publish"
           $dest = "contentPath='guildford-bsac.com',computerName='$env:DEPLOY_URL',userName='$env:DEPLOY_USERNAME',password='$env:DEPLOY_PASSWORD',authType='Basic'"
-          $skip = "objectname='filePath',absolutePath='appsettings\.json'"
-          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted
+          $skipConfig = "objectname='filePath',absolutePath='appsettings\.json$'"
+          $skipWebConfig = "objectname='filePath',absolutePath='Web\.config$'"
+          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skipConfig" "-skip:$skipWebConfig" -allowUntrusted
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
