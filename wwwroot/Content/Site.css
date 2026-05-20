@@ -239,7 +239,8 @@ h1 + hr {
   border: 1px solid #ddd;
   border-radius: 6px;
   background: #fff;
-  max-height: 420px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 .fb-feed-scroll::-webkit-scrollbar {
