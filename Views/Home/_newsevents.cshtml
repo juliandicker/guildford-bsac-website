@@ -5,14 +5,14 @@
             <hr />
         </div>
         <div class="row">
-            <div class="col-6 d-flex flex-column">
+            <div class="col-12 col-md-6 d-flex flex-column">
                 <p class="fb-feed-label">Our Diving Year</p>
                 <p class="small text-muted">A snapshot of the dive trips, training and social events we run throughout the year. Click to open the full planner.</p>
                 <a href="@Url.Action("Index", "YearPlanner")" target="_blank">
                     <img src="/YearPlanner/png?agenda=False" class="img-fluid" />
                 </a>
             </div>
-            <div class="col-6 d-flex flex-column">
+            <div class="col-12 col-md-6 d-flex flex-column">
                 <p class="fb-feed-label">Latest from Facebook</p>
                 <div class="fb-feed-scroll">
                     @if (Model.RecentPosts != null && Model.RecentPosts.Count > 0)

@@ -179,6 +179,15 @@ h1 + hr {
     white-space: normal;
   }
 }
+.whatsapp-btn-img {
+  height: 1em;
+  vertical-align: middle;
+}
+@media (max-width: 767px) {
+  .whatsapp-btn-img {
+    height: 2rem;
+  }
+}
 .content-block {
   width: 100%;
   padding: 60px 0 60px 0;
