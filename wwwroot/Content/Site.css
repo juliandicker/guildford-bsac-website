@@ -838,8 +838,17 @@ ul#portfolio-filter a:hover {
   border-bottom: 1px solid #ecf0f1;
 }
 #privacpolicy .container,
-#codeofconduct .container {
+#codeofconduct .container,
+#aboutpage .container {
   max-width: 760px;
+}
+#tryus {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+#about .content {
+  padding-top: 40px;
+  padding-bottom: 40px;
 }
 #about .image-container {
   position: absolute;
