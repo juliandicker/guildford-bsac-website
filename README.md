@@ -14,7 +14,12 @@ See [CONTENT_GUIDE.md](CONTENT_GUIDE.md) for instructions on updating content wi
 
 ## Local Development
 
-**Prerequisites:** .NET 8 SDK
+**Prerequisites:** .NET 8 SDK, [Visual C++ 2013 Redistributable (x86)](https://aka.ms/highdpimfc2013x86enu)
+
+> The year planner PNG export uses `Rotativa\wkhtmltoimage.exe`, which is a 32-bit binary requiring the VC++ 2013 x86 runtime (`msvcr120.dll` in `C:\Windows\SysWOW64`). Without it the `/YearPlanner/Png` endpoint throws `IOException: The pipe is being closed`. Install via:
+> ```powershell
+> winget install Microsoft.VCRedist.2013.x86
+> ```
 
 ```powershell
 dotnet run
