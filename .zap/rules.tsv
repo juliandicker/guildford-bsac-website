@@ -1,0 +1,11 @@
+# ZAP baseline scan rules
+# Format: AlertId<TAB>AlertAction<TAB>Comment
+# AlertAction: IGNORE | INFO | WARN | FAIL
+10015	IGNORE	Re-examine Cache-control Directives: intentional for server-rendered dynamic pages
+10017	IGNORE	Cross-Domain JavaScript Source File Inclusion: intentional use of Google reCAPTCHA and Analytics
+10027	IGNORE	Information Disclosure - Suspicious Comments: comments in third-party library source files (flexslider, mustache)
+10049	IGNORE	Non-Storable Content: intentional; server-rendered pages must not be cached by intermediaries
+10109	IGNORE	Modern Web Application: informational only, not a vulnerability
+10112	IGNORE	Session Management Response Identified: informational; standard ASP.NET antiforgery mechanism
+10202	IGNORE	Absence of Anti-CSRF Tokens: false positive; ASP.NET MVC uses antiforgery tokens on POST endpoints, not visible in GET responses
+90003	IGNORE	Sub Resource Integrity Attribute Missing: Google Fonts and Font Awesome CDN vary by query params; SRI not feasible
