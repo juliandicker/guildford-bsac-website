@@ -50,6 +50,8 @@ app.Use(async (context, next) =>
         $"frame-src https://www.google.com https://recaptcha.google.com; " +
         $"connect-src 'self' https://www.google-analytics.com; " +
         $"form-action 'self' https://guildford-bsac.us14.list-manage.com; " +
+        $"worker-src 'none'; " +
+        $"manifest-src 'self'; " +
         $"object-src 'none'; " +
         $"base-uri 'self';";
     await next();

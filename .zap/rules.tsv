@@ -9,3 +9,4 @@
 10112	IGNORE	Session Management Response Identified: informational; standard ASP.NET antiforgery mechanism
 10202	IGNORE	Absence of Anti-CSRF Tokens: false positive; ASP.NET MVC uses antiforgery tokens on POST endpoints, not visible in GET responses
 90003	IGNORE	Sub Resource Integrity Attribute Missing: Google Fonts and Font Awesome CDN vary by query params; SRI not feasible
+90004	IGNORE	Cross-Origin-Embedder-Policy: set to unsafe-none intentionally; require-corp would block Google Fonts, reCAPTCHA and Maps embeds
