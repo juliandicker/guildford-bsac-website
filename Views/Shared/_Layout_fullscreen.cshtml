@@ -16,7 +16,7 @@
 @section scripts {
     <script src="~/Scripts/owl.carousel.min.js"></script>
     <script src="~/Scripts/jquery.waypoints.min.js"></script>
-    <script>
+    <script nonce="@(Context.Items["CspNonce"] as string)">
         var offset = 96;
 
 function NavBarScroll() {

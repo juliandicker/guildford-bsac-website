@@ -6,7 +6,7 @@
 <partial name="_AlreadyADiver" />
 
 @section scripts {
-    <script>
+    <script nonce="@(Context.Items["CspNonce"] as string)">
         $('a.swingscroll').click(function (event) {
             event.preventDefault();
             var url = $(this).attr('href').replace("/", "");

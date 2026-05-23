@@ -45,7 +45,7 @@
 
 @section scripts {
     <script src="https://www.google.com/recaptcha/api.js"></script>
-    <script>
+    <script nonce="@(Context.Items["CspNonce"] as string)">
         $(function () {
             $('#ContactForm').on('submit', function (e) {
                 e.preventDefault();

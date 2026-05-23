@@ -19,6 +19,16 @@ jobs:
       - name: Build (security scan)
         run: dotnet build GuildfordBsac.Web.csproj -c Release -p:TreatWarningsAsErrors=true
 
+      - name: Check for vulnerable packages
+        run: |
+          $out = dotnet list GuildfordBsac.Web.csproj package --vulnerable --include-transitive
+          $out | Write-Host
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ($out -match "has the following vulnerable packages") {
+            Write-Error "Vulnerable NuGet packages found - update before deploying"
+            exit 1
+          }
+
       - name: Publish
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false --no-build
 
