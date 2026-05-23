@@ -41,7 +41,7 @@
   <ItemGroup>
     <PackageReference Include="bootstrap.sass" Version="5.3.8" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.74.0.4073" />
-    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.74.0.4134" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.74.0.4148" />
     <PackageReference Include="HtmlSanitizer" Version="9.0.892" />
     <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="jQuery.Validation" Version="1.21.0" />
