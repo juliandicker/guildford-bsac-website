@@ -69,3 +69,15 @@ jobs:
           $skip = "objectname='filePath',absolutePath='appsettings\.json$'"
           & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted -enableRule:AppOffline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  zap-scan:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: ${{ vars.SITE_URL }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_action: true
+          allow_issue_writing: false
