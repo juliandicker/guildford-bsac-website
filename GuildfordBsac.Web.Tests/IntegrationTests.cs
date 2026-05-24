@@ -1,9 +1,16 @@
+using GuildfordBsac.Web.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
 namespace GuildfordBsac.Web.Tests;
+
+internal class AlwaysPassReCaptchaValidator : IReCaptchaValidator
+{
+    public Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
+        => Task.FromResult(new ReCaptchaResponse { Success = true });
+}
 
 public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
 {
@@ -19,6 +26,7 @@ public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
             // HttpClient uses plain HTTP so CookieContainer won't send it — override for tests.
             services.Configure<CookiePolicyOptions>(options =>
                 options.Secure = CookieSecurePolicy.SameAsRequest);
+            services.AddScoped<IReCaptchaValidator, AlwaysPassReCaptchaValidator>();
         });
     }
 }

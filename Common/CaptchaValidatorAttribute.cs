@@ -4,30 +4,38 @@ namespace GuildfordBsac.Web.Common
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
+    using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
 
-    public class ReCaptcha
+    public interface IReCaptchaValidator
     {
-        public static async Task<ReCaptchaResponse> ValidateAsync(HttpContext context, string secret)
+        Task<ReCaptchaResponse> ValidateAsync(HttpContext context);
+    }
+
+    public class ReCaptchaValidator : IReCaptchaValidator
+    {
+        private readonly string _secret;
+
+        public ReCaptchaValidator(IOptions<AppSettings> settings)
         {
-            using (var client = new HttpClient())
+            _secret = settings.Value.RecaptchaSecret;
+        }
+
+        public async Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            var form = new Dictionary<string, string>
             {
-                client.Timeout = TimeSpan.FromSeconds(10);
-
-                var form = new Dictionary<string, string>
-                {
-                    ["secret"] = secret,
-                    ["response"] = context.Request.Form["g-recaptcha-response"].ToString(),
-                    ["remoteip"] = context.Connection.RemoteIpAddress?.ToString() ?? ""
-                };
-
-                var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(form));
-                response.EnsureSuccessStatusCode();
-                var jsonString = await response.Content.ReadAsStringAsync();
-
-                return JsonConvert.DeserializeObject<ReCaptchaResponse>(jsonString)!;
-            }
+                ["secret"] = _secret,
+                ["response"] = context.Request.Form["g-recaptcha-response"].ToString(),
+                ["remoteip"] = context.Connection.RemoteIpAddress?.ToString() ?? ""
+            };
+            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(form));
+            response.EnsureSuccessStatusCode();
+            var jsonString = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ReCaptchaResponse>(jsonString)!;
         }
     }
 
