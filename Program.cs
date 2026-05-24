@@ -47,7 +47,7 @@ app.Use(async (context, next) =>
         $"style-src 'self' 'nonce-{nonce}' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
         $"style-src-attr 'unsafe-inline'; " +
         $"font-src 'self' https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
-        $"img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com; " +
+        $"img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com https://*.fbcdn.net; " +
         $"frame-src https://www.google.com https://recaptcha.google.com; " +
         $"connect-src 'self' https://www.google-analytics.com; " +
         $"form-action 'self' https://guildford-bsac.us14.list-manage.com; " +
