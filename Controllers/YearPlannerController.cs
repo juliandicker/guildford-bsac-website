@@ -51,7 +51,7 @@ namespace GuildfordBsac.Web.Controllers
             };
         }
 
-        [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 6000)]
+        [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 6000, VaryByQueryKeys = new[] { "year", "agenda" })]
         public ActionResult Png(int? year, bool agenda = true)
         {
             return new ViewAsImage("Index", GetModel(year ?? DateTime.Now.Year, agenda))

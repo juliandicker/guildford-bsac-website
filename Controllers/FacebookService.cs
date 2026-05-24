@@ -10,7 +10,12 @@ namespace GuildfordBsac.Web.Controllers
     using System.Net.Http;
     using System.Threading.Tasks;
 
-    public class FacebookService
+    public interface IFacebookService
+    {
+        Task<List<FacebookPostModel>> GetRecentPostsAsync(string pageId, int limit = 5, CancellationToken cancellationToken = default);
+    }
+
+    public class FacebookService : IFacebookService
     {
         private readonly IMemoryCache _cache;
         private readonly ILogger<FacebookService> _logger;
