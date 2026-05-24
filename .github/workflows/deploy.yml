@@ -3,10 +3,12 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  deploy:
+  test:
     runs-on: windows-latest
 
     steps:
@@ -40,8 +42,21 @@ jobs:
           path: coverage/*/coverage.cobertura.xml
           if-no-files-found: warn
 
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Publish
-        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false --no-build
+        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
         env:
