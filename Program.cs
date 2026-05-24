@@ -44,7 +44,8 @@ app.Use(async (context, next) =>
     context.Response.Headers["Content-Security-Policy"] =
         $"default-src 'self'; " +
         $"script-src 'self' 'nonce-{nonce}' https://www.google.com https://www.gstatic.com https://www.google-analytics.com; " +
-        $"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
+        $"style-src 'self' 'nonce-{nonce}' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
+        $"style-src-attr 'unsafe-inline'; " +
         $"font-src 'self' https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
         $"img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com; " +
         $"frame-src https://www.google.com https://recaptcha.google.com; " +

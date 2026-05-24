@@ -10,7 +10,7 @@
 
 @section styles {
     <link href="@AbsUrl("~/Content/yearplanner2.css")" rel="stylesheet" type="text/css" />
-    <style type="text/css" id="calenderStyles"></style>
+    <style type="text/css" id="calenderStyles" nonce="@(Context.Items["CspNonce"] as string)"></style>
 }
 
 <div id="content" data-ispdf="@(ViewContext.RouteData.Values["action"]?.ToString() != "Index" || Context.Request.Query.ContainsKey("pdf"))">
