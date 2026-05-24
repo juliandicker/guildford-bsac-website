@@ -19,7 +19,7 @@ namespace GuildfordBsac.Web.Controllers
         private static readonly string[] AllowedFaqFiles = { "faqs.json", "faqsContact.json" };
         private static readonly HtmlSanitizer _sanitizer = new HtmlSanitizer();
 
-        private readonly FacebookService _facebook;
+        private readonly IFacebookService _facebook;
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<HomeController> _logger;
         private readonly IReCaptchaValidator _captcha;
@@ -27,7 +27,7 @@ namespace GuildfordBsac.Web.Controllers
         private readonly MembershipRatesService _membershipRates;
         private readonly TeamService _team;
 
-        public HomeController(FacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi, MembershipRatesService membershipRates, TeamService team)
+        public HomeController(IFacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi, MembershipRatesService membershipRates, TeamService team)
         {
             _facebook = facebook;
             _env = env;

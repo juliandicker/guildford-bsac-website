@@ -7,6 +7,7 @@ namespace GuildfordBsac.Web.Common
     using Google.Apis.Gmail.v1;
     using Google.Apis.Services;
     using MimeKit;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
@@ -27,9 +28,11 @@ namespace GuildfordBsac.Web.Common
         private readonly string _contactEmail;
         private readonly string _contactEmailBcc;
         private ServiceAccountCredential? _credential;
+        private readonly ILogger<GoogleApiHelper> _logger;
 
-        public GoogleApiHelper(IOptions<AppSettings> settings)
+        public GoogleApiHelper(IOptions<AppSettings> settings, ILogger<GoogleApiHelper> logger)
         {
+            _logger = logger;
             _clientEmail = settings.Value.ServiceAccount.ClientEmail;
             // Env vars store \n as literal backslash-n; normalize to actual newlines
             _privateKey = settings.Value.ServiceAccount.PrivateKey.Replace("\\n", "\n");
@@ -44,50 +47,66 @@ namespace GuildfordBsac.Web.Common
 
         public List<Calendar> GetCalendars(int year, string[] calendarIds)
         {
-            var service = new CalendarService(new BaseClientService.Initializer()
+            try
             {
-                HttpClientInitializer = Credential,
-                ApplicationName = ApplicationName,
-            });
+                var service = new CalendarService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = Credential,
+                    ApplicationName = ApplicationName,
+                });
 
-            CalendarAdapter adapter = new CalendarAdapter();
+                CalendarAdapter adapter = new CalendarAdapter();
 
-            foreach (var calId in calendarIds)
-            {
-                CalendarListResource.GetRequest getRequest = service.CalendarList.Get(calId);
+                foreach (var calId in calendarIds)
+                {
+                    CalendarListResource.GetRequest getRequest = service.CalendarList.Get(calId);
 
-                EventsResource.ListRequest request = service.Events.List(calId);
-                var timeMin = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
-                request.TimeMinDateTimeOffset = timeMin;
-                request.TimeMaxDateTimeOffset = timeMin.AddYears(1).AddSeconds(-1);
-                request.ShowDeleted = false;
-                request.SingleEvents = true;
-                request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+                    EventsResource.ListRequest request = service.Events.List(calId);
+                    var timeMin = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+                    request.TimeMinDateTimeOffset = timeMin;
+                    request.TimeMaxDateTimeOffset = timeMin.AddYears(1).AddSeconds(-1);
+                    request.ShowDeleted = false;
+                    request.SingleEvents = true;
+                    request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
-                adapter.AddCalendar(getRequest.Execute(), request.Execute());
+                    adapter.AddCalendar(getRequest.Execute(), request.Execute());
+                }
+
+                return adapter.GetCalendars();
             }
-
-            return adapter.GetCalendars();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to fetch Google Calendar data for year {Year}", year);
+                throw;
+            }
         }
 
         public bool SendMessage(string name, string email, string subject, string message)
         {
-            var service = new GmailService(new BaseClientService.Initializer()
+            try
             {
-                HttpClientInitializer = Credential,
-                ApplicationName = ApplicationName,
-            });
+                var service = new GmailService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = Credential,
+                    ApplicationName = ApplicationName,
+                });
 
-            var mimeMessage = MimeMessage.CreateFromMailMessage(CreateMailMessage(name, email, subject, message));
+                var mimeMessage = MimeMessage.CreateFromMailMessage(CreateMailMessage(name, email, subject, message));
 
-            var gmailMessage = new Google.Apis.Gmail.v1.Data.Message
+                var gmailMessage = new Google.Apis.Gmail.v1.Data.Message
+                {
+                    Raw = Encode(mimeMessage.ToString())
+                };
+
+                service.Users.Messages.Send(gmailMessage, userAccountEmail).Execute();
+
+                return true;
+            }
+            catch (Exception ex)
             {
-                Raw = Encode(mimeMessage.ToString())
-            };
-
-            service.Users.Messages.Send(gmailMessage, userAccountEmail).Execute();
-
-            return true;
+                _logger.LogError(ex, "Failed to send Gmail message from {Name} <{Email}>", name, email);
+                throw;
+            }
         }
 
         private ServiceAccountCredential CreateServiceAccountCredential(IEnumerable<string> scopes)

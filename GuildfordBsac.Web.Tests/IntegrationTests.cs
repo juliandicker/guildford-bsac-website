@@ -1,4 +1,5 @@
 using GuildfordBsac.Web.Common;
+using GuildfordBsac.Web.Controllers;
 using GuildfordBsac.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -11,6 +12,12 @@ internal class AlwaysPassReCaptchaValidator : IReCaptchaValidator
 {
     public Task<ReCaptchaResponse> ValidateAsync(HttpContext context, CancellationToken cancellationToken = default)
         => Task.FromResult(new ReCaptchaResponse { Success = true });
+}
+
+internal class NullFacebookService : IFacebookService
+{
+    public Task<List<FacebookPostModel>> GetRecentPostsAsync(string pageId, int limit = 5, CancellationToken cancellationToken = default)
+        => Task.FromResult(new List<FacebookPostModel>());
 }
 
 internal class NullGoogleApiHelper : IGoogleApiHelper
@@ -34,6 +41,7 @@ public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
             services.Configure<CookiePolicyOptions>(options =>
                 options.Secure = CookieSecurePolicy.SameAsRequest);
             services.AddScoped<IReCaptchaValidator, AlwaysPassReCaptchaValidator>();
+            services.AddSingleton<IFacebookService, NullFacebookService>();
             services.AddScoped<IGoogleApiHelper, NullGoogleApiHelper>();
         });
     }
