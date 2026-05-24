@@ -6,6 +6,7 @@ namespace GuildfordBsac.Web.Controllers
     using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -82,6 +83,7 @@ namespace GuildfordBsac.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("contact")]
         public async Task<JsonResult> Contact(ContactViewModel model)
         {
             var reCaptchaResponse = await ReCaptcha.ValidateAsync(HttpContext, _settings.RecaptchaSecret);
@@ -127,6 +129,13 @@ namespace GuildfordBsac.Web.Controllers
             }
 
             return Json(new { success = errors.Count == 0, errors });
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public ActionResult Error(int? statusCode = null)
+        {
+            Response.StatusCode = statusCode ?? 500;
+            return View("Error", statusCode?.ToString());
         }
 
         private FaqsViewModel LoadFaqModel(string filename)

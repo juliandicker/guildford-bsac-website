@@ -1,6 +1,8 @@
 using System.Security.Cryptography;
+using System.Threading.RateLimiting;
 using GuildfordBsac.Web.Controllers;
 using GuildfordBsac.Web.Properties;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Rewrite;
 using Rotativa.AspNetCore;
 
@@ -12,6 +14,17 @@ builder.Services.AddSingleton<FacebookService>();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddOutputCache();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("contact", o =>
+    {
+        o.PermitLimit = 5;
+        o.Window = TimeSpan.FromMinutes(10);
+        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        o.QueueLimit = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.Secure = CookieSecurePolicy.Always;
@@ -24,6 +37,7 @@ app.UsePathBase("/gbsacCore");
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
     app.UseHsts();
     app.UseHttpsRedirection();
 }
@@ -55,7 +69,8 @@ app.Use(async (context, next) =>
         $"manifest-src 'self'; " +
         $"object-src 'none'; " +
         $"base-uri 'self'; " +
-        $"frame-ancestors 'self';";
+        $"frame-ancestors 'self'; " +
+        $"report-uri /csp-report;";
     await next();
 });
 
@@ -66,9 +81,18 @@ app.UseRewriter(new RewriteOptions()
 
 app.UseRouting();
 app.UseOutputCache();
+app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
+
+app.MapPost("/csp-report", async (HttpContext ctx, ILogger<Program> logger) =>
+{
+    using var reader = new StreamReader(ctx.Request.Body);
+    var report = await reader.ReadToEndAsync();
+    logger.LogWarning("CSP violation: {Report}", report);
+    return Results.NoContent();
+});
 
 RotativaConfiguration.Setup(app.Environment.ContentRootPath, "Rotativa");
 
