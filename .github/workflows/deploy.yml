@@ -73,6 +73,7 @@ jobs:
           <configuration>
             <location path="." inheritInChildApplications="false">
               <system.webServer>
+                <httpErrors errorMode="Custom" existingResponse="PassThrough" />
                 <httpProtocol>
                   <customHeaders>
                     <remove name="X-Powered-By" />
