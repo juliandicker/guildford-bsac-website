@@ -1,4 +1,5 @@
 using GuildfordBsac.Web.Common;
+using GuildfordBsac.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,12 @@ internal class AlwaysPassReCaptchaValidator : IReCaptchaValidator
 {
     public Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
         => Task.FromResult(new ReCaptchaResponse { Success = true });
+}
+
+internal class NullGoogleApiHelper : IGoogleApiHelper
+{
+    public List<Calendar> GetCalendars(int year, string[] calendarIds) => new();
+    public bool SendMessage(string name, string email, string subject, string message) => true;
 }
 
 public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
@@ -27,6 +34,7 @@ public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
             services.Configure<CookiePolicyOptions>(options =>
                 options.Secure = CookieSecurePolicy.SameAsRequest);
             services.AddScoped<IReCaptchaValidator, AlwaysPassReCaptchaValidator>();
+            services.AddScoped<IGoogleApiHelper, NullGoogleApiHelper>();
         });
     }
 }

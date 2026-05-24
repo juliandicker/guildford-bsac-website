@@ -1,16 +1,24 @@
 namespace GuildfordBsac.Web.Common
 {
     using GuildfordBsac.Web.Models;
+    using GuildfordBsac.Web.Properties;
     using Google.Apis.Auth.OAuth2;
     using Google.Apis.Calendar.v3;
     using Google.Apis.Gmail.v1;
     using Google.Apis.Services;
     using MimeKit;
+    using Microsoft.Extensions.Options;
     using System;
     using System.Collections.Generic;
     using System.Net.Mail;
 
-    public class GoogleApiHelper
+    public interface IGoogleApiHelper
+    {
+        List<Calendar> GetCalendars(int year, string[] calendarIds);
+        bool SendMessage(string name, string email, string subject, string message);
+    }
+
+    public class GoogleApiHelper : IGoogleApiHelper
     {
         private static string ApplicationName = "GBSAC";
         private const string userAccountEmail = "gbsacadmin@guildford-bsac.com";
@@ -18,26 +26,27 @@ namespace GuildfordBsac.Web.Common
         private readonly string _privateKey;
         private readonly string _contactEmail;
         private readonly string _contactEmailBcc;
-        private readonly ServiceAccountCredential _credential;
+        private ServiceAccountCredential? _credential;
 
-        public GoogleApiHelper(string clientEmail, string privateKey, string contactEmail, string contactEmailBcc = "")
+        public GoogleApiHelper(IOptions<AppSettings> settings)
         {
-            _clientEmail = clientEmail;
+            _clientEmail = settings.Value.ServiceAccount.ClientEmail;
             // Env vars store \n as literal backslash-n; normalize to actual newlines
-            _privateKey = privateKey.Replace("\\n", "\n");
-            _contactEmail = contactEmail;
-            _contactEmailBcc = contactEmailBcc;
-            _credential = CreateServiceAccountCredential(new[] {
-                    CalendarService.Scope.CalendarReadonly,
-                    GmailService.Scope.GmailSend
-                });
+            _privateKey = settings.Value.ServiceAccount.PrivateKey.Replace("\\n", "\n");
+            _contactEmail = settings.Value.ContactEmail;
+            _contactEmailBcc = settings.Value.ContactEmailBcc;
         }
+
+        private ServiceAccountCredential Credential => _credential ??= CreateServiceAccountCredential(new[] {
+            CalendarService.Scope.CalendarReadonly,
+            GmailService.Scope.GmailSend
+        });
 
         public List<Calendar> GetCalendars(int year, string[] calendarIds)
         {
             var service = new CalendarService(new BaseClientService.Initializer()
             {
-                HttpClientInitializer = _credential,
+                HttpClientInitializer = Credential,
                 ApplicationName = ApplicationName,
             });
 
@@ -65,7 +74,7 @@ namespace GuildfordBsac.Web.Common
         {
             var service = new GmailService(new BaseClientService.Initializer()
             {
-                HttpClientInitializer = _credential,
+                HttpClientInitializer = Credential,
                 ApplicationName = ApplicationName,
             });
 

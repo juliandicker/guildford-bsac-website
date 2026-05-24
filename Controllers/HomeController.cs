@@ -3,12 +3,10 @@ namespace GuildfordBsac.Web.Controllers
     using Ganss.Xss;
     using GuildfordBsac.Web.Common;
     using GuildfordBsac.Web.Models;
-    using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
     using System;
     using System.Text.Json;
     using System.Collections.Generic;
@@ -23,17 +21,17 @@ namespace GuildfordBsac.Web.Controllers
 
         private readonly FacebookService _facebook;
         private readonly IWebHostEnvironment _env;
-        private readonly AppSettings _settings;
         private readonly ILogger<HomeController> _logger;
         private readonly IReCaptchaValidator _captcha;
+        private readonly IGoogleApiHelper _googleApi;
 
-        public HomeController(FacebookService facebook, IWebHostEnvironment env, IOptions<AppSettings> settings, ILogger<HomeController> logger, IReCaptchaValidator captcha)
+        public HomeController(FacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi)
         {
             _facebook = facebook;
             _env = env;
-            _settings = settings.Value;
             _logger = logger;
             _captcha = captcha;
+            _googleApi = googleApi;
         }
 
         public async Task<ActionResult> Index()
@@ -112,13 +110,7 @@ namespace GuildfordBsac.Web.Controllers
             {
                 try
                 {
-                    var gHelper = new GoogleApiHelper(
-                        _settings.ServiceAccount.ClientEmail,
-                        _settings.ServiceAccount.PrivateKey,
-                        _settings.ContactEmail,
-                        _settings.ContactEmailBcc);
-
-                    if (!gHelper.SendMessage(model.Name!, model.Emaily!, model.Subject!, model.Message!))
+                    if (!_googleApi.SendMessage(model.Name!, model.Emaily!, model.Subject!, model.Message!))
                     {
                         errors.Add("There has been a technical error sending this message. Please contact by telephone.");
                     }

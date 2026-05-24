@@ -18,15 +18,17 @@ namespace GuildfordBsac.Web.Common
     public class ReCaptchaValidator : IReCaptchaValidator
     {
         private readonly string _secret;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ReCaptchaValidator(IOptions<AppSettings> settings)
+        public ReCaptchaValidator(IOptions<AppSettings> settings, IHttpClientFactory httpClientFactory)
         {
             _secret = settings.Value.RecaptchaSecret;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
         {
-            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            var client = _httpClientFactory.CreateClient("recaptcha");
             var form = new Dictionary<string, string>
             {
                 ["secret"] = _secret,
