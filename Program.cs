@@ -17,12 +17,12 @@ builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSecond
 builder.Services.AddHttpClient("facebook");
 builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 builder.Services.AddSingleton<IGoogleApiHelper, GoogleApiHelper>();
-builder.Services.AddScoped<MembershipRatesService>(sp =>
+builder.Services.AddSingleton<MembershipRatesService>(sp =>
 {
     var env = sp.GetRequiredService<IWebHostEnvironment>();
     return new MembershipRatesService(Path.Combine(env.ContentRootPath, "App_Data", "membershiprates.json"));
 });
-builder.Services.AddScoped<TeamService>(sp =>
+builder.Services.AddSingleton<TeamService>(sp =>
 {
     var env = sp.GetRequiredService<IWebHostEnvironment>();
     return new TeamService(Path.Combine(env.ContentRootPath, "App_Data", "team.json"));
