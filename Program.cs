@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Threading.RateLimiting;
+using GuildfordBsac.Web.Common;
 using GuildfordBsac.Web.Controllers;
 using GuildfordBsac.Web.Properties;
 using Microsoft.AspNetCore.RateLimiting;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<FacebookService>();
+builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddOutputCache();

@@ -25,13 +25,15 @@ namespace GuildfordBsac.Web.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly AppSettings _settings;
         private readonly ILogger<HomeController> _logger;
+        private readonly IReCaptchaValidator _captcha;
 
-        public HomeController(FacebookService facebook, IWebHostEnvironment env, IOptions<AppSettings> settings, ILogger<HomeController> logger)
+        public HomeController(FacebookService facebook, IWebHostEnvironment env, IOptions<AppSettings> settings, ILogger<HomeController> logger, IReCaptchaValidator captcha)
         {
             _facebook = facebook;
             _env = env;
             _settings = settings.Value;
             _logger = logger;
+            _captcha = captcha;
         }
 
         public async Task<ActionResult> Index()
@@ -86,7 +88,7 @@ namespace GuildfordBsac.Web.Controllers
         [EnableRateLimiting("contact")]
         public async Task<JsonResult> Contact(ContactViewModel model)
         {
-            var reCaptchaResponse = await ReCaptcha.ValidateAsync(HttpContext, _settings.RecaptchaSecret);
+            var reCaptchaResponse = await _captcha.ValidateAsync(HttpContext);
 
             if (!reCaptchaResponse.Success)
             {
