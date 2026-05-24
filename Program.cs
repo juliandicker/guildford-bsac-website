@@ -53,7 +53,8 @@ app.Use(async (context, next) =>
         $"worker-src 'none'; " +
         $"manifest-src 'self'; " +
         $"object-src 'none'; " +
-        $"base-uri 'self';";
+        $"base-uri 'self'; " +
+        $"frame-ancestors 'self';";
     await next();
 });
 
