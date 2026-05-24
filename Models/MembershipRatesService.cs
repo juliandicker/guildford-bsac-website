@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,12 +22,6 @@ namespace GuildfordBsac.Web.Models
                 : new List<MembershipRatesViewModel>();
         }
 
-        public void Save()
-        {
-            var json = JsonSerializer.Serialize(MembershipRates);
-            File.WriteAllText(_path, json);
-        }
-
         public List<MembershipRatesViewModel> MembershipRates
         {
             get
@@ -35,8 +29,7 @@ namespace GuildfordBsac.Web.Models
                 if (_membershipRates == null) Load();
                 return _membershipRates!;
             }
-
-            set { _membershipRates = value; }
+            internal set { _membershipRates = value; }
         }
 
         public MembershipRatesViewModel Current
@@ -46,12 +39,20 @@ namespace GuildfordBsac.Web.Models
                 return GetMembershipRatesByActiveDate(DateTime.Now);
             }
         }
+
         public MembershipRatesViewModel GetMembershipRatesByActiveDate(DateTime date)
         {
-            return MembershipRates
+            var rates = MembershipRates
                 .Where(mr => mr.EffectiveDate < date)
                 .OrderByDescending(mr => mr.EffectiveDate)
-                .First();
+                .ToList();
+
+            if (rates.Count == 0)
+                throw new InvalidOperationException(
+                    $"No membership rates are effective before {date:yyyy-MM-dd}. " +
+                    "Ensure membershiprates.json contains at least one entry with an EffectiveDate in the past.");
+
+            return rates[0];
         }
     }
 }

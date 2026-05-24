@@ -15,16 +15,17 @@ namespace GuildfordBsac.Web.Controllers
         private readonly IMemoryCache _cache;
         private readonly ILogger<FacebookService> _logger;
         private readonly string _accessToken;
-        private static readonly HttpClient _http = new HttpClient();
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public FacebookService(IMemoryCache cache, IConfiguration config, ILogger<FacebookService> logger)
+        public FacebookService(IMemoryCache cache, IConfiguration config, ILogger<FacebookService> logger, IHttpClientFactory httpClientFactory)
         {
             _cache = cache;
             _logger = logger;
             _accessToken = config["Facebook:PageAccessToken"] ?? "";
+            _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<List<FacebookPostModel>> GetRecentPostsAsync(string pageId, int limit = 5)
+        public async Task<List<FacebookPostModel>> GetRecentPostsAsync(string pageId, int limit = 5, CancellationToken cancellationToken = default)
         {
             const string cacheKey = "FacebookPosts";
 
@@ -42,7 +43,8 @@ namespace GuildfordBsac.Web.Controllers
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _accessToken);
-                var httpResponse = await _http.SendAsync(request);
+                var client = _httpClientFactory.CreateClient("facebook");
+                var httpResponse = await client.SendAsync(request, cancellationToken);
                 var json = await httpResponse.Content.ReadAsStringAsync();
                 if (!httpResponse.IsSuccessStatusCode)
                 {

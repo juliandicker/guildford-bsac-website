@@ -12,7 +12,7 @@ namespace GuildfordBsac.Web.Common
 
     public interface IReCaptchaValidator
     {
-        Task<ReCaptchaResponse> ValidateAsync(HttpContext context);
+        Task<ReCaptchaResponse> ValidateAsync(HttpContext context, CancellationToken cancellationToken = default);
     }
 
     public class ReCaptchaValidator : IReCaptchaValidator
@@ -26,7 +26,7 @@ namespace GuildfordBsac.Web.Common
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
+        public async Task<ReCaptchaResponse> ValidateAsync(HttpContext context, CancellationToken cancellationToken = default)
         {
             var client = _httpClientFactory.CreateClient("recaptcha");
             var form = new Dictionary<string, string>
@@ -35,9 +35,9 @@ namespace GuildfordBsac.Web.Common
                 ["response"] = context.Request.Form["g-recaptcha-response"].ToString(),
                 ["remoteip"] = context.Connection.RemoteIpAddress?.ToString() ?? ""
             };
-            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(form));
+            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(form), cancellationToken);
             response.EnsureSuccessStatusCode();
-            var jsonString = await response.Content.ReadAsStringAsync();
+            var jsonString = await response.Content.ReadAsStringAsync(cancellationToken);
             return JsonSerializer.Deserialize<ReCaptchaResponse>(jsonString)!;
         }
     }

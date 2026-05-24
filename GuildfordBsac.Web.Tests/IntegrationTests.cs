@@ -9,7 +9,7 @@ namespace GuildfordBsac.Web.Tests;
 
 internal class AlwaysPassReCaptchaValidator : IReCaptchaValidator
 {
-    public Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
+    public Task<ReCaptchaResponse> ValidateAsync(HttpContext context, CancellationToken cancellationToken = default)
         => Task.FromResult(new ReCaptchaResponse { Success = true });
 }
 
