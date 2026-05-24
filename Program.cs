@@ -69,8 +69,7 @@ app.Use(async (context, next) =>
         $"manifest-src 'self'; " +
         $"object-src 'none'; " +
         $"base-uri 'self'; " +
-        $"frame-ancestors 'self'; " +
-        $"report-uri /csp-report;";
+        $"frame-ancestors 'self';";
     await next();
 });
 
@@ -85,14 +84,6 @@ app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
-
-app.MapPost("/csp-report", async (HttpContext ctx, ILogger<Program> logger) =>
-{
-    using var reader = new StreamReader(ctx.Request.Body);
-    var report = await reader.ReadToEndAsync();
-    logger.LogWarning("CSP violation: {Report}", report);
-    return Results.NoContent();
-});
 
 RotativaConfiguration.Setup(app.Environment.ContentRootPath, "Rotativa");
 
