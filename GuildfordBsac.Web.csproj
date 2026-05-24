@@ -9,6 +9,10 @@
 
   <ItemGroup>
     <Content Remove="compilerconfig.json" />
+    <Compile Remove="GuildfordBsac.Web.Tests\**" />
+    <Content Remove="GuildfordBsac.Web.Tests\**" />
+    <EmbeddedResource Remove="GuildfordBsac.Web.Tests\**" />
+    <None Remove="GuildfordBsac.Web.Tests\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,9 @@
 using System.Security.Cryptography;
+using System.Threading.RateLimiting;
+using GuildfordBsac.Web.Common;
 using GuildfordBsac.Web.Controllers;
 using GuildfordBsac.Web.Properties;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Rewrite;
 using Rotativa.AspNetCore;
 
@@ -9,9 +12,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<FacebookService>();
+builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddOutputCache();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("contact", o =>
+    {
+        o.PermitLimit = 5;
+        o.Window = TimeSpan.FromMinutes(10);
+        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        o.QueueLimit = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
     options.Secure = CookieSecurePolicy.Always;
@@ -24,6 +39,7 @@ app.UsePathBase("/gbsacCore");
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
     app.UseHsts();
     app.UseHttpsRedirection();
 }
@@ -44,14 +60,18 @@ app.Use(async (context, next) =>
     context.Response.Headers["Content-Security-Policy"] =
         $"default-src 'self'; " +
         $"script-src 'self' 'nonce-{nonce}' https://www.google.com https://www.gstatic.com https://www.google-analytics.com; " +
-        $"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
+        $"style-src 'self' 'nonce-{nonce}' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
+        $"style-src-attr 'unsafe-inline'; " +
         $"font-src 'self' https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
-        $"img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com; " +
+        $"img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com https://*.fbcdn.net; " +
         $"frame-src https://www.google.com https://recaptcha.google.com; " +
-        $"connect-src 'self' https://www.google-analytics.com; " +
+        $"connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " +
         $"form-action 'self' https://guildford-bsac.us14.list-manage.com; " +
+        $"worker-src 'none'; " +
+        $"manifest-src 'self'; " +
         $"object-src 'none'; " +
-        $"base-uri 'self';";
+        $"base-uri 'self'; " +
+        $"frame-ancestors 'self';";
     await next();
 });
 
@@ -62,6 +82,7 @@ app.UseRewriter(new RewriteOptions()
 
 app.UseRouting();
 app.UseOutputCache();
+app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
@@ -69,3 +90,5 @@ app.MapDefaultControllerRoute();
 RotativaConfiguration.Setup(app.Environment.ContentRootPath, "Rotativa");
 
 app.Run();
+
+public partial class Program { }

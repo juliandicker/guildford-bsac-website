@@ -1,0 +1,17 @@
+@{
+    var code = Model as string;
+    var title = code == "404" ? "Page Not Found" : "Something Went Wrong";
+    var message = code == "404"
+        ? "The page you're looking for doesn't exist."
+        : "An unexpected error occurred. Please try again later.";
+}
+<section class="content-block">
+    <div class="container" style="padding: 60px 0">
+        <div class="underlined-title">
+            <h1>@title</h1>
+            <hr />
+        </div>
+        <p>@message</p>
+        <a href="/" class="btn btn-primary">Return to Home</a>
+    </div>
+</section>

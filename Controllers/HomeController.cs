@@ -6,6 +6,7 @@ namespace GuildfordBsac.Web.Controllers
     using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using Newtonsoft.Json;
@@ -24,13 +25,15 @@ namespace GuildfordBsac.Web.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly AppSettings _settings;
         private readonly ILogger<HomeController> _logger;
+        private readonly IReCaptchaValidator _captcha;
 
-        public HomeController(FacebookService facebook, IWebHostEnvironment env, IOptions<AppSettings> settings, ILogger<HomeController> logger)
+        public HomeController(FacebookService facebook, IWebHostEnvironment env, IOptions<AppSettings> settings, ILogger<HomeController> logger, IReCaptchaValidator captcha)
         {
             _facebook = facebook;
             _env = env;
             _settings = settings.Value;
             _logger = logger;
+            _captcha = captcha;
         }
 
         public async Task<ActionResult> Index()
@@ -82,9 +85,10 @@ namespace GuildfordBsac.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [EnableRateLimiting("contact")]
         public async Task<JsonResult> Contact(ContactViewModel model)
         {
-            var reCaptchaResponse = await ReCaptcha.ValidateAsync(HttpContext, _settings.RecaptchaSecret);
+            var reCaptchaResponse = await _captcha.ValidateAsync(HttpContext);
 
             if (!reCaptchaResponse.Success)
             {
@@ -127,6 +131,13 @@ namespace GuildfordBsac.Web.Controllers
             }
 
             return Json(new { success = errors.Count == 0, errors });
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public ActionResult Error(int? statusCode = null)
+        {
+            Response.StatusCode = statusCode ?? 500;
+            return View("Error", statusCode?.ToString());
         }
 
         private FaqsViewModel LoadFaqModel(string filename)

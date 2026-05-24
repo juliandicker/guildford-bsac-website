@@ -3,16 +3,19 @@ name: Build and Deploy
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  test:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
 
@@ -29,8 +32,31 @@ jobs:
             exit 1
           }
 
+      - name: Test
+        run: dotnet test GuildfordBsac.Web.Tests/GuildfordBsac.Web.Tests.csproj -c Release --logger "console;verbosity=normal" --collect:"XPlat Code Coverage" --results-directory coverage
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage/*/coverage.cobertura.xml
+          if-no-files-found: warn
+
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Publish
-        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false --no-build
+        run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
         env:
@@ -47,6 +73,12 @@ jobs:
           <configuration>
             <location path="." inheritInChildApplications="false">
               <system.webServer>
+                <httpErrors errorMode="Custom" existingResponse="PassThrough" />
+                <httpProtocol>
+                  <customHeaders>
+                    <remove name="X-Powered-By" />
+                  </customHeaders>
+                </httpProtocol>
                 <handlers>
                   <add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
                 </handlers>
@@ -84,10 +116,10 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.14.0
+        uses: zaproxy/action-baseline@v0.15.0
         with:
           target: ${{ vars.SITE_URL }}
           token: ${{ secrets.GITHUB_TOKEN }}
