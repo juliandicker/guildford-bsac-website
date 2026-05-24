@@ -12,7 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<FacebookService>();
+builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSeconds(10));
 builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
+builder.Services.AddScoped<IGoogleApiHelper, GoogleApiHelper>();
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddOutputCache();

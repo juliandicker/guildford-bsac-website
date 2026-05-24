@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,13 +18,13 @@ namespace GuildfordBsac.Web.Models
         public void Load()
         {
             _membershipRates = File.Exists(_path)
-                ? JsonConvert.DeserializeObject<List<MembershipRatesViewModel>>(File.ReadAllText(_path)) ?? new List<MembershipRatesViewModel>()
+                ? JsonSerializer.Deserialize<List<MembershipRatesViewModel>>(File.ReadAllText(_path)) ?? new List<MembershipRatesViewModel>()
                 : new List<MembershipRatesViewModel>();
         }
 
         public void Save()
         {
-            var json = JsonConvert.SerializeObject(MembershipRates);
+            var json = JsonSerializer.Serialize(MembershipRates);
             File.WriteAllText(_path, json);
         }
 

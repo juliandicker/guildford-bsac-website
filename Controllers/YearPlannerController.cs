@@ -5,7 +5,7 @@ namespace GuildfordBsac.Web.Controllers
     using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
+    using System.Text.Json;
     using Rotativa.AspNetCore;
     using System;
 
@@ -20,10 +20,12 @@ namespace GuildfordBsac.Web.Controllers
         };
 
         private readonly AppSettings _settings;
+        private readonly IGoogleApiHelper _googleApi;
 
-        public YearPlannerController(IOptions<AppSettings> settings)
+        public YearPlannerController(IOptions<AppSettings> settings, IGoogleApiHelper googleApi)
         {
             _settings = settings.Value;
+            _googleApi = googleApi;
         }
 
         public ActionResult Index(int? year, bool agenda = true)
@@ -33,17 +35,11 @@ namespace GuildfordBsac.Web.Controllers
 
         private YearPlanner2ViewModel GetModel(int year, bool agenda = true)
         {
-            var gHelper = new GoogleApiHelper(
-                _settings.ServiceAccount.ClientEmail,
-                _settings.ServiceAccount.PrivateKey,
-                _settings.ContactEmail,
-                _settings.ContactEmailBcc);
-
             return new YearPlanner2ViewModel
             {
                 Year = year,
                 ShowAgenda = agenda,
-                CalendarData = JsonConvert.SerializeObject(gHelper.GetCalendars(year, _calendarIds))
+                CalendarData = JsonSerializer.Serialize(_googleApi.GetCalendars(year, _calendarIds))
             };
         }
 

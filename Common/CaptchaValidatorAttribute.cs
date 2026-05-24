@@ -7,7 +7,8 @@ namespace GuildfordBsac.Web.Common
     using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     public interface IReCaptchaValidator
     {
@@ -17,15 +18,17 @@ namespace GuildfordBsac.Web.Common
     public class ReCaptchaValidator : IReCaptchaValidator
     {
         private readonly string _secret;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public ReCaptchaValidator(IOptions<AppSettings> settings)
+        public ReCaptchaValidator(IOptions<AppSettings> settings, IHttpClientFactory httpClientFactory)
         {
             _secret = settings.Value.RecaptchaSecret;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<ReCaptchaResponse> ValidateAsync(HttpContext context)
         {
-            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) };
+            var client = _httpClientFactory.CreateClient("recaptcha");
             var form = new Dictionary<string, string>
             {
                 ["secret"] = _secret,
@@ -35,22 +38,22 @@ namespace GuildfordBsac.Web.Common
             var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(form));
             response.EnsureSuccessStatusCode();
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ReCaptchaResponse>(jsonString)!;
+            return JsonSerializer.Deserialize<ReCaptchaResponse>(jsonString)!;
         }
     }
 
     public class ReCaptchaResponse
     {
-        [JsonProperty("success")]
+        [JsonPropertyName("success")]
         public bool Success { get; set; }
 
-        [JsonProperty("challenge_ts")]
+        [JsonPropertyName("challenge_ts")]
         public DateTime ChallengeTimeStamp { get; set; }
 
-        [JsonProperty("hostname")]
+        [JsonPropertyName("hostname")]
         public string Hostname { get; set; } = "";
 
-        [JsonProperty("error-codes")]
+        [JsonPropertyName("error-codes")]
         public List<string> ErrorCodes { get; set; } = new();
     }
 }
