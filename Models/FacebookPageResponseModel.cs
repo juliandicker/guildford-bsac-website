@@ -1,11 +1,11 @@
 namespace GuildfordBsac.Web.Models
 {
-    using Newtonsoft.Json;
     using System.Collections.Generic;
+    using System.Text.Json.Serialization;
 
     public class FacebookPageResponseModel
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public List<FacebookPostModel> Data { get; set; } = new List<FacebookPostModel>();
     }
 }

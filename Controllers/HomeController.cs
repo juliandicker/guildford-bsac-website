@@ -9,8 +9,8 @@ namespace GuildfordBsac.Web.Controllers
     using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
     using System;
+    using System.Text.Json;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -147,7 +147,7 @@ namespace GuildfordBsac.Web.Controllers
 
             var physicalPath = Path.Combine(_env.ContentRootPath, "App_Data", filename);
             var json = System.IO.File.ReadAllText(physicalPath);
-            var model = JsonConvert.DeserializeObject<FaqsViewModel>(json)!;
+            var model = JsonSerializer.Deserialize<FaqsViewModel>(json)!;
 
             foreach (var faq in model.Faqs)
                 faq.Answer = _sanitizer.Sanitize(faq.Answer);

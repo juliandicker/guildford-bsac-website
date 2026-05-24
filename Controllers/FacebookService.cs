@@ -4,7 +4,7 @@ namespace GuildfordBsac.Web.Controllers
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
+    using System.Text.Json;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
@@ -49,7 +49,7 @@ namespace GuildfordBsac.Web.Controllers
                     _logger.LogError("Facebook API {StatusCode}: {Body}", (int)httpResponse.StatusCode, json);
                     return new List<FacebookPostModel>();
                 }
-                var response = JsonConvert.DeserializeObject<FacebookPageResponseModel>(json);
+                var response = JsonSerializer.Deserialize<FacebookPageResponseModel>(json);
                 var posts = response?.Data ?? new List<FacebookPostModel>();
 
                 _cache.Set(cacheKey, posts, TimeSpan.FromMinutes(30));

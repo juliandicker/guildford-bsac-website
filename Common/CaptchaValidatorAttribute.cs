@@ -7,7 +7,8 @@ namespace GuildfordBsac.Web.Common
     using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
     public interface IReCaptchaValidator
     {
@@ -35,22 +36,22 @@ namespace GuildfordBsac.Web.Common
             var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", new FormUrlEncodedContent(form));
             response.EnsureSuccessStatusCode();
             var jsonString = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ReCaptchaResponse>(jsonString)!;
+            return JsonSerializer.Deserialize<ReCaptchaResponse>(jsonString)!;
         }
     }
 
     public class ReCaptchaResponse
     {
-        [JsonProperty("success")]
+        [JsonPropertyName("success")]
         public bool Success { get; set; }
 
-        [JsonProperty("challenge_ts")]
+        [JsonPropertyName("challenge_ts")]
         public DateTime ChallengeTimeStamp { get; set; }
 
-        [JsonProperty("hostname")]
+        [JsonPropertyName("hostname")]
         public string Hostname { get; set; } = "";
 
-        [JsonProperty("error-codes")]
+        [JsonPropertyName("error-codes")]
         public List<string> ErrorCodes { get; set; } = new();
     }
 }

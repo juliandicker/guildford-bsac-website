@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.Collections.Generic;
 using System.IO;
 
@@ -17,7 +17,7 @@ namespace GuildfordBsac.Web.Models
         public void Load()
         {
             _teamMembers = File.Exists(_path)
-                ? JsonConvert.DeserializeObject<List<TeamMemberViewModel>>(File.ReadAllText(_path)) ?? new List<TeamMemberViewModel>()
+                ? JsonSerializer.Deserialize<List<TeamMemberViewModel>>(File.ReadAllText(_path)) ?? new List<TeamMemberViewModel>()
                 : new List<TeamMemberViewModel>();
         }
 

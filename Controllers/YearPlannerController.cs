@@ -5,7 +5,7 @@ namespace GuildfordBsac.Web.Controllers
     using GuildfordBsac.Web.Properties;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Options;
-    using Newtonsoft.Json;
+    using System.Text.Json;
     using Rotativa.AspNetCore;
     using System;
 
@@ -43,7 +43,7 @@ namespace GuildfordBsac.Web.Controllers
             {
                 Year = year,
                 ShowAgenda = agenda,
-                CalendarData = JsonConvert.SerializeObject(gHelper.GetCalendars(year, _calendarIds))
+                CalendarData = JsonSerializer.Serialize(gHelper.GetCalendars(year, _calendarIds))
             };
         }
 
