@@ -66,6 +66,7 @@ public class IntegrationTests : IClassFixture<GuildfordBsacWebApplicationFactory
     [InlineData("/Home/ContactUs")]
     [InlineData("/Home/Faqs")]
     [InlineData("/Training")]
+    [InlineData("/YearPlanner")]
     public async Task Get_ReturnsOk(string path)
     {
         var response = await _client.GetAsync(path);
