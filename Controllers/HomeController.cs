@@ -24,28 +24,28 @@ namespace GuildfordBsac.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IReCaptchaValidator _captcha;
         private readonly IGoogleApiHelper _googleApi;
+        private readonly MembershipRatesService _membershipRates;
+        private readonly TeamService _team;
 
-        public HomeController(FacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi)
+        public HomeController(FacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi, MembershipRatesService membershipRates, TeamService team)
         {
             _facebook = facebook;
             _env = env;
             _logger = logger;
             _captcha = captcha;
             _googleApi = googleApi;
+            _membershipRates = membershipRates;
+            _team = team;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(CancellationToken cancellationToken)
         {
-            var membershipRatesService = new MembershipRatesService(
-                Path.Combine(_env.ContentRootPath, "App_Data", "membershiprates.json"));
-
-            var teamService = new TeamService(
-                Path.Combine(_env.ContentRootPath, "App_Data", "team.json"));
-
-            var model = new HomeViewModel();
-            model.MembershipRates = membershipRatesService.Current;
-            model.TeamMembers = teamService.TeamMembers;
-            model.RecentPosts = await _facebook.GetRecentPostsAsync("1027783460591236", limit: 5);
+            var model = new HomeViewModel
+            {
+                MembershipRates = _membershipRates.Current,
+                TeamMembers = _team.TeamMembers,
+                RecentPosts = await _facebook.GetRecentPostsAsync("1027783460591236", limit: 5, cancellationToken)
+            };
 
             return View(model);
         }
@@ -84,9 +84,9 @@ namespace GuildfordBsac.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [EnableRateLimiting("contact")]
-        public async Task<JsonResult> Contact(ContactViewModel model)
+        public async Task<JsonResult> Contact(ContactViewModel model, CancellationToken cancellationToken)
         {
-            var reCaptchaResponse = await _captcha.ValidateAsync(HttpContext);
+            var reCaptchaResponse = await _captcha.ValidateAsync(HttpContext, cancellationToken);
 
             if (!reCaptchaResponse.Success)
             {

@@ -2,6 +2,7 @@ using System.Security.Cryptography;
 using System.Threading.RateLimiting;
 using GuildfordBsac.Web.Common;
 using GuildfordBsac.Web.Controllers;
+using GuildfordBsac.Web.Models;
 using GuildfordBsac.Web.Properties;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Rewrite;
@@ -13,8 +14,19 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<FacebookService>();
 builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSeconds(10));
+builder.Services.AddHttpClient("facebook");
 builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
-builder.Services.AddScoped<IGoogleApiHelper, GoogleApiHelper>();
+builder.Services.AddSingleton<IGoogleApiHelper, GoogleApiHelper>();
+builder.Services.AddScoped<MembershipRatesService>(sp =>
+{
+    var env = sp.GetRequiredService<IWebHostEnvironment>();
+    return new MembershipRatesService(Path.Combine(env.ContentRootPath, "App_Data", "membershiprates.json"));
+});
+builder.Services.AddScoped<TeamService>(sp =>
+{
+    var env = sp.GetRequiredService<IWebHostEnvironment>();
+    return new TeamService(Path.Combine(env.ContentRootPath, "App_Data", "team.json"));
+});
 builder.Services.AddControllersWithViews()
     .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddOutputCache();
