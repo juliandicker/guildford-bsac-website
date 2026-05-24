@@ -30,6 +30,9 @@ jobs:
             exit 1
           }
 
+      - name: Test
+        run: dotnet test GuildfordBsac.Web.Tests/GuildfordBsac.Web.Tests.csproj -c Release --logger "console;verbosity=normal"
+
       - name: Publish
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false --no-build
 

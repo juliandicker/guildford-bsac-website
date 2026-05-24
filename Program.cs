@@ -73,3 +73,5 @@ app.MapDefaultControllerRoute();
 RotativaConfiguration.Setup(app.Environment.ContentRootPath, "Rotativa");
 
 app.Run();
+
+public partial class Program { }
