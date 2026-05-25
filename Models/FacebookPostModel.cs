@@ -15,7 +15,7 @@ namespace GuildfordBsac.Web.Models
         public string? Story { get; set; }
 
         [JsonPropertyName("created_time")]
-        public DateTime CreatedTime { get; set; }
+        public DateTimeOffset CreatedTime { get; set; }
 
         [JsonPropertyName("full_picture")]
         public string? FullPicture { get; set; }
