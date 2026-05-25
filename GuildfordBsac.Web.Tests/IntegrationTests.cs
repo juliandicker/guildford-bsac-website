@@ -1,9 +1,11 @@
 using GuildfordBsac.Web.Common;
 using GuildfordBsac.Web.Models;
+using GuildfordBsac.Web.Properties;
 using GuildfordBsac.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace GuildfordBsac.Web.Tests;
@@ -118,6 +120,13 @@ public class IntegrationTests : IClassFixture<GuildfordBsacWebApplicationFactory
 
         Assert.False(doc.RootElement.GetProperty("success").GetBoolean());
         Assert.True(doc.RootElement.GetProperty("errors").GetArrayLength() > 0);
+    }
+
+    [Fact]
+    public void AppSettings_CalendarIds_AreConfigured()
+    {
+        var settings = _factory.Services.GetRequiredService<IOptions<AppSettings>>();
+        Assert.NotEmpty(settings.Value.CalendarIds);
     }
 
     private async Task<string> GetAntiForgeryTokenAsync()
