@@ -88,6 +88,11 @@ jobs:
                     <environmentVariable name="AppSettings__RecaptchaSecret" value="$r" />
                     <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$pk" />
                     <environmentVariable name="Facebook__PageAccessToken" value="$fb" />
+                    <environmentVariable name="AppSettings__CalendarIds__0" value="c_eo5g5mq6klkuhoc9us9r7e26fc@group.calendar.google.com" />
+                    <environmentVariable name="AppSettings__CalendarIds__1" value="c_1v9tf1n7rali13nvf95ak4lc7k@group.calendar.google.com" />
+                    <environmentVariable name="AppSettings__CalendarIds__2" value="c_670f59ed3f5r9fbd4molm2225s@group.calendar.google.com" />
+                    <environmentVariable name="AppSettings__CalendarIds__3" value="c_2cedqq8lnc5d016ggctuse8nko@group.calendar.google.com" />
+                    <environmentVariable name="AppSettings__CalendarIds__4" value="c_3orvtp2a88fve2ffsca6vd8tqc@group.calendar.google.com" />
                   </environmentVariables>
                 </aspNetCore>
               </system.webServer>

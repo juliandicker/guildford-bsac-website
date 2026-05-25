@@ -1,9 +1,9 @@
 using System.Security.Cryptography;
 using System.Threading.RateLimiting;
 using GuildfordBsac.Web.Common;
-using GuildfordBsac.Web.Controllers;
 using GuildfordBsac.Web.Models;
 using GuildfordBsac.Web.Properties;
+using GuildfordBsac.Web.Services;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Rewrite;
 using Rotativa.AspNetCore;
@@ -17,6 +17,8 @@ builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSecond
 builder.Services.AddHttpClient("facebook");
 builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 builder.Services.AddSingleton<IGoogleApiHelper, GoogleApiHelper>();
+builder.Services.AddSingleton<ICalendarService, CalendarService>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddSingleton<MembershipRatesService>(sp =>
 {
     var env = sp.GetRequiredService<IWebHostEnvironment>();
@@ -39,6 +41,13 @@ builder.Services.AddRateLimiter(options =>
         o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
         o.QueueLimit = 0;
     });
+    options.AddFixedWindowLimiter("pdf", o =>
+    {
+        o.PermitLimit = 3;
+        o.Window = TimeSpan.FromMinutes(1);
+        o.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        o.QueueLimit = 0;
+    });
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -47,6 +56,19 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 });
 
 var app = builder.Build();
+
+// Validate required data files at startup — surfaces missing/malformed JSON before first request
+var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+try
+{
+    _ = app.Services.GetRequiredService<MembershipRatesService>().MembershipRates;
+    _ = app.Services.GetRequiredService<TeamService>().TeamMembers;
+}
+catch (Exception ex)
+{
+    startupLogger.LogCritical(ex, "Startup data validation failed — app cannot start");
+    throw;
+}
 
 app.UsePathBase("/gbsacCore");
 

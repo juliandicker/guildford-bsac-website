@@ -3,6 +3,7 @@ namespace GuildfordBsac.Web.Controllers
     using Ganss.Xss;
     using GuildfordBsac.Web.Common;
     using GuildfordBsac.Web.Models;
+    using GuildfordBsac.Web.Services;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.RateLimiting;
@@ -23,17 +24,17 @@ namespace GuildfordBsac.Web.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly ILogger<HomeController> _logger;
         private readonly IReCaptchaValidator _captcha;
-        private readonly IGoogleApiHelper _googleApi;
+        private readonly IEmailService _email;
         private readonly MembershipRatesService _membershipRates;
         private readonly TeamService _team;
 
-        public HomeController(IFacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi, MembershipRatesService membershipRates, TeamService team)
+        public HomeController(IFacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IEmailService email, MembershipRatesService membershipRates, TeamService team)
         {
             _facebook = facebook;
             _env = env;
             _logger = logger;
             _captcha = captcha;
-            _googleApi = googleApi;
+            _email = email;
             _membershipRates = membershipRates;
             _team = team;
         }
@@ -110,7 +111,7 @@ namespace GuildfordBsac.Web.Controllers
             {
                 try
                 {
-                    if (!_googleApi.SendMessage(model.Name!, model.Emaily!, model.Subject!, model.Message!))
+                    if (!_email.SendContactEmail(model.Name!, model.Emaily!, model.Subject!, model.Message!))
                     {
                         errors.Add("There has been a technical error sending this message. Please contact by telephone.");
                     }
