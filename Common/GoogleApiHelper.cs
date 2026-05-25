@@ -104,7 +104,12 @@ namespace GuildfordBsac.Web.Common
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to send Gmail message from {Name} <{Email}>", name, email);
+                // Sanitize user-supplied values: strip newlines (log-forging) and redact email local-part (PII)
+                var safeName = name.ReplaceLineEndings(" ");
+                var safeEmail = email.Contains('@')
+                    ? $"[redacted]@{email[(email.IndexOf('@') + 1)..].ReplaceLineEndings(" ")}"
+                    : "[redacted]";
+                _logger.LogError(ex, "Failed to send Gmail message from {Name} <{Email}>", safeName, safeEmail);
                 throw;
             }
         }
