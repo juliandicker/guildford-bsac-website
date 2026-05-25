@@ -1,9 +1,10 @@
 namespace GuildfordBsac.Web.Controllers
 {
-    using GuildfordBsac.Web.Common;
     using GuildfordBsac.Web.Models;
     using GuildfordBsac.Web.Properties;
+    using GuildfordBsac.Web.Services;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Options;
     using System.Text.Json;
     using Rotativa.AspNetCore;
@@ -11,21 +12,13 @@ namespace GuildfordBsac.Web.Controllers
 
     public class YearPlannerController : Controller
     {
-        private static readonly string[] _calendarIds = new string[] {
-            "c_eo5g5mq6klkuhoc9us9r7e26fc@group.calendar.google.com",
-            "c_1v9tf1n7rali13nvf95ak4lc7k@group.calendar.google.com",
-            "c_670f59ed3f5r9fbd4molm2225s@group.calendar.google.com",
-            "c_2cedqq8lnc5d016ggctuse8nko@group.calendar.google.com",
-            "c_3orvtp2a88fve2ffsca6vd8tqc@group.calendar.google.com"
-        };
-
         private readonly AppSettings _settings;
-        private readonly IGoogleApiHelper _googleApi;
+        private readonly ICalendarService _calendar;
 
-        public YearPlannerController(IOptions<AppSettings> settings, IGoogleApiHelper googleApi)
+        public YearPlannerController(IOptions<AppSettings> settings, ICalendarService calendar)
         {
             _settings = settings.Value;
-            _googleApi = googleApi;
+            _calendar = calendar;
         }
 
         public ActionResult Index(int? year, bool agenda = true)
@@ -39,10 +32,11 @@ namespace GuildfordBsac.Web.Controllers
             {
                 Year = year,
                 ShowAgenda = agenda,
-                CalendarData = JsonSerializer.Serialize(_googleApi.GetCalendars(year, _calendarIds))
+                CalendarData = JsonSerializer.Serialize(_calendar.GetCalendars(year))
             };
         }
 
+        [EnableRateLimiting("pdf")]
         public ActionResult Pdf(int? year, bool agenda = true)
         {
             return new ViewAsPdf("Index", GetModel(year ?? DateTime.Now.Year, agenda))

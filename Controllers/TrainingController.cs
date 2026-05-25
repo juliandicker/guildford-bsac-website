@@ -1,25 +1,20 @@
 namespace GuildfordBsac.Web.Controllers
 {
     using GuildfordBsac.Web.Models;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using System.IO;
 
     public class TrainingController : Controller
     {
-        private readonly IWebHostEnvironment _env;
+        private readonly MembershipRatesService _membershipRates;
 
-        public TrainingController(IWebHostEnvironment env)
+        public TrainingController(MembershipRatesService membershipRates)
         {
-            _env = env;
+            _membershipRates = membershipRates;
         }
 
         public ActionResult Index()
         {
-            var membershipRatesService = new MembershipRatesService(
-                Path.Combine(_env.ContentRootPath, "App_Data", "membershiprates.json"));
-
-            return View(membershipRatesService.Current);
+            return View(_membershipRates.Current);
         }
     }
 }

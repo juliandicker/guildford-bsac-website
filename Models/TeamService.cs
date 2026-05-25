@@ -16,9 +16,11 @@ namespace GuildfordBsac.Web.Models
 
         public void Load()
         {
-            _teamMembers = File.Exists(_path)
-                ? JsonSerializer.Deserialize<List<TeamMemberViewModel>>(File.ReadAllText(_path)) ?? new List<TeamMemberViewModel>()
-                : new List<TeamMemberViewModel>();
+            if (!File.Exists(_path))
+                throw new FileNotFoundException($"Required data file not found: {_path}");
+
+            _teamMembers = JsonSerializer.Deserialize<List<TeamMemberViewModel>>(File.ReadAllText(_path))
+                ?? new List<TeamMemberViewModel>();
         }
 
         public List<TeamMemberViewModel> TeamMembers
