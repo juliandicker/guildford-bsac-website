@@ -1,11 +1,19 @@
 ﻿namespace GuildfordBsac.Web.Common
 {
+    using Ganss.Xss;
     using GuildfordBsac.Web.Models;
     using System;
     using System.Collections.Generic;
 
     public class CalendarAdapter
     {
+        private static readonly HtmlSanitizer _sanitizer = new HtmlSanitizer(new HtmlSanitizerOptions
+        {
+            AllowedTags = new HashSet<string> { "b", "i", "em", "strong", "a", "br", "p", "ul", "ol", "li" },
+            AllowedAttributes = new HashSet<string> { "href", "target" },
+            AllowedSchemes = new HashSet<string> { "http", "https" }
+        });
+
         private List<Calendar> _calendars = new List<Calendar>();
 
         public List<Calendar> GetCalendars()
@@ -54,7 +62,7 @@
                 StartDate = start,
                 EndDate = end,
                 Summary = gevent.Summary,
-                Description = gevent.Description
+                Description = _sanitizer.Sanitize(gevent.Description ?? string.Empty)
             };
 
             evt.Duration = Math.Max((evt.EndDate - evt.StartDate).TotalDays, 1);

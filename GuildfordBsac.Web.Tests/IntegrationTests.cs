@@ -1,6 +1,6 @@
 using GuildfordBsac.Web.Common;
-using GuildfordBsac.Web.Controllers;
 using GuildfordBsac.Web.Models;
+using GuildfordBsac.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +42,7 @@ public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
                 options.Secure = CookieSecurePolicy.SameAsRequest);
             services.AddScoped<IReCaptchaValidator, AlwaysPassReCaptchaValidator>();
             services.AddSingleton<IFacebookService, NullFacebookService>();
-            services.AddScoped<IGoogleApiHelper, NullGoogleApiHelper>();
+            services.AddSingleton<IGoogleApiHelper, NullGoogleApiHelper>();
         });
     }
 }

@@ -13,6 +13,7 @@ namespace GuildfordBsac.Web.Properties
         public string ContactEmail { get; set; } = "";
         public string ContactEmailBcc { get; set; } = "";
         public string WkHtmlPdf_CustomSwitches { get; set; } = "";
+        public string[] CalendarIds { get; set; } = Array.Empty<string>();
         public ServiceAccountSettings ServiceAccount { get; set; } = new();
     }
 }

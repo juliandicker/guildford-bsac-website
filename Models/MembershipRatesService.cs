@@ -17,9 +17,11 @@ namespace GuildfordBsac.Web.Models
 
         public void Load()
         {
-            _membershipRates = File.Exists(_path)
-                ? JsonSerializer.Deserialize<List<MembershipRatesViewModel>>(File.ReadAllText(_path)) ?? new List<MembershipRatesViewModel>()
-                : new List<MembershipRatesViewModel>();
+            if (!File.Exists(_path))
+                throw new FileNotFoundException($"Required data file not found: {_path}");
+
+            _membershipRates = JsonSerializer.Deserialize<List<MembershipRatesViewModel>>(File.ReadAllText(_path))
+                ?? new List<MembershipRatesViewModel>();
         }
 
         public List<MembershipRatesViewModel> MembershipRates
