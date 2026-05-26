@@ -8,6 +8,19 @@ on:
   workflow_dispatch:
 
 jobs:
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Scan for secrets (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE is required for private repos; see https://gitleaks.io/products.html
+          # For public repos this step runs without a license.
+
   test:
     runs-on: windows-latest
 
@@ -18,13 +31,6 @@ jobs:
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.0.x'
-
-      - name: Scan for secrets (Gitleaks)
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # GITLEAKS_LICENSE is required for private repos; see https://gitleaks.io/products.html
-          # For public repos this step runs without a license.
 
       - name: Build (security scan)
         run: dotnet build GuildfordBsac.Web.csproj -c Release -p:TreatWarningsAsErrors=true
