@@ -59,13 +59,9 @@ jobs:
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
-        # Secrets (RecaptchaApiKey, ServiceAccount__PrivateKey, Facebook__PageAccessToken) are NOT
-        # set here. They must be configured once in Plesk > .NET Settings > Environment Variables:
-        #   AppSettings__RecaptchaApiKey
-        #   AppSettings__ServiceAccount__PrivateKey
-        #   Facebook__PageAccessToken
-        # Non-secret config lives in appsettings.json (committed) and appsettings.Production.json.
         run: |
+          # Secrets live in Plesk .NET Settings > Environment Variables, not here:
+          #   AppSettings__RecaptchaApiKey, AppSettings__ServiceAccount__PrivateKey, Facebook__PageAccessToken
           $xml = @"
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
