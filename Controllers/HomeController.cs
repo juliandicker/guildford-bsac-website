@@ -16,17 +16,17 @@ namespace GuildfordBsac.Web.Controllers
         private readonly IFacebookService _facebook;
         private readonly ILogger<HomeController> _logger;
         private readonly IReCaptchaValidator _captcha;
-        private readonly IGoogleApiHelper _googleApi;
+        private readonly IEmailService _emailService;
         private readonly IMembershipRatesService _membershipRates;
         private readonly ITeamService _team;
         private readonly IFaqService _faq;
 
-        public HomeController(IFacebookService facebook, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi, IMembershipRatesService membershipRates, ITeamService team, IFaqService faq)
+        public HomeController(IFacebookService facebook, ILogger<HomeController> logger, IReCaptchaValidator captcha, IEmailService emailService, IMembershipRatesService membershipRates, ITeamService team, IFaqService faq)
         {
             _facebook = facebook;
             _logger = logger;
             _captcha = captcha;
-            _googleApi = googleApi;
+            _emailService = emailService;
             _membershipRates = membershipRates;
             _team = team;
             _faq = faq;
@@ -46,7 +46,7 @@ namespace GuildfordBsac.Web.Controllers
 
         public async Task<ActionResult> Faqs()
         {
-            return View(await _faq.GetFaqsAsync("faqs.json"));
+            return View(await _faq.GetFaqsAsync(FaqType.General));
         }
 
         public ActionResult About()
@@ -69,7 +69,7 @@ namespace GuildfordBsac.Web.Controllers
             var model = new ContactUsViewModel
             {
                 Contact = new ContactViewModel(),
-                Faqs = await _faq.GetFaqsAsync("faqsContact.json")
+                Faqs = await _faq.GetFaqsAsync(FaqType.Contact)
             };
             return View(model);
         }
@@ -103,7 +103,7 @@ namespace GuildfordBsac.Web.Controllers
             {
                 try
                 {
-                    if (!await _googleApi.SendMessageAsync(model.Name!, model.Emaily!, model.Subject!, model.Message!, cancellationToken))
+                    if (!await _emailService.SendContactFormEmailAsync(model.Name!, model.Emaily!, model.Subject!, model.Message!, cancellationToken))
                     {
                         errors.Add("There has been a technical error sending this message. Please contact by telephone.");
                     }
@@ -124,6 +124,5 @@ namespace GuildfordBsac.Web.Controllers
             Response.StatusCode = statusCode ?? 500;
             return View("Error", statusCode?.ToString());
         }
-
     }
 }

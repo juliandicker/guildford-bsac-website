@@ -1,4 +1,4 @@
-﻿@using GuildfordBsac.Web.Models
+@using GuildfordBsac.Web.Models
 @model ContactUsViewModel
 
 <section id="contactus" class="content-block">
@@ -39,6 +39,10 @@
     </div>
 </section>
 <section id="findus">
+    @*
+        Maps Embed API key: intentionally inline (required for Google Maps iframe src attribute).
+        Key is restricted to the Maps Embed API only, scoped to guildford-bsac.com domains in Google Cloud Console.
+    *@
     <iframe style="border: 0; border: none; display: block; height: 300px; width: 100%;"
             loading="lazy" allowfullscreen src="https://www.google.com/maps/embed/v1/place?q=place_id:ChIJ934GrrrQdUgReTEndusqyRI&key=AIzaSyBM0VnTgtXBudJpc3l78nIgpcag5beRVn0"></iframe>
 </section>
@@ -58,7 +62,6 @@
                             showValidationErrors(false);
                             $("#sent").show();
                             $("#form").hide();
-                            ga('send', 'pageview', '/home/contactSent');
                         } else {
                             fillErrorList(result.errors);
                             showValidationErrors(true);

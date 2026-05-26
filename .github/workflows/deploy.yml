@@ -12,10 +12,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
           dotnet-version: '8.0.x'
 
@@ -36,7 +36,7 @@ jobs:
         run: dotnet test GuildfordBsac.Web.Tests/GuildfordBsac.Web.Tests.csproj -c Release --logger "console;verbosity=normal" --collect:"XPlat Code Coverage" --results-directory coverage
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
           path: coverage/*/coverage.cobertura.xml
@@ -48,10 +48,10 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7 # v5.2.0
         with:
           dotnet-version: '8.0.x'
 
@@ -59,15 +59,13 @@ jobs:
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
-        env:
-          RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY }}
-          PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
-          FACEBOOK_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+        # Secrets (RecaptchaApiKey, ServiceAccount__PrivateKey, Facebook__PageAccessToken) are NOT
+        # set here. They must be configured once in Plesk > .NET Settings > Environment Variables:
+        #   AppSettings__RecaptchaApiKey
+        #   AppSettings__ServiceAccount__PrivateKey
+        #   Facebook__PageAccessToken
+        # Non-secret config lives in appsettings.json (committed) and appsettings.Production.json.
         run: |
-          $privateKey = ($env:PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
-          $escapedApiKey = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_API_KEY)
-          $escapedPrivateKey = [System.Security.SecurityElement]::Escape($privateKey)
-          $escapedFbToken = [System.Security.SecurityElement]::Escape($env:FACEBOOK_TOKEN)
           $xml = @"
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -82,20 +80,9 @@ jobs:
                 <handlers>
                   <add name="aspNetCore" path="*" verb="*" modules="AspNetCoreModuleV2" resourceType="Unspecified" />
                 </handlers>
-                <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="true" stdoutLogFile=".\logs\stdout" hostingModel="outofprocess">
+                <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="outofprocess">
                   <environmentVariables>
                     <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
-                    <environmentVariable name="AppSettings__RecaptchaApiKey" value="$escapedApiKey" />
-                    <environmentVariable name="AppSettings__RecaptchaSiteKey" value="6LfEV_wsAAAAAMQzxEIKxFMDMKkxAiNXU7IRo-b-" />
-                    <environmentVariable name="AppSettings__WkHtmlPdfCustomSwitches" value="--print-media-type --disable-smart-shrinking --encoding utf-8 --orientation landscape --page-size A2 -T 0 -B 0 -R 0 -L 0" />
-                    <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$escapedPrivateKey" />
-                    <environmentVariable name="AppSettings__ServiceAccount__UserEmail" value="gbsacadmin@guildford-bsac.com" />
-                    <environmentVariable name="Facebook__PageAccessToken" value="$escapedFbToken" />
-                    <environmentVariable name="AppSettings__CalendarIds__0" value="c_eo5g5mq6klkuhoc9us9r7e26fc@group.calendar.google.com" />
-                    <environmentVariable name="AppSettings__CalendarIds__1" value="c_1v9tf1n7rali13nvf95ak4lc7k@group.calendar.google.com" />
-                    <environmentVariable name="AppSettings__CalendarIds__2" value="c_670f59ed3f5r9fbd4molm2225s@group.calendar.google.com" />
-                    <environmentVariable name="AppSettings__CalendarIds__3" value="c_2cedqq8lnc5d016ggctuse8nko@group.calendar.google.com" />
-                    <environmentVariable name="AppSettings__CalendarIds__4" value="c_3orvtp2a88fve2ffsca6vd8tqc@group.calendar.google.com" />
                   </environmentVariables>
                 </aspNetCore>
               </system.webServer>
@@ -117,17 +104,17 @@ jobs:
           $src  = "${{ github.workspace }}\publish"
           $dest = "contentPath='guildford-bsac.com',computerName='$env:DEPLOY_URL',userName='$env:DEPLOY_USERNAME',password='$env:DEPLOY_PASSWORD',authType='Basic'"
           $skip = "objectname='filePath',absolutePath='appsettings\.json$'"
-          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted -enableRule:AppOffline
+          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -enableRule:AppOffline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   zap-scan:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.15.0
+        uses: zaproxy/action-baseline@6c5a007541891231cd9e0ddec25d4f25c59c9874 # v0.15.0
         with:
           target: ${{ vars.SITE_URL }}
           token: ${{ secrets.GITHUB_TOKEN }}

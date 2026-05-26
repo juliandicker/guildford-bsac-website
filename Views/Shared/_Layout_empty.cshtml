@@ -11,12 +11,14 @@
         var pdfBase = ViewData["PdfBaseUrl"] as string;
         string CssUrl(string path) => pdfBase != null ? pdfBase + Url.Content(path) : Url.Content(path);
     }
-    <link href="https://fonts.googleapis.com/css?family=Lato:300|Open+Sans" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300|Open+Sans&display=swap" rel="stylesheet" />
     <link href="@CssUrl("~/Content/bootstrap/bootstrap.css")" rel="stylesheet" />
     <link href="@CssUrl("~/Content/flexslider.css")" rel="stylesheet" />
     <link href="@CssUrl("~/Content/Site.css")" rel="stylesheet" />
     @RenderSection("styles", false)
-    <partial name="_ga" />
+    @* Google Universal Analytics (UA-46300142-3) was removed — UA was shut down July 2023. *@
 </head>
 <body>
     @RenderBody()

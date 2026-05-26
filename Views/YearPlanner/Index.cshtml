@@ -9,7 +9,7 @@
 
 @section styles {
     <link href="@AbsUrl("~/Content/yearplanner2.css")" rel="stylesheet" type="text/css" />
-    <style type="text/css" id="calenderStyles" nonce="@(Context.Items["CspNonce"] as string)"></style>
+    <style type="text/css" id="calendarStyles" nonce="@(Context.Items["CspNonce"] as string)"></style>
 }
 
 <div id="content" data-ispdf="@(ViewContext.RouteData.Values["action"]?.ToString() != "Index" || Context.Request.Query.ContainsKey("pdf"))">
@@ -32,28 +32,14 @@
                     </h1>
                 </td>
                 <td>
-                    <img src="../../Content/Images/logo_black.png" class="img-fluid float-end" />
+                    <img src="@Url.Content("~/Content/Images/logo_black.png")" class="img-fluid float-end" />
                 </td>
             </tr>
         </table>
         <div id="calendar"></div>
         <ul id="key"></ul>
         <div id="events"></div>
-        <footer>
-            <div>
-                <div class="text-center">
-                    <span class="address">
-                        Guildford Sub-Aqua Club,
-                        Guildford Waterside Centre,
-                        Riverside,
-                        Guildford,
-                        Surrey,
-                        GU1 1LW
-                    </span> |
-                    <span><a href="http://www.guildford-bsac.com/">www.guildford-bsac.com</a></span>
-                </div>
-            </div>
-        </footer>
+        <partial name="_YearPlannerFooter" />
     </div>
 
     @if (Model.ShowAgenda)
@@ -61,21 +47,7 @@
         <div class="page">
             <h1><span id="yearAgenda">@Model.Year</span> agenda</h1>
             <div id="agenda"></div>
-            <footer>
-                <div>
-                    <div class="text-center">
-                        <span class="address">
-                            Guildford Sub-Aqua Club,
-                            Guildford Waterside Centre,
-                            Riverside,
-                            Guildford,
-                            Surrey,
-                            GU1 1LW
-                        </span> |
-                        <span><a href="http://www.guildford-bsac.com/">www.guildford-bsac.com</a></span>
-                    </div>
-                </div>
-            </footer>
+            <partial name="_YearPlannerFooter" />
         </div>
     }
 </div>

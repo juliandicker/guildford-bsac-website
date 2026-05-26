@@ -1,4 +1,5 @@
-﻿@model GuildfordBsac.Web.Models.ContactViewModel
+@model GuildfordBsac.Web.Models.ContactViewModel
+@inject Microsoft.Extensions.Options.IOptions<GuildfordBsac.Web.Configuration.AppSettings> AppSettings
 
 @using (Html.BeginForm("Contact", "Home", null, FormMethod.Post, null, new { id = "ContactForm" }))
 {
@@ -15,7 +16,7 @@
     @Html.EditorFor(model => model.Message, new { htmlAttributes = new { rows = "4" } })
 
     <div class="mb-3">
-        <div class="g-recaptcha float-start" data-sitekey="6LfEV_wsAAAAAMQzxEIKxFMDMKkxAiNXU7IRo-b-"></div>
+        <div class="g-recaptcha float-start" data-sitekey="@AppSettings.Value.RecaptchaSiteKey"></div>
         <button type="submit" id="submit" class="btn btn-primary float-end">Submit</button>
     </div>
 </div>

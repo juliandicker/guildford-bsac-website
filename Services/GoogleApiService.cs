@@ -1,10 +1,12 @@
-namespace GuildfordBsac.Web.Common
+namespace GuildfordBsac.Web.Services
 {
+    using GuildfordBsac.Web.Common;
+    using GuildfordBsac.Web.Configuration;
     using GuildfordBsac.Web.Models;
-    using GuildfordBsac.Web.Properties;
     using Google.Apis.Auth.OAuth2;
     using Google.Apis.Calendar.v3;
     using Google.Apis.Gmail.v1;
+    using GoogleCalendarService = Google.Apis.Calendar.v3.CalendarService;
     using Google.Apis.Services;
     using MimeKit;
     using Microsoft.Extensions.Logging;
@@ -15,26 +17,22 @@ namespace GuildfordBsac.Web.Common
     using System.Threading;
     using System.Threading.Tasks;
 
-    public interface IGoogleApiHelper
-    {
-        Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default);
-        Task<bool> SendMessageAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default);
-    }
-
-    public class GoogleApiHelper : IGoogleApiHelper
+    public class GoogleApiService : IGoogleCalendarClient, IEmailService
     {
         private const string ApplicationName = "GBSAC";
+        private const int ApiTimeoutSeconds = 20;
+
         private readonly string _clientEmail;
         private readonly string _privateKey;
         private readonly string _userAccountEmail;
         private readonly string _contactEmail;
         private readonly string _contactEmailBcc;
         private readonly Lazy<ServiceAccountCredential> _credential;
-        private readonly Lazy<CalendarService> _calendarService;
+        private readonly Lazy<GoogleCalendarService> _calendarService;
         private readonly Lazy<GmailService> _gmailService;
-        private readonly ILogger<GoogleApiHelper> _logger;
+        private readonly ILogger<GoogleApiService> _logger;
 
-        public GoogleApiHelper(IOptions<AppSettings> settings, ILogger<GoogleApiHelper> logger)
+        public GoogleApiService(IOptions<AppSettings> settings, ILogger<GoogleApiService> logger)
         {
             _logger = logger;
             _clientEmail = settings.Value.ServiceAccount.ClientEmail;
@@ -44,8 +42,8 @@ namespace GuildfordBsac.Web.Common
             _contactEmail = settings.Value.ContactEmail;
             _contactEmailBcc = settings.Value.ContactEmailBcc;
             _credential = new Lazy<ServiceAccountCredential>(() => CreateServiceAccountCredential(
-                new[] { CalendarService.Scope.CalendarReadonly, GmailService.Scope.GmailSend }));
-            _calendarService = new Lazy<CalendarService>(() => new CalendarService(new BaseClientService.Initializer
+                new[] { GoogleCalendarService.Scope.CalendarReadonly, GmailService.Scope.GmailSend }));
+            _calendarService = new Lazy<GoogleCalendarService>(() => new GoogleCalendarService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = Credential,
                 ApplicationName = ApplicationName,
@@ -61,6 +59,10 @@ namespace GuildfordBsac.Web.Common
 
         public async Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
         {
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(TimeSpan.FromSeconds(ApiTimeoutSeconds));
+            var token = cts.Token;
+
             try
             {
                 var service = _calendarService.Value;
@@ -78,8 +80,8 @@ namespace GuildfordBsac.Web.Common
                     eventsRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
 
                     // Fire both requests concurrently — they are independent
-                    var metaTask   = service.CalendarList.Get(calId).ExecuteAsync(cancellationToken);
-                    var eventsTask = eventsRequest.ExecuteAsync(cancellationToken);
+                    var metaTask   = service.CalendarList.Get(calId).ExecuteAsync(token);
+                    var eventsTask = eventsRequest.ExecuteAsync(token);
 
                     return (
                         Meta: await metaTask,
@@ -89,7 +91,7 @@ namespace GuildfordBsac.Web.Common
 
                 var results = await Task.WhenAll(tasks);
 
-                var adapter = new CalendarAdapter();
+                var adapter = new CalendarAdapter(_logger);
                 foreach (var (meta, events) in results)
                     adapter.AddCalendar(meta, events);
 
@@ -102,8 +104,11 @@ namespace GuildfordBsac.Web.Common
             }
         }
 
-        public async Task<bool> SendMessageAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
+        public async Task<bool> SendContactFormEmailAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
         {
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            cts.CancelAfter(TimeSpan.FromSeconds(ApiTimeoutSeconds));
+
             try
             {
                 var service = _gmailService.Value;
@@ -116,7 +121,7 @@ namespace GuildfordBsac.Web.Common
                     Raw = Encode(mimeMessage.ToString())
                 };
 
-                await service.Users.Messages.Send(gmailMessage, _userAccountEmail).ExecuteAsync(cancellationToken);
+                await service.Users.Messages.Send(gmailMessage, _userAccountEmail).ExecuteAsync(cts.Token);
 
                 return true;
             }
@@ -144,26 +149,23 @@ namespace GuildfordBsac.Web.Common
             mailMessage.To.Add(_contactEmail);
             mailMessage.ReplyToList.Add(email);
 
-            if (_contactEmailBcc.Length > 0)
+            if (!string.IsNullOrWhiteSpace(_contactEmailBcc))
             {
                 foreach (var a in _contactEmailBcc.Split(','))
                 {
-                    mailMessage.Bcc.Add(a.Trim());
+                    var addr = a.Trim();
+                    if (!string.IsNullOrWhiteSpace(addr))
+                        mailMessage.Bcc.Add(addr);
                 }
             }
 
             mailMessage.Subject = subject;
-
-            mailMessage.Body = new string('*', 20)
-                + Environment.NewLine
-                + "This email was generated on www.guildford-bsac.com"
-                + Environment.NewLine
-                + "Reply to: " + name + " (" + email + ")"
-                + Environment.NewLine
-                + new string('*', 20)
-                + Environment.NewLine
-                + message;
-
+            mailMessage.Body =
+                new string('*', 20) + Environment.NewLine +
+                "This email was generated on www.guildford-bsac.com" + Environment.NewLine +
+                "Reply to: " + name + " (" + email + ")" + Environment.NewLine +
+                new string('*', 20) + Environment.NewLine +
+                message;
             mailMessage.IsBodyHtml = false;
 
             return mailMessage;
