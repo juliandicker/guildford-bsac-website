@@ -137,6 +137,10 @@ try
         {
             // 7-day cache for local assets (not fingerprinted, so immutable is omitted)
             ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800";
+            // Static files bypass the security-header middleware (which runs later), so
+            // headers that don't require a CSP nonce are applied here directly.
+            ctx.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            ctx.Context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
         }
     });
 
