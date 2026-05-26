@@ -69,11 +69,15 @@ jobs:
           SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
           RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY }}
           FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          CONTACT_EMAIL_BCC: ${{ vars.CONTACT_EMAIL_BCC }}
         run: |
           $privateKey = ($env:SERVICE_ACCOUNT_PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
           $escapedPrivateKey = [System.Security.SecurityElement]::Escape($privateKey)
           $escapedRecaptchaKey = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_API_KEY)
           $escapedFbToken = [System.Security.SecurityElement]::Escape($env:FACEBOOK_PAGE_ACCESS_TOKEN)
+          $escapedContactEmail = [System.Security.SecurityElement]::Escape($env:CONTACT_EMAIL)
+          $escapedContactEmailBcc = [System.Security.SecurityElement]::Escape($env:CONTACT_EMAIL_BCC)
           $xml = @"
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -94,6 +98,8 @@ jobs:
                     <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$escapedPrivateKey" />
                     <environmentVariable name="AppSettings__RecaptchaApiKey" value="$escapedRecaptchaKey" />
                     <environmentVariable name="Facebook__PageAccessToken" value="$escapedFbToken" />
+                    <environmentVariable name="AppSettings__ContactEmail" value="$escapedContactEmail" />
+                    <environmentVariable name="AppSettings__ContactEmailBcc" value="$escapedContactEmailBcc" />
                   </environmentVariables>
                 </aspNetCore>
               </system.webServer>
