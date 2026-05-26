@@ -26,4 +26,16 @@ namespace GuildfordBsac.Web.Configuration
         [Required]
         public ServiceAccountSettings ServiceAccount { get; set; } = new();
     }
+
+    // Bound to the "Facebook" config section. PageAccessToken is injected at deploy time
+    // via the Facebook__PageAccessToken GitHub Actions secret → web.config env var.
+    public class FacebookSettings
+    {
+        public string PageAccessToken { get; set; } = "";
+        public string PageId { get; set; } = "";
+        public string ApiVersion { get; set; } = "v25.0";
+        public TimeSpan SuccessCacheDuration { get; set; } = TimeSpan.FromMinutes(30);
+        public TimeSpan ErrorCacheDurationInitial { get; set; } = TimeSpan.FromSeconds(90);
+        public TimeSpan ErrorCacheDurationMax { get; set; } = TimeSpan.FromHours(2);
+    }
 }

@@ -14,20 +14,18 @@ namespace GuildfordBsac.Web.Controllers
 
     public class YearPlannerController : Controller
     {
-        // Rotativa renders the year planner at A2 landscape; these pixel dimensions match that target.
         private const int PngPageWidthPixels = 2250;
         private const int PngPageHeightPixels = 1550;
 
         private readonly AppSettings _settings;
         private readonly ICalendarService _calendar;
+        private readonly PngRenderLock _pngLock;
 
-        // Serializes concurrent Rotativa subprocess invocations to prevent stampede on cache miss
-        private static readonly SemaphoreSlim _pngLock = new SemaphoreSlim(1, 1);
-
-        public YearPlannerController(IOptions<AppSettings> settings, ICalendarService calendar)
+        public YearPlannerController(IOptions<AppSettings> settings, ICalendarService calendar, PngRenderLock pngLock)
         {
             _settings = settings.Value;
             _calendar = calendar;
+            _pngLock = pngLock;
         }
 
         [EnableRateLimiting("yearplanner")]

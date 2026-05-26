@@ -2,6 +2,7 @@ using GuildfordBsac.Web.Configuration;
 using GuildfordBsac.Web.Models;
 using GuildfordBsac.Web.Services;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace GuildfordBsac.Web.Tests;
@@ -25,7 +26,7 @@ public class CalendarServiceTests
         var calendarClient = new CountingGoogleCalendarClient();
         var cache = new MemoryCache(new MemoryCacheOptions());
         var settings = Options.Create(new AppSettings { CalendarIds = calendarIds });
-        return (new CalendarService(calendarClient, cache, settings), calendarClient);
+        return (new CalendarService(calendarClient, cache, settings, NullLogger<CalendarService>.Instance), calendarClient);
     }
 
     [Fact]

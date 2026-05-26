@@ -59,6 +59,18 @@ In production, credentials are injected by `deploy.yml` at deploy time into `web
 | `DEPLOY_USERNAME` | Variable | Plesk Web Deploy username |
 | `SITE_URL` | Variable | Live site URL used by the ZAP security scan |
 
+## Monitoring
+
+The app exposes a health endpoint at:
+
+```
+https://www.guildford-bsac.com/health
+```
+
+It returns HTTP 200 when all required `App_Data/` files are present, or HTTP 503 if any are missing. The CI/CD pipeline polls this endpoint after every deploy to confirm the app started successfully.
+
+**Uptime monitoring** is provided by [UptimeRobot](https://uptimerobot.com) (free tier, 5-minute interval). The free tier supports one alert email, so whoever is maintaining the site should set up their own personal UptimeRobot account pointing at the URL above. If the site goes down, UptimeRobot sends an email alert automatically.
+
 ## reCAPTCHA
 
 The contact form is protected by [Google reCAPTCHA Enterprise](https://cloud.google.com/recaptcha) ("I'm not a robot" checkbox).

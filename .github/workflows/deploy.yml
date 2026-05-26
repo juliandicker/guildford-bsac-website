@@ -19,6 +19,13 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Scan for secrets (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE is required for private repos; see https://gitleaks.io/products.html
+          # For public repos this step runs without a license.
+
       - name: Build (security scan)
         run: dotnet build GuildfordBsac.Web.csproj -c Release -p:TreatWarningsAsErrors=true
 
@@ -72,6 +79,11 @@ jobs:
           CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
           CONTACT_EMAIL_BCC: ${{ vars.CONTACT_EMAIL_BCC }}
         run: |
+          # Private key escaping: the GitHub secret contains actual newlines (CRLF or LF).
+          # Step 1: replace actual newlines with the two-character literal sequence \n
+          #   (backtick sequences are PowerShell escape chars; single-quoted '\n' is a literal backslash-n)
+          # Step 2: XML-escape the result — SecurityElement.Escape only escapes < > & " ' so \n is preserved
+          # GoogleCalendarApiService/GoogleEmailApiService then does Replace("\\n", "\n") to restore newlines.
           $privateKey = ($env:SERVICE_ACCOUNT_PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
           $escapedPrivateKey = [System.Security.SecurityElement]::Escape($privateKey)
           $escapedRecaptchaKey = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_API_KEY)
@@ -124,6 +136,28 @@ jobs:
           # so appsettings.json and appsettings.Production.json are safe to deploy on every push.
           & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" -allowUntrusted -enableRule:AppOffline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Post-deploy health check
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          $healthUrl = "$env:SITE_URL/health"
+          $maxAttempts = 10
+          $delaySeconds = 6
+          for ($i = 1; $i -le $maxAttempts; $i++) {
+            try {
+              $response = Invoke-WebRequest -Uri $healthUrl -UseBasicParsing -TimeoutSec 10
+              if ($response.StatusCode -eq 200) {
+                Write-Host "Health check passed (attempt $i)"
+                exit 0
+              }
+            } catch {
+              Write-Host "Attempt $i/$maxAttempts failed: $_"
+            }
+            if ($i -lt $maxAttempts) { Start-Sleep -Seconds $delaySeconds }
+          }
+          Write-Error "Health check did not pass after $maxAttempts attempts"
+          exit 1
 
   zap-scan:
     needs: deploy

@@ -169,6 +169,60 @@ public class IntegrationTests : IClassFixture<GuildfordBsacWebApplicationFactory
     }
 
     [Fact]
+    public async Task ContactPost_ValidSubmission_ReturnsSuccess()
+    {
+        var token = await GetAntiForgeryTokenAsync();
+        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["__RequestVerificationToken"] = token,
+            ["Name"] = "Test User",
+            ["Emaily"] = "test@example.com",
+            ["Subject"] = "Test subject",
+            ["Message"] = "Test message body that is long enough"
+        });
+
+        var response = await _client.PostAsync("/Home/Contact", form);
+        var json = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+
+        Assert.True(doc.RootElement.GetProperty("success").GetBoolean());
+        Assert.Equal(0, doc.RootElement.GetProperty("errors").GetArrayLength());
+    }
+
+    [Theory]
+    [InlineData("/YearPlanner?year=1900")]  // far past — clamped
+    [InlineData("/YearPlanner?year=2100")]  // far future — clamped
+    [InlineData("/YearPlanner?year=abc")]   // non-integer — default year
+    public async Task YearPlanner_OutOfRangeOrInvalidYear_ReturnsOk(string path)
+    {
+        var response = await _client.GetAsync(path);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task YearPlanner_NoYearParam_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/YearPlanner");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task YearPlanner_AgendaFalse_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/YearPlanner?agenda=false");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task YearPlanner_Pdf_ReturnsResult()
+    {
+        var response = await _client.GetAsync("/YearPlanner/Pdf");
+        // Rotativa requires a real wkhtmltopdf binary; in CI this returns an error result,
+        // but the endpoint must not throw an unhandled exception (5xx).
+        Assert.NotEqual(HttpStatusCode.InternalServerError, response.StatusCode);
+    }
+
+    [Fact]
     public void AppSettings_CalendarIds_AreConfigured()
     {
         var settings = _factory.Services.GetRequiredService<IOptions<AppSettings>>();

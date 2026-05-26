@@ -1,16 +1,34 @@
 namespace GuildfordBsac.Web.Common
 {
     using Ganss.Xss;
-    using System.Collections.Generic;
 
-    // Conservative allow-list: formatting and links only — no class/style/id attributes to prevent CSS injection
+    // Conservative allow-list: formatting and links only.
+    // Uses mutable instance API rather than HtmlSanitizerOptions constructor to ensure
+    // AllowedSchemes is enforced for href (UriAttributes must be populated after construction).
     internal static class SharedHtmlSanitizer
     {
-        internal static readonly HtmlSanitizer Instance = new HtmlSanitizer(new HtmlSanitizerOptions
+        internal static readonly HtmlSanitizer Instance = CreateSanitizer();
+
+        private static HtmlSanitizer CreateSanitizer()
         {
-            AllowedTags = new HashSet<string> { "b", "i", "em", "strong", "a", "br", "p", "ul", "ol", "li" },
-            AllowedAttributes = new HashSet<string> { "href", "target" },
-            AllowedSchemes = new HashSet<string> { "http", "https" }
-        });
+            var s = new HtmlSanitizer();
+
+            s.AllowedTags.Clear();
+            foreach (var tag in new[] { "b", "i", "em", "strong", "a", "br", "p", "ul", "ol", "li" })
+                s.AllowedTags.Add(tag);
+
+            s.AllowedAttributes.Clear();
+            s.AllowedAttributes.Add("href");
+            s.AllowedAttributes.Add("target");
+
+            // Restrict href/src to safe schemes only; javascript: and data: are excluded
+            s.AllowedSchemes.Clear();
+            s.AllowedSchemes.Add("http");
+            s.AllowedSchemes.Add("https");
+
+            s.AllowedCssProperties.Clear();
+
+            return s;
+        }
     }
 }

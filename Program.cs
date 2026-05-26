@@ -34,17 +34,25 @@ try
         .ValidateDataAnnotations()
         .ValidateOnStart();
 
+    builder.Services.AddOptions<FacebookSettings>()
+        .Bind(builder.Configuration.GetSection("Facebook"));
+
     builder.Services.AddMemoryCache();
-    builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
+    builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.GzipCompressionProvider>();
+    });
     builder.Services.AddSingleton<IFacebookService, FacebookService>();
     builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSeconds(10));
     builder.Services.AddHttpClient("facebook", c => c.Timeout = TimeSpan.FromSeconds(5));
     builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 
-    // GoogleApiService implements both IGoogleCalendarClient and IEmailService via shared singleton
-    builder.Services.AddSingleton<GoogleApiService>();
-    builder.Services.AddSingleton<IGoogleCalendarClient>(sp => sp.GetRequiredService<GoogleApiService>());
-    builder.Services.AddSingleton<IEmailService>(sp => sp.GetRequiredService<GoogleApiService>());
+    builder.Services.AddSingleton<IGoogleCalendarClient, GoogleCalendarApiService>();
+    builder.Services.AddSingleton<IEmailService, GoogleEmailApiService>();
+    builder.Services.AddScoped<IContactFormService, ContactFormService>();
+    builder.Services.AddSingleton<PngRenderLock>();
 
     builder.Services.AddSingleton<ICalendarService, CalendarService>();
     builder.Services.AddSingleton<ISvgIconProvider, SvgIconProvider>();
