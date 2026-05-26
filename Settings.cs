@@ -18,7 +18,7 @@ namespace GuildfordBsac.Web.Configuration
         public string RecaptchaSiteKey { get; set; } = "";
         // Injected at runtime via Plesk environment variables — not required at startup
         public string RecaptchaApiKey { get; set; } = "";
-        [Required]
+        // Injected at deploy time from GitHub Actions variable CONTACT_EMAIL — not required at startup
         public string ContactEmail { get; set; } = "";
         public string ContactEmailBcc { get; set; } = "";
         public string WkHtmlPdfCustomSwitches { get; set; } = "";
