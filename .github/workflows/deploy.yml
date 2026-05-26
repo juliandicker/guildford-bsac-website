@@ -114,8 +114,9 @@ jobs:
           $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
           $src  = "${{ github.workspace }}\publish"
           $dest = "contentPath='guildford-bsac.com',computerName='$env:DEPLOY_URL',userName='$env:DEPLOY_USERNAME',password='$env:DEPLOY_PASSWORD',authType='Basic'"
-          $skip = "objectname='filePath',absolutePath='appsettings\.json$'"
-          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted -enableRule:AppOffline
+          # No skip rule for appsettings.json — all secrets are in web.config env vars (above),
+          # so appsettings.json and appsettings.Production.json are safe to deploy on every push.
+          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" -allowUntrusted -enableRule:AppOffline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   zap-scan:
