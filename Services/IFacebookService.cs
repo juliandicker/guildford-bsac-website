@@ -5,8 +5,8 @@ namespace GuildfordBsac.Web.Services
     using System.Threading;
     using System.Threading.Tasks;
 
-    public interface IGoogleCalendarClient
+    public interface IFacebookService
     {
-        Task<IReadOnlyList<CalendarModel>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default);
+        Task<List<FacebookPostModel>> GetRecentPostsAsync(int limit = 5, CancellationToken cancellationToken = default);
     }
 }

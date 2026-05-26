@@ -5,8 +5,8 @@ namespace GuildfordBsac.Web.Services
     using GuildfordBsac.Web.Models;
     using Google.Apis.Auth.OAuth2;
     using Google.Apis.Services;
-    using GoogleCalendarService = Google.Apis.Calendar.v3.CalendarService;
     using Google.Apis.Calendar.v3;
+    using GoogleCalendarService = Google.Apis.Calendar.v3.CalendarService;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using System;
@@ -47,7 +47,7 @@ namespace GuildfordBsac.Web.Services
             });
         }
 
-        public async Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
+        public async Task<IReadOnlyList<CalendarModel>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
         {
             using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             cts.CancelAfter(TimeSpan.FromSeconds(ApiTimeoutSeconds));

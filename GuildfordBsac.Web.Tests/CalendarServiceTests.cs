@@ -12,10 +12,10 @@ internal class CountingGoogleCalendarClient : IGoogleCalendarClient
     private int _callCount;
     public int CallCount => _callCount;
 
-    public Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
+    public Task<IReadOnlyList<CalendarModel>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
     {
         Interlocked.Increment(ref _callCount);
-        return Task.FromResult<IReadOnlyList<Calendar>>(new List<Calendar>());
+        return Task.FromResult<IReadOnlyList<CalendarModel>>(new List<CalendarModel>());
     }
 }
 

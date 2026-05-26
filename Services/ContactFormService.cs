@@ -9,13 +9,6 @@ namespace GuildfordBsac.Web.Services
     using System.Threading;
     using System.Threading.Tasks;
 
-    public interface IContactFormService
-    {
-        // Validates reCAPTCHA, honeypot, and sends the email. Returns error messages (empty = success).
-        // Caller is responsible for ModelState field validation before calling this.
-        Task<IReadOnlyList<string>> SubmitAsync(ContactViewModel model, HttpContext httpContext, CancellationToken cancellationToken = default);
-    }
-
     public class ContactFormService : IContactFormService
     {
         private const string TechnicalErrorMessage = "There has been a technical error sending this message. Please contact by telephone.";
