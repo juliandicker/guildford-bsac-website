@@ -17,10 +17,10 @@
             <div class="collapse navbar-collapse" id="navbarToggler">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown ms-3">
-                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown-home" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Home
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown-home">
                             <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#newsevents">News & Events</a></li>
                             <li><a class="dropdown-item @(clsHome)" href="@Url.Action("Index", "Home")#joinus">Join Us</a></li>
                             <li><a class="dropdown-item" href="@Url.Action("About", "Home")">About Us</a></li>
@@ -29,10 +29,10 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown ms-3">
-                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown-training" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Training
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown-training">
                             <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#trydive">Try Dive</a>
                             <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#learntodive">Learn to Dive</a>
                             <a class="dropdown-item @(clsTraining)" href="@Url.Action("Index", "Training")#fasttrack">Fast Track Training</a>
@@ -44,10 +44,10 @@
                         @Html.ActionLink("FAQs", "faqs", "home", null, new { @class = "nav-link" })
                     </li>
                     <li class="nav-item dropdown ms-3">
-                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="@Url.Action("Index", "Home")#home" id="navbarDropdown-members" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Members
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown-members">
                             <a class="dropdown-item" target="_blank" href="https://www.facebook.com/groups/5725686075/">Members Facebook Group</a>
                             <a class="dropdown-item" target="_blank" href="https://drive.google.com/drive/folders/0AA--JjqpfLqiUk9PVA">Google Drive</a>
                             <a class="dropdown-item" target="_blank" href="https://sites.google.com/guildford-bsac.com/guildford-sub-aqua-club">Dive Site Library</a>

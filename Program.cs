@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Rotativa.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -34,17 +35,25 @@ try
         .ValidateDataAnnotations()
         .ValidateOnStart();
 
+    builder.Services.AddOptions<FacebookSettings>()
+        .Bind(builder.Configuration.GetSection("Facebook"));
+
     builder.Services.AddMemoryCache();
-    builder.Services.AddResponseCompression(options => options.EnableForHttps = true);
+    builder.Services.AddResponseCompression(options =>
+    {
+        options.EnableForHttps = true;
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.BrotliCompressionProvider>();
+        options.Providers.Add<Microsoft.AspNetCore.ResponseCompression.GzipCompressionProvider>();
+    });
     builder.Services.AddSingleton<IFacebookService, FacebookService>();
     builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSeconds(10));
     builder.Services.AddHttpClient("facebook", c => c.Timeout = TimeSpan.FromSeconds(5));
     builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 
-    // GoogleApiService implements both IGoogleCalendarClient and IEmailService via shared singleton
-    builder.Services.AddSingleton<GoogleApiService>();
-    builder.Services.AddSingleton<IGoogleCalendarClient>(sp => sp.GetRequiredService<GoogleApiService>());
-    builder.Services.AddSingleton<IEmailService>(sp => sp.GetRequiredService<GoogleApiService>());
+    builder.Services.AddSingleton<IGoogleCalendarClient, GoogleCalendarApiService>();
+    builder.Services.AddSingleton<IEmailService, GoogleEmailApiService>();
+    builder.Services.AddScoped<IContactFormService, ContactFormService>();
+    builder.Services.AddSingleton<PngRenderLock>();
 
     builder.Services.AddSingleton<ICalendarService, CalendarService>();
     builder.Services.AddSingleton<ISvgIconProvider, SvgIconProvider>();
@@ -98,7 +107,9 @@ try
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
     builder.Services.AddHealthChecks()
-        .AddCheck<DataFilesHealthCheck>("data-files");
+        .AddCheck<DataFilesHealthCheck>("data-files")
+        .AddCheck<ConfigurationHealthCheck>("configuration")
+        .AddCheck<RotativaBinaryHealthCheck>("rotativa");
 
     var app = builder.Build();
 
@@ -113,6 +124,20 @@ try
     {
         startupLogger.LogCritical(ex, "Startup data validation failed — app cannot start");
         throw;
+    }
+
+    // Warn on missing runtime-injected secrets in non-Development environments.
+    // These are injected via web.config at deploy time; an empty value means the deploy
+    // variable was not set, and the affected feature will silently fail on first use.
+    if (!app.Environment.IsDevelopment())
+    {
+        var appSettings = app.Services.GetRequiredService<IOptions<AppSettings>>().Value;
+        if (string.IsNullOrWhiteSpace(appSettings.ServiceAccount.PrivateKey))
+            startupLogger.LogError("AppSettings.ServiceAccount.PrivateKey is not configured — Google Calendar and Gmail integrations will fail");
+        if (string.IsNullOrWhiteSpace(appSettings.RecaptchaApiKey))
+            startupLogger.LogError("AppSettings.RecaptchaApiKey is not configured — reCAPTCHA validation will fail on contact form submissions");
+        if (string.IsNullOrWhiteSpace(appSettings.ContactEmail))
+            startupLogger.LogError("AppSettings.ContactEmail is not configured — contact form email delivery will fail");
     }
 
     app.UsePathBase("/gbsacCore");
@@ -137,6 +162,10 @@ try
         {
             // 7-day cache for local assets (not fingerprinted, so immutable is omitted)
             ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=604800";
+            // Static files bypass the security-header middleware (which runs later), so
+            // headers that don't require a CSP nonce are applied here directly.
+            ctx.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            ctx.Context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
         }
     });
 
@@ -216,5 +245,58 @@ internal class DataFilesHealthCheck : IHealthCheck
                 return Task.FromResult(HealthCheckResult.Unhealthy($"Missing App_Data file: {f}"));
         }
         return Task.FromResult(HealthCheckResult.Healthy());
+    }
+}
+
+// Validates that runtime-injected secrets are present. Only meaningful in non-Development
+// environments; returns Healthy in Development so tests and local runs are unaffected.
+internal class ConfigurationHealthCheck : IHealthCheck
+{
+    private readonly AppSettings _settings;
+    private readonly IWebHostEnvironment _env;
+
+    public ConfigurationHealthCheck(IOptions<AppSettings> settings, IWebHostEnvironment env)
+    {
+        _settings = settings.Value;
+        _env = env;
+    }
+
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        if (_env.IsDevelopment())
+            return Task.FromResult(HealthCheckResult.Healthy("Skipped in Development"));
+
+        var missing = new List<string>();
+        if (string.IsNullOrWhiteSpace(_settings.ServiceAccount.PrivateKey))
+            missing.Add("AppSettings__ServiceAccount__PrivateKey");
+        if (string.IsNullOrWhiteSpace(_settings.RecaptchaApiKey))
+            missing.Add("AppSettings__RecaptchaApiKey");
+        if (string.IsNullOrWhiteSpace(_settings.ContactEmail))
+            missing.Add("AppSettings__ContactEmail");
+
+        return missing.Count == 0
+            ? Task.FromResult(HealthCheckResult.Healthy())
+            : Task.FromResult(HealthCheckResult.Degraded($"Missing runtime config: {string.Join(", ", missing)}"));
+    }
+}
+
+// Verifies the Rotativa wkhtmltopdf binaries are present so PDF/PNG export failures
+// surface at the health probe rather than on the first user request.
+internal class RotativaBinaryHealthCheck : IHealthCheck
+{
+    private readonly IWebHostEnvironment _env;
+
+    public RotativaBinaryHealthCheck(IWebHostEnvironment env) => _env = env;
+
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        var rotativaPath = Path.Combine(_env.ContentRootPath, "Rotativa");
+        var missing = new[] { "wkhtmltopdf.exe", "wkhtmltoimage.exe" }
+            .Where(f => !File.Exists(Path.Combine(rotativaPath, f)))
+            .ToList();
+
+        return missing.Count == 0
+            ? Task.FromResult(HealthCheckResult.Healthy())
+            : Task.FromResult(HealthCheckResult.Unhealthy($"Missing Rotativa binaries: {string.Join(", ", missing)}"));
     }
 }

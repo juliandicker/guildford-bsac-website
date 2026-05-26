@@ -41,9 +41,35 @@ dotnet user-secrets init
 dotnet user-secrets set "AppSettings:ServiceAccount:PrivateKey" "<private key from Bitwarden>"
 dotnet user-secrets set "AppSettings:RecaptchaApiKey" "<API key from Bitwarden>"
 dotnet user-secrets set "Facebook:PageAccessToken" "<token from Bitwarden>"
+dotnet user-secrets set "AppSettings:ContactEmail" "<your email address>"
+dotnet user-secrets set "AppSettings:ContactEmailBcc" ""
 ```
 
-In production, these are set as environment variables in Plesk using `__` as the section separator (e.g. `AppSettings__ServiceAccount__PrivateKey`).
+In production, credentials are injected by `deploy.yml` at deploy time into `web.config` from **GitHub Actions secrets** (encrypted) and **GitHub Actions variables** (non-sensitive). To add or rotate a value, update it under **Settings → Secrets and variables → Actions** in GitHub, then re-run the workflow.
+
+| Name | Type | Purpose |
+|------|------|---------|
+| `SERVICE_ACCOUNT_PRIVATE_KEY` | Secret | GCP service account private key |
+| `RECAPTCHA_API_KEY` | Secret | reCAPTCHA Enterprise API key |
+| `FACEBOOK_PAGE_ACCESS_TOKEN` | Secret | Facebook Graph API page token |
+| `DEPLOY_PASSWORD` | Secret | Plesk Web Deploy password |
+| `CONTACT_EMAIL` | Variable | Destination address for contact form submissions |
+| `CONTACT_EMAIL_BCC` | Variable | BCC address for contact form submissions (can be blank) |
+| `DEPLOY_URL` | Variable | Plesk Web Deploy endpoint URL |
+| `DEPLOY_USERNAME` | Variable | Plesk Web Deploy username |
+| `SITE_URL` | Variable | Live site URL used by the ZAP security scan |
+
+## Monitoring
+
+The app exposes a health endpoint at:
+
+```
+https://www.guildford-bsac.com/health
+```
+
+It returns HTTP 200 when all required `App_Data/` files are present, or HTTP 503 if any are missing. The CI/CD pipeline polls this endpoint after every deploy to confirm the app started successfully.
+
+**Uptime monitoring** is provided by [UptimeRobot](https://uptimerobot.com) (free tier, 5-minute interval). The free tier supports one alert email, so whoever is maintaining the site should set up their own personal UptimeRobot account pointing at the URL above. If the site goes down, UptimeRobot sends an email alert automatically.
 
 ## reCAPTCHA
 
@@ -88,7 +114,7 @@ If the key is compromised or needs rotating:
 
 ### Adding or removing calendar feeds
 
-Calendar IDs are hardcoded in `YearPlannerController.cs` (`_calendarIds`). Each must be shared with `gbsacadmin@guildford-bsac.com` in Google Calendar settings.
+Calendar IDs are stored in `appsettings.json` under `AppSettings.CalendarIds`. Each must be shared with `gbsacadmin@guildford-bsac.com` in Google Calendar settings.
 
 ## Facebook API
 

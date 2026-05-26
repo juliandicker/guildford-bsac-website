@@ -7,6 +7,6 @@ namespace GuildfordBsac.Web.Services
 
     public interface ICalendarService
     {
-        Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<CalendarModel>> GetCalendarsAsync(int year, CancellationToken cancellationToken = default);
     }
 }

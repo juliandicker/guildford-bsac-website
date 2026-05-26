@@ -14,20 +14,18 @@ namespace GuildfordBsac.Web.Controllers
 
     public class YearPlannerController : Controller
     {
-        // Rotativa renders the year planner at A2 landscape; these pixel dimensions match that target.
         private const int PngPageWidthPixels = 2250;
         private const int PngPageHeightPixels = 1550;
 
         private readonly AppSettings _settings;
         private readonly ICalendarService _calendar;
+        private readonly PngRenderLock _pngLock;
 
-        // Serializes concurrent Rotativa subprocess invocations to prevent stampede on cache miss
-        private static readonly SemaphoreSlim _pngLock = new SemaphoreSlim(1, 1);
-
-        public YearPlannerController(IOptions<AppSettings> settings, ICalendarService calendar)
+        public YearPlannerController(IOptions<AppSettings> settings, ICalendarService calendar, PngRenderLock pngLock)
         {
             _settings = settings.Value;
             _calendar = calendar;
+            _pngLock = pngLock;
         }
 
         [EnableRateLimiting("yearplanner")]
@@ -57,24 +55,15 @@ namespace GuildfordBsac.Web.Controllers
 
         [EnableRateLimiting("yearplanner")]
         [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 6000, VaryByQueryKeys = new[] { "year", "agenda" })]
-        public async Task<ActionResult> Png(int? year, bool agenda = true, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Png(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            await _pngLock.WaitAsync(cancellationToken);
-            try
+            var viewAsImage = new ViewAsImage("Index", await GetModelAsync(ClampYear(year), agenda, cancellationToken))
             {
-                var viewAsImage = new ViewAsImage("Index", await GetModelAsync(ClampYear(year), agenda, cancellationToken))
-                {
-                    PageWidth = PngPageWidthPixels,
-                    PageHeight = PngPageHeightPixels,
-                    Format = Rotativa.AspNetCore.Options.ImageFormat.png
-                };
-                await viewAsImage.ExecuteResultAsync(ControllerContext);
-                return new EmptyResult();
-            }
-            finally
-            {
-                _pngLock.Release();
-            }
+                PageWidth = PngPageWidthPixels,
+                PageHeight = PngPageHeightPixels,
+                Format = Rotativa.AspNetCore.Options.ImageFormat.png
+            };
+            return new LockedViewAsImage(viewAsImage, _pngLock);
         }
 
         private static int ClampYear(int? year)
@@ -82,6 +71,33 @@ namespace GuildfordBsac.Web.Controllers
             var current = DateTime.Now.Year;
             var requested = year ?? current;
             return Math.Clamp(requested, current - 5, current + 1);
+        }
+
+        // Wraps ViewAsImage so the MVC pipeline executes it, while still serialising
+        // concurrent Rotativa subprocess invocations behind PngRenderLock.
+        private sealed class LockedViewAsImage : IActionResult
+        {
+            private readonly ViewAsImage _inner;
+            private readonly PngRenderLock _lock;
+
+            public LockedViewAsImage(ViewAsImage inner, PngRenderLock @lock)
+            {
+                _inner = inner;
+                _lock = @lock;
+            }
+
+            public async Task ExecuteResultAsync(ActionContext context)
+            {
+                await _lock.WaitAsync(context.HttpContext.RequestAborted);
+                try
+                {
+                    await _inner.ExecuteResultAsync(context);
+                }
+                finally
+                {
+                    _lock.Release();
+                }
+            }
         }
     }
 }

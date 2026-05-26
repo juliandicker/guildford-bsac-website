@@ -1,32 +1,26 @@
 namespace GuildfordBsac.Web.Controllers
 {
-    using GuildfordBsac.Web.Common;
     using GuildfordBsac.Web.Models;
     using GuildfordBsac.Web.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.RateLimiting;
-    using Microsoft.Extensions.Logging;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public class HomeController : Controller
     {
         private readonly IFacebookService _facebook;
-        private readonly ILogger<HomeController> _logger;
-        private readonly IReCaptchaValidator _captcha;
-        private readonly IEmailService _emailService;
+        private readonly IContactFormService _contactForm;
         private readonly IMembershipRatesService _membershipRates;
         private readonly ITeamService _team;
         private readonly IFaqService _faq;
 
-        public HomeController(IFacebookService facebook, ILogger<HomeController> logger, IReCaptchaValidator captcha, IEmailService emailService, IMembershipRatesService membershipRates, ITeamService team, IFaqService faq)
+        public HomeController(IFacebookService facebook, IContactFormService contactForm, IMembershipRatesService membershipRates, ITeamService team, IFaqService faq)
         {
             _facebook = facebook;
-            _logger = logger;
-            _captcha = captcha;
-            _emailService = emailService;
+            _contactForm = contactForm;
             _membershipRates = membershipRates;
             _team = team;
             _faq = faq;
@@ -79,42 +73,16 @@ namespace GuildfordBsac.Web.Controllers
         [EnableRateLimiting("contact")]
         public async Task<JsonResult> Contact(ContactViewModel model, CancellationToken cancellationToken)
         {
-            var reCaptchaResponse = await _captcha.ValidateAsync(HttpContext, cancellationToken);
-
-            if (!reCaptchaResponse.Success)
+            if (!ModelState.IsValid)
             {
-                ViewData.ModelState.AddModelError("reCAPTCHA", "You failed to pass the captcha test");
+                var fieldErrors = ViewData.ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                return Json(new { success = false, errors = fieldErrors });
             }
 
-            var errors = new List<string>();
-
-            if (!string.IsNullOrEmpty(model.Emailx))
-            {
-                errors.Add("There has been a technical error sending this message. Please contact by telephone.");
-            }
-            else if (!ModelState.IsValid)
-            {
-                foreach (var modelState in ViewData.ModelState.Values)
-                {
-                    errors.AddRange(modelState.Errors.Select(error => error.ErrorMessage));
-                }
-            }
-            else
-            {
-                try
-                {
-                    if (!await _emailService.SendContactFormEmailAsync(model.Name!, model.Emaily!, model.Subject!, model.Message!, cancellationToken))
-                    {
-                        errors.Add("There has been a technical error sending this message. Please contact by telephone.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Failed to send contact form email");
-                    errors.Add("There has been a technical error sending this message. Please contact by telephone.");
-                }
-            }
-
+            var errors = await _contactForm.SubmitAsync(model, HttpContext, cancellationToken);
             return Json(new { success = errors.Count == 0, errors });
         }
 

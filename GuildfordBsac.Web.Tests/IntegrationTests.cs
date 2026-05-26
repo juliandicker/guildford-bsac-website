@@ -24,8 +24,8 @@ internal class NullFacebookService : IFacebookService
 
 internal class NullGoogleCalendarClient : IGoogleCalendarClient
 {
-    public Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
-        => Task.FromResult<IReadOnlyList<Calendar>>(new List<Calendar>());
+    public Task<IReadOnlyList<CalendarModel>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<CalendarModel>>(new List<CalendarModel>());
 }
 
 internal class SuccessEmailService : IEmailService
@@ -166,6 +166,60 @@ public class IntegrationTests : IClassFixture<GuildfordBsacWebApplicationFactory
 
         Assert.False(doc.RootElement.GetProperty("success").GetBoolean());
         Assert.True(doc.RootElement.GetProperty("errors").GetArrayLength() > 0);
+    }
+
+    [Fact]
+    public async Task ContactPost_ValidSubmission_ReturnsSuccess()
+    {
+        var token = await GetAntiForgeryTokenAsync();
+        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["__RequestVerificationToken"] = token,
+            ["Name"] = "Test User",
+            ["Emaily"] = "test@example.com",
+            ["Subject"] = "Test subject",
+            ["Message"] = "Test message body that is long enough"
+        });
+
+        var response = await _client.PostAsync("/Home/Contact", form);
+        var json = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+
+        Assert.True(doc.RootElement.GetProperty("success").GetBoolean());
+        Assert.Equal(0, doc.RootElement.GetProperty("errors").GetArrayLength());
+    }
+
+    [Theory]
+    [InlineData("/YearPlanner?year=1900")]  // far past — clamped
+    [InlineData("/YearPlanner?year=2100")]  // far future — clamped
+    [InlineData("/YearPlanner?year=abc")]   // non-integer — default year
+    public async Task YearPlanner_OutOfRangeOrInvalidYear_ReturnsOk(string path)
+    {
+        var response = await _client.GetAsync(path);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task YearPlanner_NoYearParam_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/YearPlanner");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task YearPlanner_AgendaFalse_ReturnsOk()
+    {
+        var response = await _client.GetAsync("/YearPlanner?agenda=false");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task YearPlanner_Pdf_ReturnsResult()
+    {
+        var response = await _client.GetAsync("/YearPlanner/Pdf");
+        // Rotativa requires a real wkhtmltopdf binary; in CI this returns an error result,
+        // but the endpoint must not throw an unhandled exception (5xx).
+        Assert.NotEqual(HttpStatusCode.InternalServerError, response.StatusCode);
     }
 
     [Fact]
