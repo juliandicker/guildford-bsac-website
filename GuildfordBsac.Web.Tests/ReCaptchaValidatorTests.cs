@@ -1,5 +1,5 @@
 using GuildfordBsac.Web.Common;
-using GuildfordBsac.Web.Properties;
+using GuildfordBsac.Web.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;

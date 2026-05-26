@@ -29,7 +29,6 @@ try
     var builder = WebApplication.CreateBuilder(args);
     builder.Host.UseSerilog();
 
-    builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
     builder.Services.AddOptions<AppSettings>()
         .Bind(builder.Configuration.GetSection("AppSettings"))
         .ValidateDataAnnotations()

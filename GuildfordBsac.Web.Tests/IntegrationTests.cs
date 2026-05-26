@@ -42,12 +42,12 @@ internal class FailureEmailService : IEmailService
 
 public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly IEmailService? _emailService;
+    private IEmailService? _emailService;
 
-    public GuildfordBsacWebApplicationFactory(IEmailService? emailService = null)
-    {
-        _emailService = emailService;
-    }
+    public GuildfordBsacWebApplicationFactory() { }
+
+    public static GuildfordBsacWebApplicationFactory WithEmailService(IEmailService emailService)
+        => new() { _emailService = emailService };
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -57,10 +57,12 @@ public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Development");
         builder.ConfigureServices(services =>
         {
-            // CookieSecurePolicy.Always marks the antiforgery cookie as Secure; the test
-            // HttpClient uses plain HTTP so CookieContainer won't send it — override for tests.
+            // CookieSecurePolicy.Always marks cookies as Secure; the test HttpClient uses
+            // plain HTTP so override both the global policy and antiforgery-specific policy.
             services.Configure<CookiePolicyOptions>(options =>
                 options.Secure = CookieSecurePolicy.SameAsRequest);
+            services.AddAntiforgery(options =>
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest);
             services.AddScoped<IReCaptchaValidator, AlwaysPassReCaptchaValidator>();
             services.AddSingleton<IFacebookService, NullFacebookService>();
             services.AddSingleton<IGoogleCalendarClient, NullGoogleCalendarClient>();
@@ -145,7 +147,7 @@ public class IntegrationTests : IClassFixture<GuildfordBsacWebApplicationFactory
     [Fact]
     public async Task ContactPost_SendEmailReturnsFalse_ReturnsErrorResponse()
     {
-        var failFactory = new GuildfordBsacWebApplicationFactory(new FailureEmailService());
+        var failFactory = GuildfordBsacWebApplicationFactory.WithEmailService(new FailureEmailService());
         var client = failFactory.CreateClient();
 
         var token = await GetAntiForgeryTokenAsync(client);
