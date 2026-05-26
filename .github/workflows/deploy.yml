@@ -59,9 +59,21 @@ jobs:
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
+        # SECURITY NOTE: Secrets are injected here from GitHub Actions secrets, not stored in Plesk.
+        # Plesk's "Environment Variables" UI also writes to web.config, but MsDeploy overwrites
+        # web.config on every deploy — so anything set via Plesk is lost immediately. GitHub secrets
+        # injection is the only mechanism that survives across deploys.
+        # web.config itself is safe to hold secrets: IIS refuses to serve it over HTTP (403).
+        # To rotate a secret: update the GitHub Actions secret, then re-run this workflow.
+        env:
+          SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
+          RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
         run: |
-          # Secrets live in Plesk .NET Settings > Environment Variables, not here:
-          #   AppSettings__RecaptchaApiKey, AppSettings__ServiceAccount__PrivateKey, Facebook__PageAccessToken
+          $privateKey = ($env:SERVICE_ACCOUNT_PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
+          $escapedPrivateKey = [System.Security.SecurityElement]::Escape($privateKey)
+          $escapedRecaptchaKey = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_API_KEY)
+          $escapedFbToken = [System.Security.SecurityElement]::Escape($env:FACEBOOK_PAGE_ACCESS_TOKEN)
           $xml = @"
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -79,6 +91,9 @@ jobs:
                 <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="outofprocess">
                   <environmentVariables>
                     <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
+                    <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$escapedPrivateKey" />
+                    <environmentVariable name="AppSettings__RecaptchaApiKey" value="$escapedRecaptchaKey" />
+                    <environmentVariable name="Facebook__PageAccessToken" value="$escapedFbToken" />
                   </environmentVariables>
                 </aspNetCore>
               </system.webServer>
@@ -100,7 +115,7 @@ jobs:
           $src  = "${{ github.workspace }}\publish"
           $dest = "contentPath='guildford-bsac.com',computerName='$env:DEPLOY_URL',userName='$env:DEPLOY_USERNAME',password='$env:DEPLOY_PASSWORD',authType='Basic'"
           $skip = "objectname='filePath',absolutePath='appsettings\.json$'"
-          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -enableRule:AppOffline
+          & $msdeploy -verb:sync "-source:contentPath=$src" "-dest:$dest" "-skip:$skip" -allowUntrusted -enableRule:AppOffline
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   zap-scan:
