@@ -1,24 +1,24 @@
 namespace GuildfordBsac.Web.Services
 {
-    using GuildfordBsac.Web.Common;
+    using GuildfordBsac.Web.Configuration;
     using GuildfordBsac.Web.Models;
-    using GuildfordBsac.Web.Properties;
     using Microsoft.Extensions.Caching.Memory;
     using Microsoft.Extensions.Options;
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class CalendarService : ICalendarService
+    public class CalendarService : ICalendarService, IDisposable
     {
-        private readonly IGoogleApiHelper _googleApi;
+        private readonly IGoogleCalendarClient _calendarClient;
         private readonly IMemoryCache _cache;
         private readonly string[] _calendarIds;
         private readonly SemaphoreSlim _fetchLock = new SemaphoreSlim(1, 1);
 
-        public CalendarService(IGoogleApiHelper googleApi, IMemoryCache cache, IOptions<AppSettings> settings)
+        public CalendarService(IGoogleCalendarClient calendarClient, IMemoryCache cache, IOptions<AppSettings> settings)
         {
-            _googleApi = googleApi;
+            _calendarClient = calendarClient;
             _cache = cache;
             _calendarIds = settings.Value.CalendarIds;
         }
@@ -37,7 +37,7 @@ namespace GuildfordBsac.Web.Services
                 if (_cache.TryGetValue(cacheKey, out cached))
                     return cached!;
 
-                var result = await _googleApi.GetCalendarsAsync(year, _calendarIds, cancellationToken);
+                var result = await _calendarClient.GetCalendarsAsync(year, _calendarIds, cancellationToken);
                 _cache.Set(cacheKey, result, TimeSpan.FromHours(1));
                 return result;
             }
@@ -46,5 +46,7 @@ namespace GuildfordBsac.Web.Services
                 _fetchLock.Release();
             }
         }
+
+        public void Dispose() => _fetchLock.Dispose();
     }
 }

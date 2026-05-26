@@ -1,6 +1,6 @@
 using GuildfordBsac.Web.Common;
+using GuildfordBsac.Web.Configuration;
 using GuildfordBsac.Web.Models;
-using GuildfordBsac.Web.Properties;
 using GuildfordBsac.Web.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -22,16 +22,33 @@ internal class NullFacebookService : IFacebookService
         => Task.FromResult(new List<FacebookPostModel>());
 }
 
-internal class NullGoogleApiHelper : IGoogleApiHelper
+internal class NullGoogleCalendarClient : IGoogleCalendarClient
 {
     public Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<Calendar>>(new List<Calendar>());
-    public Task<bool> SendMessageAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
+}
+
+internal class SuccessEmailService : IEmailService
+{
+    public Task<bool> SendContactFormEmailAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
         => Task.FromResult(true);
+}
+
+internal class FailureEmailService : IEmailService
+{
+    public Task<bool> SendContactFormEmailAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
+        => Task.FromResult(false);
 }
 
 public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private IEmailService? _emailService;
+
+    public GuildfordBsacWebApplicationFactory() { }
+
+    public static GuildfordBsacWebApplicationFactory WithEmailService(IEmailService emailService)
+        => new() { _emailService = emailService };
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         // Navigate from bin/Release|Debug/net8.0/ up to the repo root where App_Data lives
@@ -40,13 +57,16 @@ public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Development");
         builder.ConfigureServices(services =>
         {
-            // CookieSecurePolicy.Always marks the antiforgery cookie as Secure; the test
-            // HttpClient uses plain HTTP so CookieContainer won't send it — override for tests.
+            // CookieSecurePolicy.Always marks cookies as Secure; the test HttpClient uses
+            // plain HTTP so override both the global policy and antiforgery-specific policy.
             services.Configure<CookiePolicyOptions>(options =>
                 options.Secure = CookieSecurePolicy.SameAsRequest);
+            services.AddAntiforgery(options =>
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest);
             services.AddScoped<IReCaptchaValidator, AlwaysPassReCaptchaValidator>();
             services.AddSingleton<IFacebookService, NullFacebookService>();
-            services.AddSingleton<IGoogleApiHelper, NullGoogleApiHelper>();
+            services.AddSingleton<IGoogleCalendarClient, NullGoogleCalendarClient>();
+            services.AddSingleton<IEmailService>(_emailService ?? new SuccessEmailService());
         });
     }
 }
@@ -125,15 +145,48 @@ public class IntegrationTests : IClassFixture<GuildfordBsacWebApplicationFactory
     }
 
     [Fact]
+    public async Task ContactPost_SendEmailReturnsFalse_ReturnsErrorResponse()
+    {
+        var failFactory = GuildfordBsacWebApplicationFactory.WithEmailService(new FailureEmailService());
+        var client = failFactory.CreateClient();
+
+        var token = await GetAntiForgeryTokenAsync(client);
+        var form = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["__RequestVerificationToken"] = token,
+            ["Name"] = "Test User",
+            ["Emaily"] = "test@example.com",
+            ["Subject"] = "Test subject",
+            ["Message"] = "Test message body"
+        });
+
+        var response = await client.PostAsync("/Home/Contact", form);
+        var json = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(json);
+
+        Assert.False(doc.RootElement.GetProperty("success").GetBoolean());
+        Assert.True(doc.RootElement.GetProperty("errors").GetArrayLength() > 0);
+    }
+
+    [Fact]
     public void AppSettings_CalendarIds_AreConfigured()
     {
         var settings = _factory.Services.GetRequiredService<IOptions<AppSettings>>();
         Assert.NotEmpty(settings.Value.CalendarIds);
     }
 
-    private async Task<string> GetAntiForgeryTokenAsync()
+    [Fact]
+    public async Task Health_ReturnsOk()
     {
-        var response = await _client.GetAsync("/Home/ContactUs");
+        var response = await _client.GetAsync("/health");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    private async Task<string> GetAntiForgeryTokenAsync() => await GetAntiForgeryTokenAsync(_client);
+
+    private static async Task<string> GetAntiForgeryTokenAsync(HttpClient client)
+    {
+        var response = await client.GetAsync("/Home/ContactUs");
         var html = await response.Content.ReadAsStringAsync();
         var match = Regex.Match(html, @"name=""__RequestVerificationToken"" type=""hidden"" value=""([^""]+)""");
         return match.Groups[1].Value;

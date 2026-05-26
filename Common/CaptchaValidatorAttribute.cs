@@ -4,7 +4,7 @@ namespace GuildfordBsac.Web.Common
     using System.Net.Http;
     using System.Net.Http.Json;
     using System.Threading.Tasks;
-    using GuildfordBsac.Web.Properties;
+    using GuildfordBsac.Web.Configuration;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
@@ -42,39 +42,47 @@ namespace GuildfordBsac.Web.Common
             if (string.IsNullOrEmpty(token))
                 return new ReCaptchaResponse { Success = false };
 
-            var client = _httpClientFactory.CreateClient("recaptcha");
-            var requestBody = new
+            try
             {
-                @event = new { token, siteKey = _siteKey }
-            };
+                var client = _httpClientFactory.CreateClient("recaptcha");
+                var requestBody = new
+                {
+                    @event = new { token, siteKey = _siteKey }
+                };
 
-            var url = $"https://recaptchaenterprise.googleapis.com/v1/projects/{_projectId}/assessments?key={_apiKey}";
-            var response = await client.PostAsJsonAsync(url, requestBody, cancellationToken);
+                var url = $"https://recaptchaenterprise.googleapis.com/v1/projects/{_projectId}/assessments?key={_apiKey}";
+                var response = await client.PostAsJsonAsync(url, requestBody, cancellationToken);
 
-            if (!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
+                {
+                    var body = await response.Content.ReadAsStringAsync(cancellationToken);
+                    _logger.LogError("reCAPTCHA Enterprise API returned {Status}: {Body}", (int)response.StatusCode, body);
+                    return new ReCaptchaResponse { Success = false };
+                }
+
+                var assessment = await response.Content.ReadFromJsonAsync<EnterpriseAssessment>(cancellationToken: cancellationToken)
+                    ?? new EnterpriseAssessment();
+
+                var valid = assessment.TokenProperties?.Valid ?? false;
+                var score = assessment.RiskAnalysis?.Score ?? 0f;
+
+                if (!valid)
+                    _logger.LogWarning("reCAPTCHA token invalid: hostname={Hostname}, reason={Reason}",
+                        assessment.TokenProperties?.Hostname ?? "",
+                        assessment.TokenProperties?.InvalidReason ?? "");
+                else if (score < MinimumAcceptableScore)
+                {
+                    _logger.LogWarning("reCAPTCHA score too low: {Score}", score);
+                    valid = false;
+                }
+
+                return new ReCaptchaResponse { Success = valid };
+            }
+            catch (Exception ex)
             {
-                var body = await response.Content.ReadAsStringAsync(cancellationToken);
-                _logger.LogError("reCAPTCHA Enterprise API returned {Status}: {Body}", (int)response.StatusCode, body);
+                _logger.LogError(ex, "reCAPTCHA validation request failed");
                 return new ReCaptchaResponse { Success = false };
             }
-
-            var assessment = await response.Content.ReadFromJsonAsync<EnterpriseAssessment>(cancellationToken: cancellationToken)
-                ?? new EnterpriseAssessment();
-
-            var valid = assessment.TokenProperties?.Valid ?? false;
-            var score = assessment.RiskAnalysis?.Score ?? 0f;
-
-            if (!valid)
-                _logger.LogWarning("reCAPTCHA token invalid: hostname={Hostname}, reason={Reason}",
-                    assessment.TokenProperties?.Hostname ?? "",
-                    assessment.TokenProperties?.InvalidReason ?? "");
-            else if (score < MinimumAcceptableScore)
-            {
-                _logger.LogWarning("reCAPTCHA score too low: {Score}", score);
-                valid = false;
-            }
-
-            return new ReCaptchaResponse { Success = valid };
         }
 
         private static string ExtractProjectId(string serviceAccountEmail)

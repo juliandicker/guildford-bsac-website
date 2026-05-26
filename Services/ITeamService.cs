@@ -5,6 +5,6 @@ namespace GuildfordBsac.Web.Services
 
     public interface ITeamService
     {
-        List<TeamMemberViewModel> TeamMembers { get; }
+        IReadOnlyList<TeamMemberViewModel> TeamMembers { get; }
     }
 }

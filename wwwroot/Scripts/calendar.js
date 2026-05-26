@@ -125,7 +125,7 @@ function buildCalendarKeyHtml(result) {
 
 function DrawYearPlanner(year, result) {
     $("#calendar").html(buildYearHtml(year));
-    $("#calenderStyles").html(buildCalendarStylesHtml(result));
+    $("#calendarStyles").html(buildCalendarStylesHtml(result));
     $("#key").html(buildCalendarKeyHtml(result));
     $("#events").html(buildEventsHtml(result));
     PositionEvents();

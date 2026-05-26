@@ -7,11 +7,11 @@ namespace GuildfordBsac.Web.Services
 
     public class TeamService : ITeamService
     {
-        public List<TeamMemberViewModel> TeamMembers { get; }
+        public IReadOnlyList<TeamMemberViewModel> TeamMembers { get; }
 
         public TeamService(string path) => TeamMembers = Load(path);
 
-        private static List<TeamMemberViewModel> Load(string path)
+        private static IReadOnlyList<TeamMemberViewModel> Load(string path)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException($"Required data file not found: {path}");

@@ -6,6 +6,6 @@ namespace GuildfordBsac.Web.Models
     {
         public MembershipRatesViewModel MembershipRates { get; set; } = null!;
         public List<FacebookPostModel> RecentPosts { get; set; } = new List<FacebookPostModel>();
-        public List<TeamMemberViewModel> TeamMembers { get; set; } = new List<TeamMemberViewModel>();
+        public IReadOnlyList<TeamMemberViewModel> TeamMembers { get; set; } = new List<TeamMemberViewModel>();
     }
 }

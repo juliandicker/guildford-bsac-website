@@ -1,21 +1,28 @@
 namespace GuildfordBsac.Web.Controllers
 {
+    using GuildfordBsac.Web.Configuration;
     using GuildfordBsac.Web.Models;
-    using GuildfordBsac.Web.Properties;
     using GuildfordBsac.Web.Services;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Options;
-    using System.Text.Json;
-    using Rotativa.AspNetCore;
     using System;
+    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
+    using Rotativa.AspNetCore;
 
     public class YearPlannerController : Controller
     {
+        // Rotativa renders the year planner at A2 landscape; these pixel dimensions match that target.
+        private const int PngPageWidthPixels = 2250;
+        private const int PngPageHeightPixels = 1550;
+
         private readonly AppSettings _settings;
         private readonly ICalendarService _calendar;
+
+        // Serializes concurrent Rotativa subprocess invocations to prevent stampede on cache miss
+        private static readonly SemaphoreSlim _pngLock = new SemaphoreSlim(1, 1);
 
         public YearPlannerController(IOptions<AppSettings> settings, ICalendarService calendar)
         {
@@ -23,9 +30,10 @@ namespace GuildfordBsac.Web.Controllers
             _calendar = calendar;
         }
 
+        [EnableRateLimiting("yearplanner")]
         public async Task<ActionResult> Index(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            return View(await GetModelAsync(year ?? DateTime.Now.Year, agenda, cancellationToken));
+            return View(await GetModelAsync(ClampYear(year), agenda, cancellationToken));
         }
 
         private async Task<YearPlanner2ViewModel> GetModelAsync(int year, bool agenda, CancellationToken cancellationToken)
@@ -41,21 +49,39 @@ namespace GuildfordBsac.Web.Controllers
         [EnableRateLimiting("pdf")]
         public async Task<ActionResult> Pdf(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            return new ViewAsPdf("Index", await GetModelAsync(year ?? DateTime.Now.Year, agenda, cancellationToken))
+            return new ViewAsPdf("Index", await GetModelAsync(ClampYear(year), agenda, cancellationToken))
             {
                 CustomSwitches = _settings.WkHtmlPdfCustomSwitches
             };
         }
 
+        [EnableRateLimiting("yearplanner")]
         [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 6000, VaryByQueryKeys = new[] { "year", "agenda" })]
         public async Task<ActionResult> Png(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            return new ViewAsImage("Index", await GetModelAsync(year ?? DateTime.Now.Year, agenda, cancellationToken))
+            await _pngLock.WaitAsync(cancellationToken);
+            try
             {
-                PageWidth = 2250,
-                PageHeight = 1550,
-                Format = Rotativa.AspNetCore.Options.ImageFormat.png
-            };
+                var viewAsImage = new ViewAsImage("Index", await GetModelAsync(ClampYear(year), agenda, cancellationToken))
+                {
+                    PageWidth = PngPageWidthPixels,
+                    PageHeight = PngPageHeightPixels,
+                    Format = Rotativa.AspNetCore.Options.ImageFormat.png
+                };
+                await viewAsImage.ExecuteResultAsync(ControllerContext);
+                return new EmptyResult();
+            }
+            finally
+            {
+                _pngLock.Release();
+            }
+        }
+
+        private static int ClampYear(int? year)
+        {
+            var current = DateTime.Now.Year;
+            var requested = year ?? current;
+            return Math.Clamp(requested, current - 5, current + 1);
         }
     }
 }
