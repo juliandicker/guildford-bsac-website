@@ -111,4 +111,31 @@ public class CalendarAdapterTests
 
         Assert.Empty(adapter.GetCalendars()[0].Events);
     }
+
+    [Fact]
+    public void EventSpanningYearBoundary_IsSplit()
+    {
+        // Regression: original code used start.Month >= endMinusSecond.Month, which evaluates
+        // Dec(12) >= Jan(1) = true, so year-crossing events were never split.
+        // Fix: year equality is checked first.
+        var adapter = new CalendarAdapter();
+        adapter.AddCalendar(Cal(), Evts(AllDay("2024-12-31", "2025-01-02")));
+
+        var events = adapter.GetCalendars()[0].Events;
+        Assert.Equal(2, events.Count);
+        Assert.Equal(new DateTime(2024, 12, 31), events[0].StartDate);
+        Assert.Equal(new DateTime(2025, 1, 1), events[0].EndDate);
+        Assert.Equal(new DateTime(2025, 1, 1), events[1].StartDate);
+        Assert.Equal(new DateTime(2025, 1, 2), events[1].EndDate);
+    }
+
+    [Fact]
+    public void AllDayEventEndingOnFirstOfNextYear_IsNotSplit()
+    {
+        // Dec 31 all-day event: end = Jan 1 exclusive; endMinusSecond = Dec 31 23:59:59 — same month as start
+        var adapter = new CalendarAdapter();
+        adapter.AddCalendar(Cal(), Evts(AllDay("2024-12-31", "2025-01-01")));
+
+        Assert.Single(adapter.GetCalendars()[0].Events);
+    }
 }

@@ -9,6 +9,8 @@ namespace GuildfordBsac.Web.Controllers
     using System.Text.Json;
     using Rotativa.AspNetCore;
     using System;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public class YearPlannerController : Controller
     {
@@ -21,34 +23,34 @@ namespace GuildfordBsac.Web.Controllers
             _calendar = calendar;
         }
 
-        public ActionResult Index(int? year, bool agenda = true)
+        public async Task<ActionResult> Index(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            return View(GetModel(year ?? DateTime.Now.Year, agenda));
+            return View(await GetModelAsync(year ?? DateTime.Now.Year, agenda, cancellationToken));
         }
 
-        private YearPlanner2ViewModel GetModel(int year, bool agenda = true)
+        private async Task<YearPlanner2ViewModel> GetModelAsync(int year, bool agenda, CancellationToken cancellationToken)
         {
             return new YearPlanner2ViewModel
             {
                 Year = year,
                 ShowAgenda = agenda,
-                CalendarData = JsonSerializer.Serialize(_calendar.GetCalendars(year))
+                CalendarData = JsonSerializer.Serialize(await _calendar.GetCalendarsAsync(year, cancellationToken))
             };
         }
 
         [EnableRateLimiting("pdf")]
-        public ActionResult Pdf(int? year, bool agenda = true)
+        public async Task<ActionResult> Pdf(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            return new ViewAsPdf("Index", GetModel(year ?? DateTime.Now.Year, agenda))
+            return new ViewAsPdf("Index", await GetModelAsync(year ?? DateTime.Now.Year, agenda, cancellationToken))
             {
-                CustomSwitches = _settings.WkHtmlPdf_CustomSwitches
+                CustomSwitches = _settings.WkHtmlPdfCustomSwitches
             };
         }
 
         [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 6000, VaryByQueryKeys = new[] { "year", "agenda" })]
-        public ActionResult Png(int? year, bool agenda = true)
+        public async Task<ActionResult> Png(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            return new ViewAsImage("Index", GetModel(year ?? DateTime.Now.Year, agenda))
+            return new ViewAsImage("Index", await GetModelAsync(year ?? DateTime.Now.Year, agenda, cancellationToken))
             {
                 PageWidth = 2250,
                 PageHeight = 1550,

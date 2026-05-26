@@ -1,13 +1,13 @@
 namespace GuildfordBsac.Web.Controllers
 {
-    using GuildfordBsac.Web.Models;
+    using GuildfordBsac.Web.Services;
     using Microsoft.AspNetCore.Mvc;
 
     public class TrainingController : Controller
     {
-        private readonly MembershipRatesService _membershipRates;
+        private readonly IMembershipRatesService _membershipRates;
 
-        public TrainingController(MembershipRatesService membershipRates)
+        public TrainingController(IMembershipRatesService membershipRates)
         {
             _membershipRates = membershipRates;
         }

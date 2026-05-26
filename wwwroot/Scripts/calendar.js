@@ -25,6 +25,7 @@ function jsDayToShort(jsDay) {
 
 $('#loading').hide();
 var $content = $('#content').show();
+var _isPdf = $content.data("ispdf").toString().toLowerCase() === "true";
 
 $('#eventModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);
@@ -44,8 +45,10 @@ $(document).ready(function () {
     DisplayCalendar(year);
 });
 
+var _resizeTimer;
 $(window).resize(function () {
-    ZoomIt();
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(ZoomIt, 100);
 });
 
 
@@ -54,35 +57,57 @@ function DisplayCalendar(year) {
 }
 
 function PositionEvents() {
-    $('.eventitem').each(function () {
-        $content.show();
+    $content.show();
 
-        var calendar = $(this).data("calendar");
-        var startdate = parseISODate($(this).data("start-date"));
-        var cellName = "#d" + dateToYYYYLLDD(startdate);
-        var cell = $(cellName);
+    // Pre-build overlap groups for .cal events in one pass — avoids O(n²) DOM queries
+    var overlapMap = {};
+    $('.cal').each(function () {
+        var startDate = $(this).data("start-date");
+        if (!overlapMap[startDate]) overlapMap[startDate] = [];
+        overlapMap[startDate].push(this);
+    });
+
+    // Phase 1: collect all layout reads without any writes — prevents read-after-write thrashing
+    var positions = [];
+    $('.eventitem').each(function () {
+        var startDateStr = $(this).data("start-date");
+        var startdate = parseISODate(startDateStr);
+        var cell = $("#d" + dateToYYYYLLDD(startdate));
         var cellWidth = parseFloat(cell.css("width"));
         var padLeft = cellWidth / 6;
+        var cellOffset = cell.offset();
 
-        if (calendar == "Tides") {
+        var calendar = $(this).data("calendar");
+        if (calendar === "Tides") {
             var tideWidth = parseFloat($(this).css("width"));
-            $(this).css({ top: cell.offset().top + 2, left: cell.offset().left + cellWidth - tideWidth - 1 });
+            positions.push({
+                el: this,
+                css: { top: cellOffset.top + 2, left: cellOffset.left + cellWidth - tideWidth - 1 }
+            });
         } else {
-            var duration = $(this).data("duration");
-            var description = $(this).data("description");
-
-            var overlapEvents = $('.cal[data-start-date="' + $(this).data("start-date") + '"]');
-            var overlapEventCount = overlapEvents.length;
-            var overlapEventIndex = overlapEvents.index($(this));
-
+            var overlapItems = overlapMap[startDateStr] || [];
+            var overlapEventCount = Math.max(overlapItems.length, 1);
+            var overlapEventIndex = overlapItems.indexOf(this);
             var evtwidth = (cellWidth - padLeft) / overlapEventCount;
-            var startleft = cell.offset().left + padLeft + 1 + (evtwidth * overlapEventIndex);
-
-            var evtheight = parseFloat(cell.css("height")) * duration;
-            $(this).find(".desc").html(description);
-            $(this).css({ top: cell.offset().top, left: startleft, width: evtwidth, height: evtheight });
+            positions.push({
+                el: this,
+                description: $(this).data("description"),
+                css: {
+                    top: cellOffset.top,
+                    left: cellOffset.left + padLeft + 1 + (evtwidth * overlapEventIndex),
+                    width: evtwidth,
+                    height: parseFloat(cell.css("height")) * $(this).data("duration")
+                }
+            });
         }
     });
+
+    // Phase 2: apply all CSS writes in one batch — no reads follow, so no forced reflows
+    for (var i = 0; i < positions.length; i++) {
+        var p = positions[i];
+        if (p.description !== undefined) $(p.el).find(".desc").html(p.description);
+        $(p.el).css(p.css);
+    }
 }
 
 function buildCalendarKeyHtml(result) {
@@ -128,6 +153,7 @@ function buildAgendaHtml(result) {
             var data = {
                 calendar: cal.Name,
                 startDate: event.StartDate,
+                _sortKey: start.getTime(),
                 day: start.getDate(),
                 month: _monthsShort[start.getMonth()],
                 summary: event.Summary,
@@ -146,7 +172,7 @@ function buildAgendaHtml(result) {
     });
 
     eventdata.sort(function (a, b) {
-        return parseISODate(a.startDate) - parseISODate(b.startDate);
+        return a._sortKey - b._sortKey;
     });
 
     var agendaTemplate = $("#agenda-template").html();
@@ -266,10 +292,8 @@ function buildYearHtml(year) {
 }
 
 function ZoomIt() {
-    var isPdf = $("#content").data("ispdf").toLowerCase() == "true";
-    if (!isPdf) {
+    if (!_isPdf) {
         var perc = $(window).width() / $(document).width();
-        $content.css("transform-origin", "top left");
-        $content.css("transform", "scale(" + perc + ")");
+        $content.css({ "transform-origin": "top left", "transform": "scale(" + perc + ")" });
     }
 }

@@ -7,19 +7,11 @@
 
     public class CalendarAdapter
     {
-        private static readonly HtmlSanitizer _sanitizer = new HtmlSanitizer(new HtmlSanitizerOptions
-        {
-            AllowedTags = new HashSet<string> { "b", "i", "em", "strong", "a", "br", "p", "ul", "ol", "li" },
-            AllowedAttributes = new HashSet<string> { "href", "target" },
-            AllowedSchemes = new HashSet<string> { "http", "https" }
-        });
+        private static readonly HtmlSanitizer _sanitizer = SharedHtmlSanitizer.Instance;
 
         private List<Calendar> _calendars = new List<Calendar>();
 
-        public List<Calendar> GetCalendars()
-        {
-            return _calendars;
-        }
+        public IReadOnlyList<Calendar> GetCalendars() => _calendars.AsReadOnly();
 
         public void AddCalendar(Google.Apis.Calendar.v3.Data.CalendarListEntry gcal, Google.Apis.Calendar.v3.Data.Events gevents, bool splitEventsOverMonths = true)
         {
@@ -35,7 +27,7 @@
                     var start = gevent.Start.DateTimeDateTimeOffset?.DateTime ?? DateTime.Parse(gevent.Start.Date);
                     var end = gevent.End.DateTimeDateTimeOffset?.DateTime ?? DateTime.Parse(gevent.End.Date);
                     var endMinusSecond = end.AddSeconds(-1);
-                    var eventIsInSameMonth = start.Month >= endMinusSecond.Month;
+                    var eventIsInSameMonth = start.Year == endMinusSecond.Year && start.Month == endMinusSecond.Month;
 
                     if (!splitEventsOverMonths || eventIsInSameMonth)
                     {

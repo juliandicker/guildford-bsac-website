@@ -18,14 +18,16 @@ internal class AlwaysPassReCaptchaValidator : IReCaptchaValidator
 
 internal class NullFacebookService : IFacebookService
 {
-    public Task<List<FacebookPostModel>> GetRecentPostsAsync(string pageId, int limit = 5, CancellationToken cancellationToken = default)
+    public Task<List<FacebookPostModel>> GetRecentPostsAsync(int limit = 5, CancellationToken cancellationToken = default)
         => Task.FromResult(new List<FacebookPostModel>());
 }
 
 internal class NullGoogleApiHelper : IGoogleApiHelper
 {
-    public List<Calendar> GetCalendars(int year, string[] calendarIds) => new();
-    public bool SendMessage(string name, string email, string subject, string message) => true;
+    public Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<Calendar>>(new List<Calendar>());
+    public Task<bool> SendMessageAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
+        => Task.FromResult(true);
 }
 
 public class GuildfordBsacWebApplicationFactory : WebApplicationFactory<Program>
