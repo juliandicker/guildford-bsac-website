@@ -59,6 +59,12 @@ jobs:
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
+        # SECURITY NOTE: Secrets are injected here from GitHub Actions secrets, not stored in Plesk.
+        # Plesk's "Environment Variables" UI also writes to web.config, but MsDeploy overwrites
+        # web.config on every deploy — so anything set via Plesk is lost immediately. GitHub secrets
+        # injection is the only mechanism that survives across deploys.
+        # web.config itself is safe to hold secrets: IIS refuses to serve it over HTTP (403).
+        # To rotate a secret: update the GitHub Actions secret, then re-run this workflow.
         env:
           SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
           RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY }}
