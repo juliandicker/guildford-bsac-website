@@ -40,7 +40,7 @@ Google API access is split across two service interfaces:
 
 Both are implemented by the same `GoogleApiService` singleton (shared credential).
 
-Secrets (`AppSettings__ServiceAccount__PrivateKey`, `AppSettings__RecaptchaApiKey`, `Facebook__PageAccessToken`) are injected at runtime via **Plesk .NET Settings → Environment Variables** — they are NOT stored in committed files or generated at deploy time.
+Secrets (`AppSettings__ServiceAccount__PrivateKey`, `AppSettings__RecaptchaApiKey`, `Facebook__PageAccessToken`) are injected at deploy time from **GitHub Actions secrets** into `web.config`'s `<environmentVariables>` section. They are NOT stored in committed files. Do not remove them from the `deploy.yml` web.config generation step — Plesk's env var UI also writes to `web.config` and is overwritten on every deploy, so GitHub secrets injection is the only persistent mechanism.
 
 ### Data
 

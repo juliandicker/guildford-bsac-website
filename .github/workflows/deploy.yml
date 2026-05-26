@@ -59,9 +59,15 @@ jobs:
         run: dotnet publish GuildfordBsac.Web.csproj -c Release -o publish -p:UseAppHost=false
 
       - name: Generate web.config
+        env:
+          SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
+          RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY }}
+          FACEBOOK_PAGE_ACCESS_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
         run: |
-          # Secrets live in Plesk .NET Settings > Environment Variables, not here:
-          #   AppSettings__RecaptchaApiKey, AppSettings__ServiceAccount__PrivateKey, Facebook__PageAccessToken
+          $privateKey = ($env:SERVICE_ACCOUNT_PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
+          $escapedPrivateKey = [System.Security.SecurityElement]::Escape($privateKey)
+          $escapedRecaptchaKey = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_API_KEY)
+          $escapedFbToken = [System.Security.SecurityElement]::Escape($env:FACEBOOK_PAGE_ACCESS_TOKEN)
           $xml = @"
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -79,6 +85,9 @@ jobs:
                 <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="false" stdoutLogFile=".\logs\stdout" hostingModel="outofprocess">
                   <environmentVariables>
                     <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
+                    <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$escapedPrivateKey" />
+                    <environmentVariable name="AppSettings__RecaptchaApiKey" value="$escapedRecaptchaKey" />
+                    <environmentVariable name="Facebook__PageAccessToken" value="$escapedFbToken" />
                   </environmentVariables>
                 </aspNetCore>
               </system.webServer>
