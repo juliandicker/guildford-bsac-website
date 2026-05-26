@@ -14,14 +14,14 @@ namespace GuildfordBsac.Web.Common
         private static readonly Regex _colorPattern = new Regex(@"^#[0-9A-Fa-f]{6}$", RegexOptions.Compiled);
 
         private readonly ILogger _logger;
-        private readonly List<Calendar> _calendars = new List<Calendar>();
+        private readonly List<CalendarModel> _calendars = new List<CalendarModel>();
 
         public CalendarAdapter(ILogger? logger = null)
         {
             _logger = logger ?? NullLogger.Instance;
         }
 
-        public IReadOnlyList<Calendar> GetCalendars() => _calendars.AsReadOnly();
+        public IReadOnlyList<CalendarModel> GetCalendars() => _calendars.AsReadOnly();
 
         public void AddCalendar(Google.Apis.Calendar.v3.Data.CalendarListEntry gcal, Google.Apis.Calendar.v3.Data.Events gevents, bool splitEventsOverMonths = true)
         {
@@ -30,9 +30,9 @@ namespace GuildfordBsac.Web.Common
             if (!_colorPattern.IsMatch(bgColor))
                 bgColor = "#000000";
 
-            var cal = new Calendar
+            var cal = new CalendarModel
             {
-                Events = new List<Event>(),
+                Events = new List<CalendarEvent>(),
                 Name = gcal.Summary,
                 BackgroundColor = bgColor
             };
@@ -87,10 +87,10 @@ namespace GuildfordBsac.Web.Common
             _calendars.Add(cal);
         }
 
-        private static void AddEvent(Calendar cal, DateTime start, DateTime end, Google.Apis.Calendar.v3.Data.Event gevent)
+        private static void AddEvent(CalendarModel cal, DateTime start, DateTime end, Google.Apis.Calendar.v3.Data.Event gevent)
         {
             var description = gevent.Description;
-            var evt = new Event
+            var evt = new CalendarEvent
             {
                 StartDate = start,
                 EndDate = end,

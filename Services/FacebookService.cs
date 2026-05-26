@@ -13,11 +13,6 @@ namespace GuildfordBsac.Web.Services
     using System.Threading;
     using System.Threading.Tasks;
 
-    public interface IFacebookService
-    {
-        Task<List<FacebookPostModel>> GetRecentPostsAsync(int limit = 5, CancellationToken cancellationToken = default);
-    }
-
     public class FacebookService : IFacebookService, IAsyncDisposable
     {
         private readonly FacebookSettings _settings;

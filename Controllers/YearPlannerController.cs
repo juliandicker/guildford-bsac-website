@@ -55,24 +55,15 @@ namespace GuildfordBsac.Web.Controllers
 
         [EnableRateLimiting("yearplanner")]
         [Microsoft.AspNetCore.OutputCaching.OutputCache(Duration = 6000, VaryByQueryKeys = new[] { "year", "agenda" })]
-        public async Task<ActionResult> Png(int? year, bool agenda = true, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Png(int? year, bool agenda = true, CancellationToken cancellationToken = default)
         {
-            await _pngLock.WaitAsync(cancellationToken);
-            try
+            var viewAsImage = new ViewAsImage("Index", await GetModelAsync(ClampYear(year), agenda, cancellationToken))
             {
-                var viewAsImage = new ViewAsImage("Index", await GetModelAsync(ClampYear(year), agenda, cancellationToken))
-                {
-                    PageWidth = PngPageWidthPixels,
-                    PageHeight = PngPageHeightPixels,
-                    Format = Rotativa.AspNetCore.Options.ImageFormat.png
-                };
-                await viewAsImage.ExecuteResultAsync(ControllerContext);
-                return new EmptyResult();
-            }
-            finally
-            {
-                _pngLock.Release();
-            }
+                PageWidth = PngPageWidthPixels,
+                PageHeight = PngPageHeightPixels,
+                Format = Rotativa.AspNetCore.Options.ImageFormat.png
+            };
+            return new LockedViewAsImage(viewAsImage, _pngLock);
         }
 
         private static int ClampYear(int? year)
@@ -80,6 +71,33 @@ namespace GuildfordBsac.Web.Controllers
             var current = DateTime.Now.Year;
             var requested = year ?? current;
             return Math.Clamp(requested, current - 5, current + 1);
+        }
+
+        // Wraps ViewAsImage so the MVC pipeline executes it, while still serialising
+        // concurrent Rotativa subprocess invocations behind PngRenderLock.
+        private sealed class LockedViewAsImage : IActionResult
+        {
+            private readonly ViewAsImage _inner;
+            private readonly PngRenderLock _lock;
+
+            public LockedViewAsImage(ViewAsImage inner, PngRenderLock @lock)
+            {
+                _inner = inner;
+                _lock = @lock;
+            }
+
+            public async Task ExecuteResultAsync(ActionContext context)
+            {
+                await _lock.WaitAsync(context.HttpContext.RequestAborted);
+                try
+                {
+                    await _inner.ExecuteResultAsync(context);
+                }
+                finally
+                {
+                    _lock.Release();
+                }
+            }
         }
     }
 }

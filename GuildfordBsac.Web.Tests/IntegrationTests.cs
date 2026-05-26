@@ -24,8 +24,8 @@ internal class NullFacebookService : IFacebookService
 
 internal class NullGoogleCalendarClient : IGoogleCalendarClient
 {
-    public Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
-        => Task.FromResult<IReadOnlyList<Calendar>>(new List<Calendar>());
+    public Task<IReadOnlyList<CalendarModel>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
+        => Task.FromResult<IReadOnlyList<CalendarModel>>(new List<CalendarModel>());
 }
 
 internal class SuccessEmailService : IEmailService
