@@ -1,4 +1,5 @@
 using GuildfordBsac.Web.Models;
+using GuildfordBsac.Web.Services;
 
 namespace GuildfordBsac.Web.Tests;
 
@@ -6,11 +7,9 @@ public class MembershipRatesServiceTests
 {
     private static MembershipRatesService MakeService(params (DateTime effectiveDate, decimal monthlyRate)[] rates)
     {
-        var service = new MembershipRatesService("unused.json");
-        service.MembershipRates = rates
+        return new MembershipRatesService(rates
             .Select(r => new MembershipRatesViewModel { EffectiveDate = r.effectiveDate, ClubMembershipMonthlyRate = r.monthlyRate })
-            .ToList();
-        return service;
+            .ToList());
     }
 
     [Fact]

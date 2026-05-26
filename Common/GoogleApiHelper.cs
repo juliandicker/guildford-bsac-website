@@ -12,22 +12,26 @@ namespace GuildfordBsac.Web.Common
     using System;
     using System.Collections.Generic;
     using System.Net.Mail;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     public interface IGoogleApiHelper
     {
-        List<Calendar> GetCalendars(int year, string[] calendarIds);
-        bool SendMessage(string name, string email, string subject, string message);
+        Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default);
+        Task<bool> SendMessageAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default);
     }
 
     public class GoogleApiHelper : IGoogleApiHelper
     {
-        private static string ApplicationName = "GBSAC";
-        private const string userAccountEmail = "gbsacadmin@guildford-bsac.com";
+        private const string ApplicationName = "GBSAC";
         private readonly string _clientEmail;
         private readonly string _privateKey;
+        private readonly string _userAccountEmail;
         private readonly string _contactEmail;
         private readonly string _contactEmailBcc;
-        private ServiceAccountCredential? _credential;
+        private readonly Lazy<ServiceAccountCredential> _credential;
+        private readonly Lazy<CalendarService> _calendarService;
+        private readonly Lazy<GmailService> _gmailService;
         private readonly ILogger<GoogleApiHelper> _logger;
 
         public GoogleApiHelper(IOptions<AppSettings> settings, ILogger<GoogleApiHelper> logger)
@@ -36,41 +40,58 @@ namespace GuildfordBsac.Web.Common
             _clientEmail = settings.Value.ServiceAccount.ClientEmail;
             // Env vars store \n as literal backslash-n; normalize to actual newlines
             _privateKey = settings.Value.ServiceAccount.PrivateKey.Replace("\\n", "\n");
+            _userAccountEmail = settings.Value.ServiceAccount.UserEmail;
             _contactEmail = settings.Value.ContactEmail;
             _contactEmailBcc = settings.Value.ContactEmailBcc;
+            _credential = new Lazy<ServiceAccountCredential>(() => CreateServiceAccountCredential(
+                new[] { CalendarService.Scope.CalendarReadonly, GmailService.Scope.GmailSend }));
+            _calendarService = new Lazy<CalendarService>(() => new CalendarService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Credential,
+                ApplicationName = ApplicationName,
+            }));
+            _gmailService = new Lazy<GmailService>(() => new GmailService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Credential,
+                ApplicationName = ApplicationName,
+            }));
         }
 
-        private ServiceAccountCredential Credential => _credential ??= CreateServiceAccountCredential(new[] {
-            CalendarService.Scope.CalendarReadonly,
-            GmailService.Scope.GmailSend
-        });
+        private ServiceAccountCredential Credential => _credential.Value;
 
-        public List<Calendar> GetCalendars(int year, string[] calendarIds)
+        public async Task<IReadOnlyList<Calendar>> GetCalendarsAsync(int year, string[] calendarIds, CancellationToken cancellationToken = default)
         {
             try
             {
-                var service = new CalendarService(new BaseClientService.Initializer()
+                var service = _calendarService.Value;
+
+                var timeMin = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
+                var timeMax = timeMin.AddYears(1).AddSeconds(-1);
+
+                var tasks = calendarIds.Select(async calId =>
                 {
-                    HttpClientInitializer = Credential,
-                    ApplicationName = ApplicationName,
+                    var eventsRequest = service.Events.List(calId);
+                    eventsRequest.TimeMinDateTimeOffset = timeMin;
+                    eventsRequest.TimeMaxDateTimeOffset = timeMax;
+                    eventsRequest.ShowDeleted = false;
+                    eventsRequest.SingleEvents = true;
+                    eventsRequest.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+
+                    // Fire both requests concurrently — they are independent
+                    var metaTask   = service.CalendarList.Get(calId).ExecuteAsync(cancellationToken);
+                    var eventsTask = eventsRequest.ExecuteAsync(cancellationToken);
+
+                    return (
+                        Meta: await metaTask,
+                        Events: await eventsTask
+                    );
                 });
 
-                CalendarAdapter adapter = new CalendarAdapter();
+                var results = await Task.WhenAll(tasks);
 
-                foreach (var calId in calendarIds)
-                {
-                    CalendarListResource.GetRequest getRequest = service.CalendarList.Get(calId);
-
-                    EventsResource.ListRequest request = service.Events.List(calId);
-                    var timeMin = new DateTimeOffset(year, 1, 1, 0, 0, 0, TimeSpan.Zero);
-                    request.TimeMinDateTimeOffset = timeMin;
-                    request.TimeMaxDateTimeOffset = timeMin.AddYears(1).AddSeconds(-1);
-                    request.ShowDeleted = false;
-                    request.SingleEvents = true;
-                    request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
-
-                    adapter.AddCalendar(getRequest.Execute(), request.Execute());
-                }
+                var adapter = new CalendarAdapter();
+                foreach (var (meta, events) in results)
+                    adapter.AddCalendar(meta, events);
 
                 return adapter.GetCalendars();
             }
@@ -81,24 +102,21 @@ namespace GuildfordBsac.Web.Common
             }
         }
 
-        public bool SendMessage(string name, string email, string subject, string message)
+        public async Task<bool> SendMessageAsync(string name, string email, string subject, string message, CancellationToken cancellationToken = default)
         {
             try
             {
-                var service = new GmailService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = Credential,
-                    ApplicationName = ApplicationName,
-                });
+                var service = _gmailService.Value;
 
-                var mimeMessage = MimeMessage.CreateFromMailMessage(CreateMailMessage(name, email, subject, message));
+                using var mailMessage = CreateMailMessage(name, email, subject, message);
+                var mimeMessage = MimeMessage.CreateFromMailMessage(mailMessage);
 
                 var gmailMessage = new Google.Apis.Gmail.v1.Data.Message
                 {
                     Raw = Encode(mimeMessage.ToString())
                 };
 
-                service.Users.Messages.Send(gmailMessage, userAccountEmail).Execute();
+                await service.Users.Messages.Send(gmailMessage, _userAccountEmail).ExecuteAsync(cancellationToken);
 
                 return true;
             }
@@ -120,14 +138,14 @@ namespace GuildfordBsac.Web.Common
                 new ServiceAccountCredential.Initializer(_clientEmail)
                 {
                     Scopes = scopes,
-                    User = userAccountEmail
+                    User = _userAccountEmail
                 }.FromPrivateKey(_privateKey));
         }
 
         private MailMessage CreateMailMessage(string name, string email, string subject, string message)
         {
             var mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(userAccountEmail);
+            mailMessage.From = new MailAddress(_userAccountEmail);
             mailMessage.To.Add(_contactEmail);
             mailMessage.ReplyToList.Add(email);
 
@@ -158,12 +176,8 @@ namespace GuildfordBsac.Web.Common
 
         private static string Encode(string text)
         {
-            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(text);
-
-            return Convert.ToBase64String(bytes)
-                .Replace('+', '-')
-                .Replace('/', '_')
-                .Replace("=", "");
+            var bytes = System.Text.Encoding.UTF8.GetBytes(text);
+            return Microsoft.AspNetCore.WebUtilities.WebEncoders.Base64UrlEncode(bytes);
         }
     }
 }

@@ -1,9 +1,8 @@
 @using System.Globalization
-@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+@inject GuildfordBsac.Web.Common.ISvgIconProvider Icons
 @model GuildfordBsac.Web.Models.YearPlanner2ViewModel
 @{
     Layout = "~/Views/Shared/_Layout_empty.cshtml";
-    var iconBase = System.IO.Path.Combine(Env.WebRootPath, "Content", "Images", "icons");
     var _pdfBase = ViewData["PdfBaseUrl"] as string;
     string AbsUrl(string path) => _pdfBase != null ? _pdfBase + Url.Content(path) : Url.Content(path);
 }
@@ -21,14 +20,14 @@
                     <h1>
                         Year planner
                         <a class="d-print-none" href="@Url.Action("Index", "YearPlanner", new { year = Model.Year - 1 })" title="Previous year">
-                            @Html.Raw(System.IO.File.ReadAllText(System.IO.Path.Combine(iconBase, "chevron-left.svg")))
+                            @Html.Raw(Icons.ChevronLeft)
                         </a>
                         <span id="year">@Model.Year</span>
                         <a class="d-print-none" href="@Url.Action("Index", "YearPlanner", new { year = Model.Year + 1 })" title="Next year">
-                            @Html.Raw(System.IO.File.ReadAllText(System.IO.Path.Combine(iconBase, "chevron-right.svg")))
+                            @Html.Raw(Icons.ChevronRight)
                         </a>
                         <a class="d-print-none" href="@Url.Action("Pdf", "YearPlanner", new { year = Model.Year })" title="Print to PDF" target="_blank">
-                            @Html.Raw(System.IO.File.ReadAllText(System.IO.Path.Combine(iconBase, "printer-fill.svg")))
+                            @Html.Raw(Icons.PrinterFill)
                         </a>
                     </h1>
                 </td>

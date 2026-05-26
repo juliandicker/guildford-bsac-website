@@ -60,14 +60,14 @@ jobs:
 
       - name: Generate web.config
         env:
-          RECAPTCHA_SECRET: ${{ secrets.RECAPTCHA_SECRET }}
+          RECAPTCHA_API_KEY: ${{ secrets.RECAPTCHA_API_KEY }}
           PRIVATE_KEY: ${{ secrets.SERVICE_ACCOUNT_PRIVATE_KEY }}
           FACEBOOK_TOKEN: ${{ secrets.FACEBOOK_PAGE_ACCESS_TOKEN }}
         run: |
-          $pk = ($env:PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
-          $r  = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_SECRET)
-          $pk = [System.Security.SecurityElement]::Escape($pk)
-          $fb = [System.Security.SecurityElement]::Escape($env:FACEBOOK_TOKEN)
+          $privateKey = ($env:PRIVATE_KEY -replace "`r`n", '\n' -replace "`n", '\n')
+          $escapedApiKey = [System.Security.SecurityElement]::Escape($env:RECAPTCHA_API_KEY)
+          $escapedPrivateKey = [System.Security.SecurityElement]::Escape($privateKey)
+          $escapedFbToken = [System.Security.SecurityElement]::Escape($env:FACEBOOK_TOKEN)
           $xml = @"
           <?xml version="1.0" encoding="utf-8"?>
           <configuration>
@@ -85,9 +85,12 @@ jobs:
                 <aspNetCore processPath="dotnet" arguments=".\GuildfordBsac.Web.dll" stdoutLogEnabled="true" stdoutLogFile=".\logs\stdout" hostingModel="outofprocess">
                   <environmentVariables>
                     <environmentVariable name="ASPNETCORE_ENVIRONMENT" value="Production" />
-                    <environmentVariable name="AppSettings__RecaptchaSecret" value="$r" />
-                    <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$pk" />
-                    <environmentVariable name="Facebook__PageAccessToken" value="$fb" />
+                    <environmentVariable name="AppSettings__RecaptchaApiKey" value="$escapedApiKey" />
+                    <environmentVariable name="AppSettings__RecaptchaSiteKey" value="6LfEV_wsAAAAAMQzxEIKxFMDMKkxAiNXU7IRo-b-" />
+                    <environmentVariable name="AppSettings__WkHtmlPdfCustomSwitches" value="--print-media-type --disable-smart-shrinking --encoding utf-8 --orientation landscape --page-size A2 -T 0 -B 0 -R 0 -L 0" />
+                    <environmentVariable name="AppSettings__ServiceAccount__PrivateKey" value="$escapedPrivateKey" />
+                    <environmentVariable name="AppSettings__ServiceAccount__UserEmail" value="gbsacadmin@guildford-bsac.com" />
+                    <environmentVariable name="Facebook__PageAccessToken" value="$escapedFbToken" />
                     <environmentVariable name="AppSettings__CalendarIds__0" value="c_eo5g5mq6klkuhoc9us9r7e26fc@group.calendar.google.com" />
                     <environmentVariable name="AppSettings__CalendarIds__1" value="c_1v9tf1n7rali13nvf95ak4lc7k@group.calendar.google.com" />
                     <environmentVariable name="AppSettings__CalendarIds__2" value="c_670f59ed3f5r9fbd4molm2225s@group.calendar.google.com" />

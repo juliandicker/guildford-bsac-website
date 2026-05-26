@@ -39,7 +39,7 @@ Set up [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app
 ```powershell
 dotnet user-secrets init
 dotnet user-secrets set "AppSettings:ServiceAccount:PrivateKey" "<private key from Bitwarden>"
-dotnet user-secrets set "AppSettings:RecaptchaSecret" "<secret from Bitwarden>"
+dotnet user-secrets set "AppSettings:RecaptchaApiKey" "<API key from Bitwarden>"
 dotnet user-secrets set "Facebook:PageAccessToken" "<token from Bitwarden>"
 ```
 
@@ -47,22 +47,25 @@ In production, these are set as environment variables in Plesk using `__` as the
 
 ## reCAPTCHA
 
-The contact form is protected by [Google reCAPTCHA v2](https://developers.google.com/recaptcha/) ("I'm not a robot" checkbox).
+The contact form is protected by [Google reCAPTCHA Enterprise](https://cloud.google.com/recaptcha) ("I'm not a robot" checkbox).
 
-**Admin console:** [google.com/recaptcha/admin](https://www.google.com/recaptcha/admin) — log in with the club Google account to manage keys and view traffic stats.
+**Admin console:** [GCP Console → Security → reCAPTCHA](https://console.cloud.google.com/security/recaptcha) in project `gbsac-312212` — log in with the club Google account to manage keys and view traffic stats.
 
-The site is registered under the domain `guildford-bsac.com`. Two keys are required:
+The site is registered under the domain `guildford-bsac.com`. Two values are required:
 
-| Key | Where used |
-|-----|-----------|
+| Setting | Where used |
+|---------|-----------|
 | **Site key** (`RecaptchaSiteKey`) | Embedded in the contact form HTML — safe to be public, stored in `appsettings.json` |
-| **Secret key** (`RecaptchaSecret`) | Server-side token validation — must be kept secret, stored in User Secrets / Plesk env var |
+| **API key** (`RecaptchaApiKey`) | Server-side token validation via reCAPTCHA Enterprise Assessment API — must be kept secret, stored in User Secrets / GitHub secret `RECAPTCHA_API_KEY` |
+
+The API key is restricted to the reCAPTCHA Enterprise API only (no HTTP referrer restrictions — server-to-server calls require this).
 
 To rotate keys or register a new domain:
-1. Go to the [reCAPTCHA admin console](https://www.google.com/recaptcha/admin)
-2. Select the site → Settings → update domains or generate new keys
-3. Update `RecaptchaSiteKey` in `appsettings.json` and `RecaptchaSecret` in User Secrets (dev) and Plesk (production)
-4. Update the Bitwarden entry
+1. Go to [GCP Console → Security → reCAPTCHA](https://console.cloud.google.com/security/recaptcha) in project `gbsac-312212`
+2. Select the key → Settings → update domains or create a new key
+3. Update `RecaptchaSiteKey` in `appsettings.json` and `Views/Home/_contact.cshtml`
+4. Update `RecaptchaApiKey` in User Secrets (dev) and GitHub secret `RECAPTCHA_API_KEY` (production)
+5. Update the Bitwarden entry
 
 ## Google APIs
 

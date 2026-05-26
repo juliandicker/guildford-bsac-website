@@ -17,7 +17,7 @@ dotnet run
 - HTTP: `http://localhost:5235`
 - App runs under path base `/gbsacCore`
 
-No test projects exist in this repository.
+Tests are in `GuildfordBsac.Web.Tests/`. Run with `dotnet test GuildfordBsac.Web.Tests/GuildfordBsac.Web.Tests.csproj`.
 
 ## Architecture
 
@@ -47,7 +47,8 @@ Static JSON files in `App_Data/` are loaded by service classes:
 ### Configuration (`appsettings.json`)
 
 Key settings mapped to `Settings.cs`:
-- `reCAPTCHA` — site/secret keys for contact form protection
+- `RecaptchaSiteKey` — public site key embedded in the contact form HTML
+- `RecaptchaApiKey` — Google Cloud API key for server-side reCAPTCHA Enterprise Assessment API calls
 - `ContactEmail` — destination address for contact form submissions
 - `PdfSwitches` — Rotativa CLI options for PDF generation
 

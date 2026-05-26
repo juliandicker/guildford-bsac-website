@@ -1,7 +1,6 @@
 using System.Security.Cryptography;
 using System.Threading.RateLimiting;
 using GuildfordBsac.Web.Common;
-using GuildfordBsac.Web.Models;
 using GuildfordBsac.Web.Properties;
 using GuildfordBsac.Web.Services;
 using Microsoft.AspNetCore.RateLimiting;
@@ -14,17 +13,18 @@ builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSet
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IFacebookService, FacebookService>();
 builder.Services.AddHttpClient("recaptcha", c => c.Timeout = TimeSpan.FromSeconds(10));
-builder.Services.AddHttpClient("facebook");
+builder.Services.AddHttpClient("facebook", c => c.Timeout = TimeSpan.FromSeconds(5));
 builder.Services.AddScoped<IReCaptchaValidator, ReCaptchaValidator>();
 builder.Services.AddSingleton<IGoogleApiHelper, GoogleApiHelper>();
 builder.Services.AddSingleton<ICalendarService, CalendarService>();
-builder.Services.AddSingleton<IEmailService, EmailService>();
-builder.Services.AddSingleton<MembershipRatesService>(sp =>
+builder.Services.AddSingleton<ISvgIconProvider, SvgIconProvider>();
+builder.Services.AddSingleton<IFaqService, FaqService>();
+builder.Services.AddSingleton<IMembershipRatesService>(sp =>
 {
     var env = sp.GetRequiredService<IWebHostEnvironment>();
     return new MembershipRatesService(Path.Combine(env.ContentRootPath, "App_Data", "membershiprates.json"));
 });
-builder.Services.AddSingleton<TeamService>(sp =>
+builder.Services.AddSingleton<ITeamService>(sp =>
 {
     var env = sp.GetRequiredService<IWebHostEnvironment>();
     return new TeamService(Path.Combine(env.ContentRootPath, "App_Data", "team.json"));
@@ -61,8 +61,8 @@ var app = builder.Build();
 var startupLogger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
 try
 {
-    _ = app.Services.GetRequiredService<MembershipRatesService>().MembershipRates;
-    _ = app.Services.GetRequiredService<TeamService>().TeamMembers;
+    _ = app.Services.GetRequiredService<IMembershipRatesService>().MembershipRates;
+    _ = app.Services.GetRequiredService<ITeamService>().TeamMembers;
 }
 catch (Exception ex)
 {
@@ -82,6 +82,23 @@ if (!app.Environment.IsDevelopment())
 
 app.UseCookiePolicy();
 
+// Pre-built once — only the nonce placeholder {0} changes per request
+var cspTemplate =
+    "default-src 'self'; " +
+    "script-src 'self' 'nonce-{0}' https://www.google.com https://www.gstatic.com https://www.google-analytics.com; " +
+    "style-src 'self' 'nonce-{0}' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
+    "style-src-attr 'unsafe-inline'; " +
+    "font-src 'self' https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
+    "img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com https://*.fbcdn.net; " +
+    "frame-src https://www.google.com https://recaptcha.google.com; " +
+    "connect-src 'self' https://www.google.com https://www.gstatic.com https://google-analytics.com https://www.google-analytics.com https://region1.google-analytics.com; " +
+    "form-action 'self' https://guildford-bsac.us14.list-manage.com; " +
+    "worker-src 'none'; " +
+    "manifest-src 'self'; " +
+    "object-src 'none'; " +
+    "base-uri 'self'; " +
+    "frame-ancestors 'self';";
+
 app.Use(async (context, next) =>
 {
     var nonce = Convert.ToBase64String(RandomNumberGenerator.GetBytes(18));
@@ -93,21 +110,7 @@ app.Use(async (context, next) =>
     context.Response.Headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
     context.Response.Headers["Cross-Origin-Embedder-Policy"] = "unsafe-none";
     context.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin";
-    context.Response.Headers["Content-Security-Policy"] =
-        $"default-src 'self'; " +
-        $"script-src 'self' 'nonce-{nonce}' https://www.google.com https://www.gstatic.com https://www.google-analytics.com; " +
-        $"style-src 'self' 'nonce-{nonce}' https://fonts.googleapis.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
-        $"style-src-attr 'unsafe-inline'; " +
-        $"font-src 'self' https://fonts.gstatic.com https://maxcdn.bootstrapcdn.com https://cdn.jsdelivr.net; " +
-        $"img-src 'self' data: https://www.google-analytics.com https://www.gstatic.com https://*.fbcdn.net; " +
-        $"frame-src https://www.google.com https://recaptcha.google.com; " +
-        $"connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com; " +
-        $"form-action 'self' https://guildford-bsac.us14.list-manage.com; " +
-        $"worker-src 'none'; " +
-        $"manifest-src 'self'; " +
-        $"object-src 'none'; " +
-        $"base-uri 'self'; " +
-        $"frame-ancestors 'self';";
+    context.Response.Headers["Content-Security-Policy"] = string.Format(cspTemplate, nonce);
     await next();
 });
 

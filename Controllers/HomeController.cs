@@ -1,42 +1,35 @@
 namespace GuildfordBsac.Web.Controllers
 {
-    using Ganss.Xss;
     using GuildfordBsac.Web.Common;
     using GuildfordBsac.Web.Models;
     using GuildfordBsac.Web.Services;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.RateLimiting;
     using Microsoft.Extensions.Logging;
     using System;
-    using System.Text.Json;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
     public class HomeController : Controller
     {
-        private static readonly string[] AllowedFaqFiles = { "faqs.json", "faqsContact.json" };
-        private static readonly HtmlSanitizer _sanitizer = new HtmlSanitizer();
-
         private readonly IFacebookService _facebook;
-        private readonly IWebHostEnvironment _env;
         private readonly ILogger<HomeController> _logger;
         private readonly IReCaptchaValidator _captcha;
-        private readonly IEmailService _email;
-        private readonly MembershipRatesService _membershipRates;
-        private readonly TeamService _team;
+        private readonly IGoogleApiHelper _googleApi;
+        private readonly IMembershipRatesService _membershipRates;
+        private readonly ITeamService _team;
+        private readonly IFaqService _faq;
 
-        public HomeController(IFacebookService facebook, IWebHostEnvironment env, ILogger<HomeController> logger, IReCaptchaValidator captcha, IEmailService email, MembershipRatesService membershipRates, TeamService team)
+        public HomeController(IFacebookService facebook, ILogger<HomeController> logger, IReCaptchaValidator captcha, IGoogleApiHelper googleApi, IMembershipRatesService membershipRates, ITeamService team, IFaqService faq)
         {
             _facebook = facebook;
-            _env = env;
             _logger = logger;
             _captcha = captcha;
-            _email = email;
+            _googleApi = googleApi;
             _membershipRates = membershipRates;
             _team = team;
+            _faq = faq;
         }
 
         public async Task<ActionResult> Index(CancellationToken cancellationToken)
@@ -45,16 +38,15 @@ namespace GuildfordBsac.Web.Controllers
             {
                 MembershipRates = _membershipRates.Current,
                 TeamMembers = _team.TeamMembers,
-                RecentPosts = await _facebook.GetRecentPostsAsync("1027783460591236", limit: 5, cancellationToken)
+                RecentPosts = await _facebook.GetRecentPostsAsync(limit: 5, cancellationToken)
             };
 
             return View(model);
         }
 
-        public ActionResult Faqs()
+        public async Task<ActionResult> Faqs()
         {
-            var model = LoadFaqModel("faqs.json");
-            return View(model);
+            return View(await _faq.GetFaqsAsync("faqs.json"));
         }
 
         public ActionResult About()
@@ -72,12 +64,12 @@ namespace GuildfordBsac.Web.Controllers
             return View();
         }
 
-        public ActionResult ContactUs()
+        public async Task<ActionResult> ContactUs()
         {
             var model = new ContactUsViewModel
             {
                 Contact = new ContactViewModel(),
-                Faqs = LoadFaqModel("faqsContact.json")
+                Faqs = await _faq.GetFaqsAsync("faqsContact.json")
             };
             return View(model);
         }
@@ -96,7 +88,7 @@ namespace GuildfordBsac.Web.Controllers
 
             var errors = new List<string>();
 
-            if (!String.IsNullOrEmpty(model.Emailx))
+            if (!string.IsNullOrEmpty(model.Emailx))
             {
                 errors.Add("There has been a technical error sending this message. Please contact by telephone.");
             }
@@ -111,7 +103,7 @@ namespace GuildfordBsac.Web.Controllers
             {
                 try
                 {
-                    if (!_email.SendContactEmail(model.Name!, model.Emaily!, model.Subject!, model.Message!))
+                    if (!await _googleApi.SendMessageAsync(model.Name!, model.Emaily!, model.Subject!, model.Message!, cancellationToken))
                     {
                         errors.Add("There has been a technical error sending this message. Please contact by telephone.");
                     }
@@ -133,19 +125,5 @@ namespace GuildfordBsac.Web.Controllers
             return View("Error", statusCode?.ToString());
         }
 
-        private FaqsViewModel LoadFaqModel(string filename)
-        {
-            if (!AllowedFaqFiles.Contains(filename))
-                throw new ArgumentException($"Invalid FAQ file: {filename}");
-
-            var physicalPath = Path.Combine(_env.ContentRootPath, "App_Data", filename);
-            var json = System.IO.File.ReadAllText(physicalPath);
-            var model = JsonSerializer.Deserialize<FaqsViewModel>(json)!;
-
-            foreach (var faq in model.Faqs)
-                faq.Answer = _sanitizer.Sanitize(faq.Answer);
-
-            return model;
-        }
     }
 }

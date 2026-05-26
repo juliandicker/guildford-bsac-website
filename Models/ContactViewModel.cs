@@ -13,11 +13,10 @@
         [StringLength(254)]
         [Display(Name = "Your email", Prompt = "Email")]
         [EmailAddress]
+        // Intentionally not named "email" to avoid bot autofill on the real field
         public string Emaily { get; set; } = string.Empty;
 
-        [StringLength(254)]
-        [Display(Name = "Your email", Prompt = "Email")]
-        [EmailAddress]
+        // Honeypot: must remain empty. Bots fill it in, humans don't see it.
         public string? Emailx { get; set; }
 
         [Required]
