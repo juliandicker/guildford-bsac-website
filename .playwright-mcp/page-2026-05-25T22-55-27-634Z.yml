@@ -1,0 +1,325 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Guildford BSAC" [ref=e5] [cursor=pointer]:
+          - /url: "#"
+          - img "Guildford BSAC" [ref=e6]
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - button "Home" [ref=e10] [cursor=pointer]
+          - listitem [ref=e11]:
+            - button "Training" [ref=e12] [cursor=pointer]
+          - listitem [ref=e13]:
+            - link "FAQs" [ref=e14] [cursor=pointer]:
+              - /url: /gbsacCore/home/faqs
+          - listitem [ref=e15]:
+            - button "Members" [ref=e16] [cursor=pointer]
+          - listitem [ref=e17]:
+            - link "Contact Us" [ref=e18] [cursor=pointer]:
+              - /url: /gbsacCore/home/ContactUs
+  - generic [ref=e24]:
+    - heading "Try Dive" [level=1] [ref=e25]
+    - paragraph [ref=e26]: Try scuba diving. The first time you breathe underwater is an experience to remember – and you will be surprised by just how much fun it is.
+    - link "Contact" [ref=e27] [cursor=pointer]:
+      - /url: /gbsacCore/Home/ContactUs
+    - generic [ref=e29]:
+      - heading "Never dived before?" [level=3] [ref=e30]
+      - paragraph [ref=e31]: Guildford Sub-Aqua Club offers try diving sessions to anyone who is interested to give it a go and experience the thrill of breathing under water! We will supply you with all the necessary kit and you will spend between 30 minutes to an hour in the pool with an experienced qualified instructor, who will give you an insight into what we are sure you will find to be a most enjoyable experience.
+      - paragraph [ref=e32]: This try dive is open to young* and old alike and all that we ask is that you bring with you an open mind and your swim suit and have fun!
+      - paragraph [ref=e33]: "* Minimum Age for Membership of Guildford BSAC is 12."
+  - generic [ref=e36]:
+    - generic [ref=e37]:
+      - heading "What will you learn?" [level=3] [ref=e38]
+      - paragraph [ref=e39]: "Under the direct supervision of a BSAC Instructor, you will learn:"
+      - list [ref=e40]:
+        - listitem [ref=e41]: the basic safety guidelines and skills needed to dive.
+        - listitem [ref=e42]: about scuba equipment and how easy it is to use.
+        - listitem [ref=e43]: how to breathe underwater with scuba equipment.
+        - listitem [ref=e44]: the correct fining technique and how to adjust buoyancy, whilst having fun swimming around and exploring.
+        - listitem [ref=e45]: how to become a certified BSAC Ocean Diver.
+    - generic [ref=e46]:
+      - heading "When and where?" [level=3] [ref=e47]
+      - paragraph [ref=e48]: All try dives take place in a swimming pool and must be arranged in advance. The cost is £25.00, which is fully refunded if you decide to join the club. Come to the Waterside Centre first so we can arrange equipment and introduce you to an instructor.
+  - generic [ref=e51]:
+    - generic [ref=e52]:
+      - heading "Learn to Dive" [level=1] [ref=e53]
+      - paragraph [ref=e54]: From beginner to experienced, BSAC provides a full training programme that enables divers to progress through a framework of qualifications at their own pace.
+      - paragraph [ref=e55]: There are five internationally-recognised BSAC diver grades, from the entry level Ocean Diver through to our highest grade, First Class Diver.
+    - generic [ref=e56]:
+      - tablist [ref=e57]:
+        - tab "Ocean Diver" [selected] [ref=e58] [cursor=pointer]
+        - tab "Sports Diver" [ref=e59] [cursor=pointer]
+        - tab "Dive Leader" [ref=e60] [cursor=pointer]
+        - tab "Advanced Diver" [ref=e61] [cursor=pointer]
+        - tab "First Class Diver" [ref=e62] [cursor=pointer]
+      - tabpanel "Ocean Diver" [ref=e64]:
+        - generic [ref=e66]:
+          - heading "Ocean Diver" [level=2] [ref=e67]
+          - paragraph [ref=e68]: If you’ve always wanted to learn how to dive, this course is for you. This course is for beginners and provides the essential knowledge and skills needed to prepare for open water diving.
+          - paragraph [ref=e69]: The BSAC Ocean Diver course prepares for this in the safety of a swimming pool or sheltered water and an introduction to open water in a controlled, safe manner. Experience and confidence will be gained under the guidance of a qualified instructor. Maximum depth - 20m.
+          - heading "Prerequisites" [level=4] [ref=e70]
+          - paragraph [ref=e71]:
+            - text: To enrol on the BSAC Ocean Diver Course you must be 12 years or older.
+            - text: A basic level of comfort in the water is important and you will have to demonstrate that you can swim 200m in swimwear.
+          - heading "What you’ll learn" [level=4] [ref=e72]
+          - paragraph [ref=e73]: "The BSAC Ocean Diver course has three main stages:"
+          - list [ref=e74]:
+            - listitem [ref=e75]: Lessons and theory assessment on the basic principles of scuba diving
+            - listitem [ref=e76]: Five confined water dives to learn the basics in the water (usually in a swimming pool)
+            - listitem [ref=e77]: Five open water dives to further develop your scuba diving skills
+          - heading "The fun bit" [level=4] [ref=e78]
+          - paragraph [ref=e79]: Will hopefully be from start to finish! Learning to dive is a life changing experience for many people. Breathing underwater for the first time is something you will never forget and the experience of learning with others is great fun. Your instructor is trained to look after you every step of the way.
+          - heading "Qualification and what that means" [level=4] [ref=e80]
+          - paragraph [ref=e81]: "A BSAC Ocean Diver is defined as a diver who is competent to conduct dives:"
+          - list [ref=e82]:
+            - listitem [ref=e83]: to a maximum depth of 20m.
+            - listitem [ref=e84]: with another BSAC Ocean Diver or with a BSAC Sports Diver, within the restrictions of the conditions already encountered during training.
+            - listitem [ref=e85]: with a Dive Leader or higher grade, to expand experience beyond the conditions encountered during training, under the supervision of a Dive Manager.
+            - listitem [ref=e86]: not requiring mandatory decompression stops.
+            - listitem [ref=e87]: under the on-site supervision of a Dive Manager with respect to site selection, conditions and dive plan.
+  - generic [ref=e89]:
+    - link:
+      - /url: https://shop.divecrew.co.uk/shop/divecrew-2012/en/view-course/courses/open-water-courses/bsac/bsac-ocean-diver-full-52148
+      - img [ref=e90] [cursor=pointer]
+    - heading "Fast Track Training with Divecrew" [level=1] [ref=e91]
+    - paragraph [ref=e92]: our BSAC Centre Partnership
+    - paragraph [ref=e93]:
+      - text: At Guildford Sub-Aqua Club you can choose whether to train with the club or you can train with our partner BSAC Training Centre,
+      - link "Divecrew" [ref=e94] [cursor=pointer]:
+        - /url: https://divecrew.dive360.biz/courses/ocean-diver-fast-track
+      - text: . If you want to get certified quickly then
+      - link "Divecrew" [ref=e95] [cursor=pointer]:
+        - /url: https://divecrew.dive360.biz/courses/ocean-diver-fast-track
+      - text: can help you complete the Ocean Diver course in 4 or 5 days. This is a great option if you have a holiday in the near future or just can't wait to come diving with our club.
+    - generic [ref=e96]:
+      - generic [ref=e97]:
+        - paragraph [ref=e98]:
+          - text: The Ocean Diver course costs £519.00 which includes all training, course materials and equipment including dry suits.
+          - link "Divecrew" [ref=e99] [cursor=pointer]:
+            - /url: https://divecrew.dive360.biz/courses/ocean-diver-fast-track
+          - text: can offer 0% Finance on the Ocean Diver Course so you can spread payments over a longer time period. You can also extend this Finance to equipment purchases if you so wish.
+        - paragraph [ref=e100]:
+          - text: BSAC and club membership are additional, but the great news is we will waive the usual £30 joining fee if training with Divecrew. See more about our
+          - link "membership prices here" [ref=e101] [cursor=pointer]:
+            - /url: /gbsacCore#membership
+          - text: .
+      - link "Visit Divecrew Website" [ref=e103] [cursor=pointer]:
+        - /url: https://divecrew.dive360.biz/courses/ocean-diver-fast-track
+  - generic [ref=e105]:
+    - generic [ref=e106]:
+      - heading "Skill Development Courses (SDCs)" [level=1] [ref=e107]
+      - separator [ref=e108]
+    - paragraph [ref=e109]: SDCs are specialist BSAC qualifications available to Ocean Diver grade and above. They let you develop skills in specific areas - from boat handling and underwater photography to rescue management and technical diving. All courses below are available to BSAC members.
+    - list [ref=e111]:
+      - listitem [ref=e112]:
+        - link "All" [ref=e113] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e114]:
+        - link "Club Diving" [ref=e115] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e116]:
+        - link "Safety and Rescue" [ref=e117] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e118]:
+        - link "Seamanship" [ref=e119] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e120]:
+        - link "Special Interest" [ref=e121] [cursor=pointer]:
+          - /url: "#"
+      - listitem [ref=e122]:
+        - link "Technical" [ref=e123] [cursor=pointer]:
+          - /url: "#"
+    - generic [ref=e124]:
+      - generic [ref=e126]:
+        - figure [ref=e127]:
+          - img "Accelerated Decompression Procedures" [ref=e128]
+        - generic [ref=e131]: 
+      - generic [ref=e133]:
+        - figure [ref=e134]:
+          - img "Buoyancy and Trim Workshop" [ref=e135]
+        - generic [ref=e138]: 
+      - generic [ref=e140]:
+        - figure [ref=e141]:
+          - img "Compressor Operation" [ref=e142]
+        - generic [ref=e145]: 
+      - generic [ref=e147]:
+        - figure [ref=e148]:
+          - img "Dive Planning and Management" [ref=e149]
+        - generic [ref=e152]: 
+      - generic [ref=e154]:
+        - figure [ref=e155]:
+          - img "Equipment Care" [ref=e156]
+        - generic [ref=e159]: 
+      - generic [ref=e161]:
+        - figure [ref=e162]:
+          - img "Marine Life Appreciation" [ref=e163]
+        - generic [ref=e166]: 
+      - generic [ref=e168]:
+        - figure [ref=e169]:
+          - img "Mixed Gas Blender / Nitrox Gas Blender" [ref=e170]
+        - generic [ref=e173]: 
+      - generic [ref=e175]:
+        - figure [ref=e176]:
+          - img "Search and Recovery" [ref=e177]
+        - generic [ref=e180]: 
+      - generic [ref=e182]:
+        - figure [ref=e183]:
+          - img "Wreck Appreciation" [ref=e184]
+        - generic [ref=e187]: 
+      - generic [ref=e189]:
+        - figure [ref=e190]:
+          - img "Twin-set Diver" [ref=e191]
+        - generic [ref=e194]: 
+      - generic [ref=e196]:
+        - figure [ref=e197]:
+          - img "Advanced Lifesaver Award" [ref=e198]
+        - generic [ref=e201]: 
+      - generic [ref=e203]:
+        - figure [ref=e204]:
+          - img "Automated External Defibrillator" [ref=e205]
+        - generic [ref=e208]: 
+      - generic [ref=e210]:
+        - figure [ref=e211]:
+          - img "First Aid for Divers" [ref=e212]
+        - generic [ref=e215]: 
+      - generic [ref=e217]:
+        - figure [ref=e218]:
+          - img "Lifesaver Award" [ref=e219]
+        - generic [ref=e222]: 
+      - generic [ref=e224]:
+        - figure [ref=e225]:
+          - img "Oxygen Administration" [ref=e226]
+        - generic [ref=e229]: 
+      - generic [ref=e231]:
+        - figure [ref=e232]:
+          - img "Practical Rescue Management" [ref=e233]
+        - generic [ref=e236]: 
+      - generic [ref=e238]:
+        - figure [ref=e239]:
+          - img "Boat Handling" [ref=e240]
+        - generic [ref=e243]: 
+      - generic [ref=e245]:
+        - figure [ref=e246]:
+          - img "Chartwork and Position Fixing" [ref=e247]
+        - generic [ref=e250]: 
+      - generic [ref=e252]:
+        - figure [ref=e253]:
+          - img "Diver Coxswain Assessment" [ref=e254]
+        - generic [ref=e257]: 
+      - generic [ref=e259]:
+        - figure [ref=e260]:
+          - img "Outboard Engine and Boat Maintenance" [ref=e261]
+        - generic [ref=e264]: 
+      - generic [ref=e266]:
+        - figure [ref=e267]:
+          - img "Underwater Photography" [ref=e268]
+        - generic [ref=e271]: 
+      - generic [ref=e273]:
+        - figure [ref=e274]:
+          - img "Ice Diving" [ref=e275]
+        - generic [ref=e278]: 
+      - generic [ref=e280]:
+        - figure [ref=e281]:
+          - img "Sport Mixed Gas Diver 50m" [ref=e282]
+        - generic [ref=e285]: 
+      - generic [ref=e287]:
+        - figure [ref=e288]:
+          - img "Explorer Mixed Gas Diver 60m" [ref=e289]
+        - generic [ref=e292]: 
+      - generic [ref=e294]:
+        - figure [ref=e295]:
+          - img "Advanced Mixed Gas Diver 80m" [ref=e296]
+        - generic [ref=e299]: 
+  - generic [ref=e305]:
+    - heading "Already A Diver" [level=1] [ref=e306]
+    - paragraph [ref=e307]: Qualifications from PADI, SSI, SSAC, SAA and other agencies are all recognised — it's easy to dive with us.
+    - paragraph [ref=e308]: If you have a recognised qualification you do not have to do any cross-over or further training (unless you want to!). It doesn't matter who you trained with (recreational, commercial or military), if you've never dived in the UK before or if you haven't dived for a few seasons - all very welcome - please join us!
+    - paragraph [ref=e309]: Instructors who have trained with other agencies are also exceptionally welcome. There is a straightforward induction process which recognises instructor qualifications and accreditation to able to deliver BSAC instruction.
+    - paragraph [ref=e310]: If you’re interested in experiencing diving with us, get in touch — we’d love to hear from you.
+    - link "Contact Us" [ref=e311] [cursor=pointer]:
+      - /url: /gbsacCore/Home/ContactUs
+  - contentinfo [ref=e312]:
+    - generic [ref=e313]:
+      - generic [ref=e314]:
+        - generic [ref=e315]:
+          - img "BSAC" [ref=e316]
+          - list [ref=e317]:
+            - listitem [ref=e318]:
+              - link "" [ref=e319] [cursor=pointer]:
+                - /url: https://www.facebook.com/GuildfordBSAC/
+                - generic [ref=e320]: 
+            - listitem [ref=e321]:
+              - link "" [ref=e322] [cursor=pointer]:
+                - /url: tel:+447787141857
+                - generic [ref=e323]: 
+          - heading "Subscribe" [level=4] [ref=e324]
+          - generic [ref=e327]:
+            - textbox [ref=e329]
+            - textbox "email address" [ref=e330]
+            - button "Subscribe" [ref=e331] [cursor=pointer]
+        - generic [ref=e333]:
+          - generic [ref=e334]:
+            - heading "Home" [level=4] [ref=e335]
+            - list [ref=e336]:
+              - listitem [ref=e337]:
+                - link "Join Us" [ref=e338] [cursor=pointer]:
+                  - /url: /gbsacCore#joinus
+              - listitem [ref=e339]:
+                - link "About Us" [ref=e340] [cursor=pointer]:
+                  - /url: /gbsacCore/Home/About
+              - listitem [ref=e341]:
+                - link "Committee" [ref=e342] [cursor=pointer]:
+                  - /url: /gbsacCore#team
+              - listitem [ref=e343]:
+                - link "Membership" [ref=e344] [cursor=pointer]:
+                  - /url: /gbsacCore#membership
+              - listitem [ref=e345]:
+                - link "News & Events" [ref=e346] [cursor=pointer]:
+                  - /url: /gbsacCore#newsevents
+              - listitem [ref=e347]:
+                - link "Year Wall Planner" [ref=e348] [cursor=pointer]:
+                  - /url: /gbsacCore/YearPlanner
+            - heading "Pages" [level=4] [ref=e349]
+            - list [ref=e350]:
+              - listitem [ref=e351]:
+                - link "Training" [ref=e352] [cursor=pointer]:
+                  - /url: /gbsacCore/Training
+              - listitem [ref=e353]:
+                - link "FAQs" [ref=e354] [cursor=pointer]:
+                  - /url: /gbsacCore/home/faqs
+              - listitem [ref=e355]:
+                - link "Contact Us" [ref=e356] [cursor=pointer]:
+                  - /url: /gbsacCore/home/ContactUs
+              - listitem [ref=e357]:
+                - link "Privacy Policy" [ref=e358] [cursor=pointer]:
+                  - /url: /gbsacCore/home/PrivacyPolicy
+          - generic [ref=e359]:
+            - heading "Shortcuts" [level=4] [ref=e360]
+            - list [ref=e361]:
+              - listitem [ref=e362]:
+                - link "Facebook Page" [ref=e363] [cursor=pointer]:
+                  - /url: https://www.facebook.com/GuildfordBSAC/
+              - listitem [ref=e364]:
+                - link "BSAC" [ref=e365] [cursor=pointer]:
+                  - /url: http://www.bsac.com/
+              - listitem [ref=e366]:
+                - link "Guildford Waterside Centre" [ref=e367] [cursor=pointer]:
+                  - /url: http://www.guildford-waterside.org.uk/
+            - heading "Members" [level=4] [ref=e368]
+            - list [ref=e369]:
+              - listitem [ref=e370]:
+                - link "Members Facebook Group" [ref=e371] [cursor=pointer]:
+                  - /url: https://www.facebook.com/groups/5725686075/
+              - listitem [ref=e372]:
+                - link "Google Drive" [ref=e373] [cursor=pointer]:
+                  - /url: https://drive.google.com/drive/folders/0AA--JjqpfLqiUk9PVA
+              - listitem [ref=e374]:
+                - link "Dive Site Library" [ref=e375] [cursor=pointer]:
+                  - /url: https://sites.google.com/guildford-bsac.com/guildford-sub-aqua-club
+              - listitem [ref=e376]:
+                - link "Code Of Conduct" [ref=e377] [cursor=pointer]:
+                  - /url: /gbsacCore/home/CodeOfConduct
+      - generic [ref=e379]:
+        - separator [ref=e380]
+        - paragraph [ref=e381]: Guildford Sub-Aqua Club, Guildford Waterside Centre, Riverside, Guildford, Surrey, GU1 1LW

@@ -1,0 +1,159 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Guildford BSAC" [ref=e5] [cursor=pointer]:
+          - /url: "#"
+          - img "Guildford BSAC" [ref=e6]
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - button "Home" [ref=e10] [cursor=pointer]
+          - listitem [ref=e11]:
+            - button "Training" [ref=e12] [cursor=pointer]
+          - listitem [ref=e13]:
+            - link "FAQs" [ref=e14] [cursor=pointer]:
+              - /url: /gbsacCore/home/faqs
+          - listitem [ref=e15]:
+            - button "Members" [ref=e16] [cursor=pointer]
+          - listitem [ref=e17]:
+            - link "Contact Us" [ref=e18] [cursor=pointer]:
+              - /url: /gbsacCore/home/ContactUs
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Contact Us" [level=1] [ref=e22]
+      - separator [ref=e23]
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - heading "Frequently Asked Questions" [level=2] [ref=e26]
+        - tablist [ref=e27]:
+          - tab "I'm interested in try dive" [ref=e29]:
+            - heading "I'm interested in try dive" [level=4] [ref=e30]:
+              - button "I'm interested in try dive" [expanded] [ref=e31] [cursor=pointer]
+          - tab "How much is an introductory course and when does the course run?" [ref=e33]:
+            - heading "How much is an introductory course and when does the course run?" [level=4] [ref=e34]:
+              - button "How much is an introductory course and when does the course run?" [expanded] [ref=e35] [cursor=pointer]
+          - tab "My child would like to learn to dive. Can you help?" [ref=e37]:
+            - heading "My child would like to learn to dive. Can you help?" [level=4] [ref=e38]:
+              - button "My child would like to learn to dive. Can you help?" [expanded] [ref=e39] [cursor=pointer]
+          - tab "Is it possible to arrange training before I go on holiday" [ref=e41]:
+            - heading "Is it possible to arrange training before I go on holiday" [level=4] [ref=e42]:
+              - button "Is it possible to arrange training before I go on holiday" [expanded] [ref=e43] [cursor=pointer]
+          - tab "I'm going diving soon and wonder if you run a refresher session" [ref=e45]:
+            - heading "I'm going diving soon and wonder if you run a refresher session" [level=4] [ref=e46]:
+              - button "I'm going diving soon and wonder if you run a refresher session" [expanded] [ref=e47] [cursor=pointer]
+          - tab "I'd like to get a sub aqua qualification to become stunt performer." [ref=e49]:
+            - heading "I'd like to get a sub aqua qualification to become stunt performer." [level=4] [ref=e50]:
+              - button "I'd like to get a sub aqua qualification to become stunt performer." [expanded] [ref=e51] [cursor=pointer]
+      - generic [ref=e52]:
+        - heading "Call Us" [level=2] [ref=e53]
+        - paragraph [ref=e54]:
+          - text: Please contact our Reception Officer on WhatsApp or call on
+          - link "07787 141 857" [ref=e55] [cursor=pointer]:
+            - /url: tel:+447787141857
+          - text: . If no answer, please leave a voicemail with your name, telephone number and query. We aim to respond to all queries within two working days.
+        - paragraph [ref=e56]:
+          - link "Chat on WhatsApp" [ref=e57] [cursor=pointer]:
+            - /url: https://wa.me/447787141857
+            - img "Chat on WhatsApp" [ref=e58]
+        - heading "Email Us" [level=2] [ref=e59]
+        - paragraph [ref=e60]: Send us an email by completing our online form. We aim to respond to all emails within two working days.
+        - generic [ref=e62]:
+          - textbox "Name" [ref=e64]
+          - textbox "Email" [ref=e66]
+          - textbox [ref=e67]
+          - textbox "Subject" [ref=e69]
+          - textbox "Message" [ref=e71]
+          - generic:
+            - iframe [ref=e75]:
+              - generic [ref=f58e2]:
+                - generic [ref=f58e3]:
+                  - checkbox "I'm not a robot" [ref=f58e7]
+                  - generic [ref=f58e11]: I'm not a robot
+                - generic [ref=f58e15]: reCAPTCHA
+            - button "Submit" [ref=e76] [cursor=pointer]
+  - iframe [ref=e78]:
+    
+  - contentinfo [ref=e79]:
+    - generic [ref=e80]:
+      - generic [ref=e81]:
+        - generic [ref=e82]:
+          - img "BSAC" [ref=e83]
+          - list [ref=e84]:
+            - listitem [ref=e85]:
+              - link "" [ref=e86] [cursor=pointer]:
+                - /url: https://www.facebook.com/GuildfordBSAC/
+                - generic [ref=e87]: 
+            - listitem [ref=e88]:
+              - link "" [ref=e89] [cursor=pointer]:
+                - /url: tel:+447787141857
+                - generic [ref=e90]: 
+          - heading "Subscribe" [level=4] [ref=e91]
+          - generic [ref=e94]:
+            - textbox [ref=e96]
+            - textbox "email address" [ref=e97]
+            - button "Subscribe" [ref=e98] [cursor=pointer]
+        - generic [ref=e100]:
+          - generic [ref=e101]:
+            - heading "Home" [level=4] [ref=e102]
+            - list [ref=e103]:
+              - listitem [ref=e104]:
+                - link "Join Us" [ref=e105] [cursor=pointer]:
+                  - /url: /gbsacCore#joinus
+              - listitem [ref=e106]:
+                - link "About Us" [ref=e107] [cursor=pointer]:
+                  - /url: /gbsacCore/Home/About
+              - listitem [ref=e108]:
+                - link "Committee" [ref=e109] [cursor=pointer]:
+                  - /url: /gbsacCore#team
+              - listitem [ref=e110]:
+                - link "Membership" [ref=e111] [cursor=pointer]:
+                  - /url: /gbsacCore#membership
+              - listitem [ref=e112]:
+                - link "News & Events" [ref=e113] [cursor=pointer]:
+                  - /url: /gbsacCore#newsevents
+              - listitem [ref=e114]:
+                - link "Year Wall Planner" [ref=e115] [cursor=pointer]:
+                  - /url: /gbsacCore/YearPlanner
+            - heading "Pages" [level=4] [ref=e116]
+            - list [ref=e117]:
+              - listitem [ref=e118]:
+                - link "Training" [ref=e119] [cursor=pointer]:
+                  - /url: /gbsacCore/Training
+              - listitem [ref=e120]:
+                - link "FAQs" [ref=e121] [cursor=pointer]:
+                  - /url: /gbsacCore/home/faqs
+              - listitem [ref=e122]:
+                - link "Contact Us" [ref=e123] [cursor=pointer]:
+                  - /url: /gbsacCore/home/ContactUs
+              - listitem [ref=e124]:
+                - link "Privacy Policy" [ref=e125] [cursor=pointer]:
+                  - /url: /gbsacCore/home/PrivacyPolicy
+          - generic [ref=e126]:
+            - heading "Shortcuts" [level=4] [ref=e127]
+            - list [ref=e128]:
+              - listitem [ref=e129]:
+                - link "Facebook Page" [ref=e130] [cursor=pointer]:
+                  - /url: https://www.facebook.com/GuildfordBSAC/
+              - listitem [ref=e131]:
+                - link "BSAC" [ref=e132] [cursor=pointer]:
+                  - /url: http://www.bsac.com/
+              - listitem [ref=e133]:
+                - link "Guildford Waterside Centre" [ref=e134] [cursor=pointer]:
+                  - /url: http://www.guildford-waterside.org.uk/
+            - heading "Members" [level=4] [ref=e135]
+            - list [ref=e136]:
+              - listitem [ref=e137]:
+                - link "Members Facebook Group" [ref=e138] [cursor=pointer]:
+                  - /url: https://www.facebook.com/groups/5725686075/
+              - listitem [ref=e139]:
+                - link "Google Drive" [ref=e140] [cursor=pointer]:
+                  - /url: https://drive.google.com/drive/folders/0AA--JjqpfLqiUk9PVA
+              - listitem [ref=e141]:
+                - link "Dive Site Library" [ref=e142] [cursor=pointer]:
+                  - /url: https://sites.google.com/guildford-bsac.com/guildford-sub-aqua-club
+              - listitem [ref=e143]:
+                - link "Code Of Conduct" [ref=e144] [cursor=pointer]:
+                  - /url: /gbsacCore/home/CodeOfConduct
+      - generic [ref=e146]:
+        - separator [ref=e147]
+        - paragraph [ref=e148]: Guildford Sub-Aqua Club, Guildford Waterside Centre, Riverside, Guildford, Surrey, GU1 1LW

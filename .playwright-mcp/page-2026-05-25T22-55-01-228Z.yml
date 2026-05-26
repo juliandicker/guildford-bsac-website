@@ -1,0 +1,161 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - generic [ref=e4]:
+        - link "Guildford BSAC" [ref=e5] [cursor=pointer]:
+          - /url: "#"
+          - img "Guildford BSAC" [ref=e6]
+        - list [ref=e8]:
+          - listitem [ref=e9]:
+            - button "Home" [ref=e10] [cursor=pointer]
+          - listitem [ref=e11]:
+            - button "Training" [ref=e12] [cursor=pointer]
+          - listitem [ref=e13]:
+            - link "FAQs" [ref=e14] [cursor=pointer]:
+              - /url: /gbsacCore/home/faqs
+          - listitem [ref=e15]:
+            - button "Members" [ref=e16] [cursor=pointer]
+          - listitem [ref=e17]:
+            - link "Contact Us" [ref=e18] [cursor=pointer]:
+              - /url: /gbsacCore/home/ContactUs
+  - generic [ref=e20]:
+    - generic [ref=e21]:
+      - heading "Frequently Asked Questions" [level=1] [ref=e22]
+      - separator [ref=e23]
+    - tablist [ref=e24]:
+      - tab "Who can teach me to dive?" [ref=e26]:
+        - heading "Who can teach me to dive?" [level=4] [ref=e27]:
+          - button "Who can teach me to dive?" [expanded] [ref=e28] [cursor=pointer]
+      - tab "What organisations teach people to dive in the UK?" [ref=e30]:
+        - heading "What organisations teach people to dive in the UK?" [level=4] [ref=e31]:
+          - button "What organisations teach people to dive in the UK?" [expanded] [ref=e32] [cursor=pointer]
+      - tab "Who are the BSAC?" [ref=e34]:
+        - heading "Who are the BSAC?" [level=4] [ref=e35]:
+          - button "Who are the BSAC?" [expanded] [ref=e36] [cursor=pointer]
+      - tab "What’s the difference between a club and a school?" [ref=e38]:
+        - heading "What’s the difference between a club and a school?" [level=4] [ref=e39]:
+          - button "What’s the difference between a club and a school?" [expanded] [ref=e40] [cursor=pointer]
+      - tab "What are the advantages of the club system?" [ref=e42]:
+        - heading "What are the advantages of the club system?" [level=4] [ref=e43]:
+          - button "What are the advantages of the club system?" [expanded] [ref=e44] [cursor=pointer]
+      - tab "What about diving schools?" [ref=e46]:
+        - heading "What about diving schools?" [level=4] [ref=e47]:
+          - button "What about diving schools?" [expanded] [ref=e48] [cursor=pointer]
+      - tab "What form does the training take?" [ref=e50]:
+        - heading "What form does the training take?" [level=4] [ref=e51]:
+          - button "What form does the training take?" [expanded] [ref=e52] [cursor=pointer]
+      - tab "What qualification do I get?" [ref=e54]:
+        - heading "What qualification do I get?" [level=4] [ref=e55]:
+          - button "What qualification do I get?" [expanded] [ref=e56] [cursor=pointer]
+      - tab "Are the qualifications recognised world-wide?" [ref=e58]:
+        - heading "Are the qualifications recognised world-wide?" [level=4] [ref=e59]:
+          - button "Are the qualifications recognised world-wide?" [expanded] [ref=e60] [cursor=pointer]
+      - tab "How long does it take?" [ref=e62]:
+        - heading "How long does it take?" [level=4] [ref=e63]:
+          - button "How long does it take?" [expanded] [ref=e64] [cursor=pointer]
+      - tab "Where do I train?" [ref=e66]:
+        - heading "Where do I train?" [level=4] [ref=e67]:
+          - button "Where do I train?" [expanded] [ref=e68] [cursor=pointer]
+      - tab "Do I need to be particularly fit?" [ref=e70]:
+        - heading "Do I need to be particularly fit?" [level=4] [ref=e71]:
+          - button "Do I need to be particularly fit?" [expanded] [ref=e72] [cursor=pointer]
+      - tab "How old do I need to be?" [ref=e74]:
+        - heading "How old do I need to be?" [level=4] [ref=e75]:
+          - button "How old do I need to be?" [expanded] [ref=e76] [cursor=pointer]
+      - tab "What happens after training?" [ref=e78]:
+        - heading "What happens after training?" [level=4] [ref=e79]:
+          - button "What happens after training?" [expanded] [ref=e80] [cursor=pointer]
+      - tab "What equipment do I need?" [ref=e82]:
+        - heading "What equipment do I need?" [level=4] [ref=e83]:
+          - button "What equipment do I need?" [expanded] [ref=e84] [cursor=pointer]
+      - tab "How much does the equipment cost?" [ref=e86]:
+        - heading "How much does the equipment cost?" [level=4] [ref=e87]:
+          - button "How much does the equipment cost?" [expanded] [ref=e88] [cursor=pointer]
+    - generic [ref=e89]:
+      - paragraph [ref=e90]: Still have questions? We'd love to hear from you.
+      - link "Get in Touch" [ref=e91] [cursor=pointer]:
+        - /url: /gbsacCore/Home/ContactUs
+  - contentinfo [ref=e92]:
+    - generic [ref=e93]:
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - img "BSAC" [ref=e96]
+          - list [ref=e97]:
+            - listitem [ref=e98]:
+              - link "" [ref=e99] [cursor=pointer]:
+                - /url: https://www.facebook.com/GuildfordBSAC/
+                - generic [ref=e100]: 
+            - listitem [ref=e101]:
+              - link "" [ref=e102] [cursor=pointer]:
+                - /url: tel:+447787141857
+                - generic [ref=e103]: 
+          - heading "Subscribe" [level=4] [ref=e104]
+          - generic [ref=e107]:
+            - textbox [ref=e109]
+            - textbox "email address" [ref=e110]
+            - button "Subscribe" [ref=e111] [cursor=pointer]
+        - generic [ref=e113]:
+          - generic [ref=e114]:
+            - heading "Home" [level=4] [ref=e115]
+            - list [ref=e116]:
+              - listitem [ref=e117]:
+                - link "Join Us" [ref=e118] [cursor=pointer]:
+                  - /url: /gbsacCore#joinus
+              - listitem [ref=e119]:
+                - link "About Us" [ref=e120] [cursor=pointer]:
+                  - /url: /gbsacCore/Home/About
+              - listitem [ref=e121]:
+                - link "Committee" [ref=e122] [cursor=pointer]:
+                  - /url: /gbsacCore#team
+              - listitem [ref=e123]:
+                - link "Membership" [ref=e124] [cursor=pointer]:
+                  - /url: /gbsacCore#membership
+              - listitem [ref=e125]:
+                - link "News & Events" [ref=e126] [cursor=pointer]:
+                  - /url: /gbsacCore#newsevents
+              - listitem [ref=e127]:
+                - link "Year Wall Planner" [ref=e128] [cursor=pointer]:
+                  - /url: /gbsacCore/YearPlanner
+            - heading "Pages" [level=4] [ref=e129]
+            - list [ref=e130]:
+              - listitem [ref=e131]:
+                - link "Training" [ref=e132] [cursor=pointer]:
+                  - /url: /gbsacCore/Training
+              - listitem [ref=e133]:
+                - link "FAQs" [ref=e134] [cursor=pointer]:
+                  - /url: /gbsacCore/home/faqs
+              - listitem [ref=e135]:
+                - link "Contact Us" [ref=e136] [cursor=pointer]:
+                  - /url: /gbsacCore/home/ContactUs
+              - listitem [ref=e137]:
+                - link "Privacy Policy" [ref=e138] [cursor=pointer]:
+                  - /url: /gbsacCore/home/PrivacyPolicy
+          - generic [ref=e139]:
+            - heading "Shortcuts" [level=4] [ref=e140]
+            - list [ref=e141]:
+              - listitem [ref=e142]:
+                - link "Facebook Page" [ref=e143] [cursor=pointer]:
+                  - /url: https://www.facebook.com/GuildfordBSAC/
+              - listitem [ref=e144]:
+                - link "BSAC" [ref=e145] [cursor=pointer]:
+                  - /url: http://www.bsac.com/
+              - listitem [ref=e146]:
+                - link "Guildford Waterside Centre" [ref=e147] [cursor=pointer]:
+                  - /url: http://www.guildford-waterside.org.uk/
+            - heading "Members" [level=4] [ref=e148]
+            - list [ref=e149]:
+              - listitem [ref=e150]:
+                - link "Members Facebook Group" [ref=e151] [cursor=pointer]:
+                  - /url: https://www.facebook.com/groups/5725686075/
+              - listitem [ref=e152]:
+                - link "Google Drive" [ref=e153] [cursor=pointer]:
+                  - /url: https://drive.google.com/drive/folders/0AA--JjqpfLqiUk9PVA
+              - listitem [ref=e154]:
+                - link "Dive Site Library" [ref=e155] [cursor=pointer]:
+                  - /url: https://sites.google.com/guildford-bsac.com/guildford-sub-aqua-club
+              - listitem [ref=e156]:
+                - link "Code Of Conduct" [ref=e157] [cursor=pointer]:
+                  - /url: /gbsacCore/home/CodeOfConduct
+      - generic [ref=e159]:
+        - separator [ref=e160]
+        - paragraph [ref=e161]: Guildford Sub-Aqua Club, Guildford Waterside Centre, Riverside, Guildford, Surrey, GU1 1LW
