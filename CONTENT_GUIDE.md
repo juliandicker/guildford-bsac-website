@@ -15,7 +15,7 @@ This guide explains how to update the main content areas of the Guildford BSAC w
 
 Click this button to open the editor directly (sign in to GitHub first if prompted):
 
-<a href="https://github.dev/juliandicker/guildford-bsac-website" target="_blank"><img src="https://img.shields.io/badge/Open%20in-github.dev-blue?logo=github" alt="Open in github.dev"></a>
+[![Open in github.dev](https://img.shields.io/badge/Open%20in-github.dev-blue?logo=github)](https://github.dev/juliandicker/guildford-bsac-website)
 
 Alternatively, go to [github.com/juliandicker/guildford-bsac-website](https://github.com/juliandicker/guildford-bsac-website) and press the **`.` (full stop) key** on your keyboard.
 
