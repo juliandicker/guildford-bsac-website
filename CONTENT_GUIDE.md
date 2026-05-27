@@ -13,8 +13,11 @@ This guide explains how to update the main content areas of the Guildford BSAC w
 
 ## Opening the editor
 
-1. Go to [github.com/juliandicker/guildford-bsac-website](https://github.com/juliandicker/guildford-bsac-website) (sign in if prompted)
-2. Press the **`.` (full stop/period) key** on your keyboard
+Click this button to open the editor directly (sign in to GitHub first if prompted):
+
+[![Open in github.dev](https://img.shields.io/badge/Open%20in-github.dev-blue?logo=github)](https://github.dev/juliandicker/guildford-bsac-website)
+
+Alternatively, go to [github.com/juliandicker/guildford-bsac-website](https://github.com/juliandicker/guildford-bsac-website) and press the **`.` (full stop) key** on your keyboard.
 
 A code editor opens in your browser — no software to install. It looks like this:
 
