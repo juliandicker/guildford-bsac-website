@@ -1,16 +1,53 @@
 # Content Update Guide
 
-This guide explains how to update the three main content areas of the Guildford BSAC website. No programming knowledge is needed — all changes are made by editing simple text files.
+This guide explains how to update the main content areas of the Guildford BSAC website. No programming knowledge is needed — all changes are made by editing simple text files directly in your browser.
+
+---
+
+## What you need
+
+- A **GitHub account** — sign up free at [github.com](https://github.com) if you don't have one
+- To be added as a **collaborator** on the repository — ask the website maintainer to invite you (they do this via Settings → Collaborators on GitHub)
+
+---
+
+## Opening the editor
+
+1. Go to [github.com/juliandicker/guildford-bsac-website](https://github.com/juliandicker/guildford-bsac-website) (sign in if prompted)
+2. Press the **`.` (full stop/period) key** on your keyboard
+
+A code editor opens in your browser — no software to install. It looks like this:
+
+- **Left panel:** file explorer — click folders to expand them, click a file to open it
+- **Main area:** the file you're editing
+- **Left sidebar icons:** the branch/source-control icon (looks like a Y shape) is how you save changes
+
+---
+
+## Editing a file
+
+1. In the left panel, navigate to the file you want (e.g. `App_Data` → `team.json`)
+2. Click the file to open it
+3. Make your changes in the main editor area
+4. When done, move on to **Saving your changes** below
+
+---
+
+## Saving your changes (publishing to the website)
+
+1. Click the **source control icon** in the left sidebar — it looks like a branching Y shape, and will show a number badge when you have unsaved changes
+2. Your changed files appear under **Changes**
+3. Click the **`+` icon** next to each file to stage it (moves it to **Staged Changes**)
+4. Type a short note in the **Message** box describing what you did — e.g. `Update membership rates for 2025` or `Add new committee member`
+5. Click **Commit & Push**
+
+The website will rebuild and go live within about **3 minutes**. You can watch progress in the **Actions** tab back on github.com.
 
 ---
 
 ## How changes are published
 
-1. Make your changes to the files described below
-2. Commit and push to GitHub (the `main` branch)
-3. GitHub automatically builds and deploys the site to the server — this takes about 2–3 minutes
-
-You can watch the deployment progress in the **Actions** tab on GitHub.
+Once you commit and push, GitHub automatically builds and deploys the site. You don't need to do anything else.
 
 ---
 
@@ -59,10 +96,19 @@ Note: no comma after the **last** entry in the list.
 Delete their entire block (from `{` to `}`), including the comma before or after it.
 
 ### Photos
-- Photo files go in `Content/Images/team/`
-- Use lowercase filenames with underscores, e.g. `jane_smith.jpg`
-- The `ImgSrc` value must exactly match the filename
-- Recommended size: roughly square, at least 300×300 pixels, but recommend 600x600 pixels
+
+To upload a new photo:
+
+1. In the left panel, open `wwwroot` → `Content` → `Images` → `team`
+2. Right-click the `team` folder and choose **Upload...**
+3. Select the photo from your computer
+4. The filename you upload must exactly match what you put in `ImgSrc` — use lowercase with underscores, e.g. `jane_smith.jpg`
+
+Photo guidelines:
+- Square crops work best (same width and height)
+- At least 300×300 pixels; 600×600 is ideal
+- Keep file size under 500 KB
+- If there's no photo yet, use `placeholder.jpg` as the `ImgSrc` value until one is available
 
 ---
 
@@ -149,20 +195,3 @@ If the file is invalid JSON the site will show an error. The most common mistake
 
 **Before saving, paste the file contents into [jsonlint.com](https://jsonlint.com) to check for errors.**
 
----
-
-## Setting up GitHub deployment (one-time setup)
-
-The deployment uses GitHub Actions with FTP credentials stored as secrets. These are already set up if the site is deploying automatically. If you need to reconfigure them:
-
-1. Go to the repository on GitHub → **Settings** → **Secrets and variables** → **Actions**
-2. Add the following secrets:
-
-| Secret name | Value |
-|-------------|-------|
-| `FTP_HOST` | FTP hostname (from Plesk, e.g. `ftp.guildford-bsac.com`) |
-| `FTP_USERNAME` | FTP username |
-| `FTP_PASSWORD` | FTP password |
-| `FTP_REMOTE_PATH` | Remote folder path (e.g. `/httpdocs/gbsacCore/`) |
-
-The `appsettings.json` file (which contains API keys) is **excluded** from deployment — it lives permanently on the server and is not overwritten when you push changes.
