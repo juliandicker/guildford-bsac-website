@@ -28,5 +28,15 @@
     "DiveCrewCost": 519.0,
     "TryDiveCost": 25.0,
     "ClubMembershipMonthlyRate": 17.5
+  },
+  {
+    "EffectiveDate": "2026-03-01T00:00:00",
+    "AgmApprovedDate": "2025-10-21T00:00:00",
+    "BsacFullMemberAnnualRate": 74.0,
+    "ClubJoiningFee": 50.0,
+    "ClubJoiningFeeWithTraining": 75.0,
+    "DiveCrewCost": 519.0,
+    "TryDiveCost": 40.0,
+    "ClubMembershipMonthlyRate": 17.5
   }
 ]
