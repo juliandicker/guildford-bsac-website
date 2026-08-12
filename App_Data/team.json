@@ -6,44 +6,32 @@
     "Description": "The leader & figure-head of the club, manages the conduct of branch affairs & the clubs public image."
   },
   {
-    "Name": "Andrew Taylor",
-    "ImgSrc": "andrew_taylor.jpg",
+    "Name": "Duncan Howe",
+    "ImgSrc": "duncan_howe.jpg",
     "Role": "Diving Officer",
     "Description": "Responsible for the safety of the divers in the branch, approving all diving & training activities within the club & that it will meet the current BSAC standards."
   },
   {
     "Name": "Raynor Manuel",
     "ImgSrc": "raynor_manuel.jpg",
-    "Role": "Membership Officer",
-    "Description": "Responsible for ensuring the membership details and medical status is up to date & sending renewals to BSAC."
+    "Role": "Membership and Reception Officer",
+    "Description": "Responsible for ensuring the membership details and medical status is up to date & sending renewals to BSAC. Deals with membership/try dive enquiries & assists new members to become fully integrated with the club activities, training & social events."
   },
   {
-    "Name": "Charles Collard",
-    "ImgSrc": "charles_collard.jpg",
-    "Role": "Reception Officer",
-    "Description": "Deals with membership/try dive enquiries & assists new members to become fully integrated with the club activities, training & social events."
+    "Name": "Sean Arrowsmith",
+    "ImgSrc": "sean_arrowsmith.jpg",
+    "Role": "Training and Equipment Officer",
+    "Description": "Plan the clubs training programme, co-ordinates the instructor team & ensures that training meets the current BSAC standards. Responsible for the clubs shed, equipment, compressor & making sure it is serviced and accessible."
   },
   {
-    "Name": "Mark Ridpath",
-    "ImgSrc": "mark_ridpath.jpg",
-    "Role": "Training Officer",
-    "Description": "Plan the clubs training programme, co-ordinates the instructor team & ensures that training meets the current BSAC standards."
-  },
-  {
-    "Name": "Rachel Sharp",
-    "ImgSrc": "rachel_sharp.jpg",
+    "Name": "David Rees",
+    "ImgSrc": "david_rees.jpg",
     "Role": "Secretary",
     "Description": "Responsible for the administration of the club, organising committee meetings, AGMs & providing minutes."
   },
   {
-    "Name": "Thiery Thielens",
-    "ImgSrc": "thiery_thielens.jpg",
-    "Role": "Equipment Officer",
-    "Description": "Responsible for the clubs shed, equipment, compressor & making sure it is serviced and accessible."
-  },
-  {
-    "Name": "Steve Batt",
-    "ImgSrc": "steve.jpg",
+    "Name": "Andy Taylor",
+    "ImgSrc": "andrew_taylor.jpg",
     "Role": "Boat Officer",
     "Description": "Responsible for the clubs boats & trailers making sure they are serviced and accessible."
   },
@@ -58,5 +46,11 @@
     "ImgSrc": "sally_evans.jpg",
     "Role": "Welfare Officer",
     "Description": "Responsible for ensuring the safety, wellbeing & inclusion of all members within the club."
+  },
+  {
+    "Name": "Mark Ridpath",
+    "ImgSrc": "mark_ridpath.jpg",
+    "Role": "Social Secretary",
+    "Description": "Plans, organises and promotes club social events."
   }
 ]
