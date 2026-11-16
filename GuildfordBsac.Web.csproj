@@ -49,7 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="bootstrap.sass" Version="5.3.8" />
+    <PackageReference Include="bootstrap.sass" Version="5.3.9" />
     <PackageReference Include="Google.Apis.Calendar.v3" Version="1.77.0.4285" />
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.75.0.4225" />
     <PackageReference Include="HtmlSanitizer" Version="9.2.1039" />
